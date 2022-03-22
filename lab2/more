@@ -1,0 +1,5 @@
+    compile  lab2/timer.o
+*** Error code 1
+
+Stop.
+make: stopped in /home/lcom/labs/lab2
