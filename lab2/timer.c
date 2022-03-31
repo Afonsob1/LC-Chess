@@ -9,22 +9,37 @@ int counter=0;
 int hook_id;
 
 int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
-  /* To be implemented by the students */
-  uint8_t result;
-  timer_get_conf(timer,&result);
-  uint8_t control = (0x03<<4) | (0x0F & result);
-  control = control |  (timer<<6);
-  uint8_t div = TIMER_FREQ/freq;
-  sys_outb(TIMER_CTRL,control);
+  if (freq > TIMER_FREQ || freq<19)
+    return 1;
+
+  uint16_t init = TIMER_FREQ/freq;
+  uint8_t initmsb = 0;
+  util_get_MSB(init,&initmsb);
+  uint8_t initlsb = 0;
+  util_get_LSB(init,&initlsb);
+
+  uint8_t control;
+  timer_get_conf(timer,&control);
+  control = TIMER_LSB_MSB | (control & 0x0F);
+
   switch(timer){
     case 0:
-      sys_outb(TIMER_0,div);
+      control |= TIMER_SEL0;
+      sys_outb(TIMER_CTRL,control);
+      sys_outb(TIMER_0,initlsb);
+      sys_outb(TIMER_0,initmsb);
       break;
     case 1:
-      sys_outb(TIMER_1,div);
+      control |= TIMER_SEL1;
+      sys_outb(TIMER_CTRL,control);
+      sys_outb(TIMER_1,initlsb);
+      sys_outb(TIMER_1,initmsb);
       break;
     case 2:
-      sys_outb(TIMER_2,div);
+      control |= TIMER_SEL2;
+      sys_outb(TIMER_CTRL,control);
+      sys_outb(TIMER_2,initlsb);
+      sys_outb(TIMER_2,initmsb);
       break;
     default:
       return -1;
