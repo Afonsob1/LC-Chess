@@ -1,6 +1,5 @@
 #include <keyboard.h>
 
-extern int counter;
 
 void (kbc_ih)(){
   uint8_t status;
@@ -24,38 +23,33 @@ void (kbc_ih)(){
 
 int (issue_command)(uint8_t* command,uint8_t args){
   uint8_t output;
-  int return_value;
-
   switch(*command){
-    case 0x20:
-      return_value = write_kbc(*command);
-      if(return_value)
-        return return_value;
-      else
-        return read_kbc(command);
+    case ReadCMDByte:
+      write_kbc(ReadCMDByte);
+      return read_kbc(command);
       break;
-    case 0x60:
-      return write_kbc_args(*command,args);
+    case WriteCMDByte:
+      return write_kbc_args(WriteCMDByte,args);
       break;
-    case 0xAA:
-      write_kbc(*command);
+    case checkKBC:
+      write_kbc(checkKBC);
       read_kbc(&output);
-      if(output==0x55)
+      if(output==KBCTestOK)
         return 0;
-      else if(output==0xFC)
+      else if(output==KBCTestFailed)
         return 1;
       else
         return 2;
       break;
-    case 0xAB:
+    case CheckKBInterface:
       read_kbc(&output);
       return output;
       break;
-    case 0xAD:
-      return write_kbc(*command);
+    case DisableKBDInterface:
+      return write_kbc(DisableKBDInterface);
       break;
-    case 0xAE:
-      return write_kbc(*command);
+    case EnableKBDInterface:
+      return write_kbc(EnableKBDInterface);
       break;
     default:
       return 2;

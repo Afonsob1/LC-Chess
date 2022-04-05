@@ -5,6 +5,8 @@
 #include <stdint.h>
 
 extern uint8_t c;
+extern int counter;
+#define DELAY_US    20000
 #define OUTPUT_BUFFER 0x60
 #define STAT_REG 0x64
 #define KBC_ST_REG 0x64
@@ -15,6 +17,16 @@ extern uint8_t c;
 #define KBC_PAR_ERROR 0x80
 #define KBC_TO_ERROR 0x40
 #define KBC_INPUT_BUFFER 0x60
+#define ReadCMDByte 0x20
+#define WriteCMDByte 0x60
+#define checkKBC 0xAA
+#define CheckKBInterface 0xAB
+#define DisableKBDInterface 0xAD
+#define EnableKBDInterface 0xAE
+#define KBCTestOK 0x55
+#define KBCTestFailed 0xFC
+#define OUTPUT_BUFFER 0x60
+#define STAT_REG 0x64
 
 void (kbc_ih)();
 

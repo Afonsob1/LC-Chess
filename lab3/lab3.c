@@ -13,6 +13,10 @@ uint8_t c=0;
 #define OUTPUT_BUFFER 0x60
 #define STAT_REG 0x64
 #define TIMER0_IRQ 0
+#define KBC_ST_REG 0x64
+#define KBC_CMD_REG 0x64
+#define DELAY_US    20000
+
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
   lcf_set_language("EN-US");

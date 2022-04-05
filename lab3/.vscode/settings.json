@@ -10,6 +10,7 @@
     "lab3.h": "c",
     "utils.h": "c",
     "stdint.h": "c",
-    "keyboard.h": "c"
+    "keyboard.h": "c",
+    "lcf.h": "c"
   },
 }
