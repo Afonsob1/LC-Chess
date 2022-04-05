@@ -66,7 +66,7 @@ int (read_kbc)(uint8_t *kbc_status){
     uint8_t stat;
     util_sys_inb(KBC_ST_REG, &stat); /* assuming it returns OK */
     /* loop while 8042 input buffer is not empty */
-    if(!(stat & KBC_OUT_BUF)) {
+    if(stat & KBC_OUT_BUF) {
         util_sys_inb(OUTPUT_BUFFER,kbc_status);
         if(!(stat & (KBC_PAR_ERROR |KBC_TO_ERROR)))
           return EXIT_SUCCESS;
@@ -86,7 +86,6 @@ int (write_kbc)(uint8_t command){
     util_sys_inb(KBC_ST_REG, &stat); /* assuming it returns OK */
     /* loop while 8042 input buffer is not empty */
     if( (stat & KBC_ST_IBF) == 0 ) {
-      printf("Wrote to the cmd reg!\n");
       sys_outb(KBC_CMD_REG, command);
       return 0;
     }

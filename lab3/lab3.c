@@ -94,12 +94,11 @@ int(kbd_test_poll)() {
     }
     tickdelay(micros_to_ticks(DELAY_US));
   }
-  uint8_t write_command = 0x60;
-  issue_command(&write_command,0x01);
-  write_command = 0xAE;
+  uint8_t write_command = 0x20;
   issue_command(&write_command,0);
-  write_command = 0xAB;
-  printf("Keyboard Interface: %d\n",issue_command(&write_command,0));
+  uint8_t previous_command_byte = write_command;
+  write_command = 0x60;
+  issue_command(&write_command,0x01 | previous_command_byte);
   return 1;
 }
 
