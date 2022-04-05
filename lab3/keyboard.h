@@ -25,3 +25,5 @@ int (read_kbc)(uint8_t *);
 int (write_kbc)(uint8_t);
 
 int (write_kbc_args)(uint8_t,uint8_t);
+
+void (timer_int_handler)();

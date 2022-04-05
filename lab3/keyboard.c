@@ -1,5 +1,7 @@
 #include <keyboard.h>
 
+extern int counter;
+
 void (kbc_ih)(){
   uint8_t status;
   util_sys_inb(STAT_REG,&status);
@@ -110,6 +112,11 @@ int (write_kbc_args)(uint8_t command,uint8_t args){
     tickdelay(micros_to_ticks(DELAY_US)); // e.g. tickdelay()
   }
   return -1;
+}
+
+
+void (timer_int_handler)(){
+  counter--;
 }
 
 
