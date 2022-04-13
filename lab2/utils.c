@@ -2,24 +2,25 @@
 
 #include <stdint.h>
 
+#define LSB_MASK 0x00FF
+#define MSB_MASK 0xFF00
+
 int(util_get_LSB)(uint16_t val, uint8_t *lsb) {
-  /* To be implemented by the students */
-  *lsb = (uint8_t)(val&0x00FF);
-  return 1;
+  *lsb = (uint8_t) val&LSB_MASK;
+  return 0;
 }
 
 int(util_get_MSB)(uint16_t val, uint8_t *msb) {
-  /* To be implemented by the students */
-  *msb = (uint8_t)((val&0xFF00)>>8);
-  return 1;
+  *msb = (uint8_t) ((val&MSB_MASK) >> 8);
+  return 0;
 }
 
 int (util_sys_inb)(int port, uint8_t *value) {
-  /* To be implemented by the students */
-
   uint32_t aux;
-  sys_inb(port,&aux);
-  *value = aux;
-
-  return 1;
+  int r;
+  if((r=sys_inb(port,&aux))!=0)
+    return r;
+  *value = (uint8_t) aux&LSB_MASK;
+  return 0;   
 }
+

@@ -5,57 +5,65 @@
 
 #include "i8254.h"
 
+#define READBACK_CMD BIT(7) | BIT(6)
+#define PROGRAM_TIMER(n) n<<6
+#define INIT_MODE_MASK BIT(4)|BIT(5)
+#define COUNTING_MODE_MASK 0x0E
+#define BASE_MASK 0x01
+
 int counter=0;
-int hook_id;
+int hook_id=4;
 
 int (timer_set_frequency)(uint8_t timer, uint32_t freq) {
+  int r;
   if (freq > TIMER_FREQ || freq<19)
-    return 1;
-
-  uint16_t init = TIMER_FREQ/freq;
-  uint8_t initmsb = 0;
-  util_get_MSB(init,&initmsb);
-  uint8_t initlsb = 0;
-  util_get_LSB(init,&initlsb);
+  return -1;
 
   uint8_t control;
   timer_get_conf(timer,&control);
-  control = TIMER_LSB_MSB | (control & 0x0F);
+  control &= (COUNTING_MODE_MASK | BASE_MASK);
+  control |= (TIMER_LSB_MSB | PROGRAM_TIMER(timer));
+
+  if((r=sys_outb(TIMER_CTRL,control))!=0)
+    return r;
+
+  uint16_t div = TIMER_FREQ/freq;
+  uint8_t div_MSB,div_LSB;
+  util_get_MSB(div,&div_MSB);
+  util_get_LSB(div,&div_LSB);
 
   switch(timer){
     case 0:
-      control |= TIMER_SEL0;
-      sys_outb(TIMER_CTRL,control);
-      sys_outb(TIMER_0,initlsb);
-      sys_outb(TIMER_0,initmsb);
+      if((r=sys_outb(TIMER_0,div_LSB))!=0)
+        return r;
+      if((r=sys_outb(TIMER_0,div_MSB))!=0)
+        return r;
       break;
     case 1:
-      control |= TIMER_SEL1;
-      sys_outb(TIMER_CTRL,control);
-      sys_outb(TIMER_1,initlsb);
-      sys_outb(TIMER_1,initmsb);
+      if((r=sys_outb(TIMER_1,div_LSB))!=0)
+        return r;
+      if((r=sys_outb(TIMER_1,div_MSB))!=0)
+        return r;
       break;
     case 2:
-      control |= TIMER_SEL2;
-      sys_outb(TIMER_CTRL,control);
-      sys_outb(TIMER_2,initlsb);
-      sys_outb(TIMER_2,initmsb);
+      if((r=sys_outb(TIMER_2,div_LSB))!=0)
+        return r;
+      if((r=sys_outb(TIMER_2,div_MSB))!=0)
+        return r;
       break;
     default:
       return -1;
-  }
+      break;
+  } 
   return 0;
 }
 
 int (timer_subscribe_int)(uint8_t *bit_no) {
-  counter = 60*(*bit_no);
-  hook_id=4;
   *bit_no=hook_id;
   return sys_irqsetpolicy(TIMER0_IRQ,IRQ_REENABLE,&hook_id);
 }
 
 int (timer_unsubscribe_int)() {
-  /* To be implemented by the students */
   return sys_irqrmpolicy(&hook_id);
 }
 
@@ -65,48 +73,40 @@ void (timer_int_handler)() {
 }
 
 int (timer_get_conf)(uint8_t timer, uint8_t *st) {
-  /* To be implemented by the students */
-  uint8_t control = TIMER_RB_SEL(timer) | TIMER_RB_COUNT_ | 0xC0;
-  sys_outb(TIMER_CTRL,control);
-  int port;
+  uint8_t read_back_command = (READBACK_CMD) | TIMER_RB_COUNT_ | TIMER_RB_SEL(timer);
+  if(sys_outb(TIMER_CTRL,read_back_command)!=0)
+    return -1;
   switch(timer){
     case 0:
-      port = TIMER_0;
-      break;
+      return util_sys_inb(TIMER_0,st);
     case 1:
-      port = TIMER_1;
-      break;
+      return util_sys_inb(TIMER_1,st);
     case 2:
-      port = TIMER_2;
-      break;
-  } 
-  util_sys_inb(port,st);
-  return 0;
+      return util_sys_inb(TIMER_2,st);
+    default:
+      return -1;
+  }
 }
 
 int (timer_display_conf)(uint8_t timer, uint8_t st,
                         enum timer_status_field field) {
-  /* To be implemented by the students */
-  union timer_status_field_val aux;
-  uint8_t initial_mode = (st&0x30)>>4;
-  uint8_t programmed_mode = (st & 0x0E)>>1;
-  if(programmed_mode==6 || programmed_mode==7)
-    programmed_mode-=4;
-  uint8_t base = (st&0x01);
+
+  union timer_status_field_val conf;
   switch(field){
     case tsf_all:
-      aux.byte=st;
+      conf.byte=st;
       break;
     case tsf_initial:
-      aux.in_mode=initial_mode;
+      conf.in_mode=(st&INIT_MODE_MASK)>>4;
       break;
     case tsf_mode:
-      aux.count_mode=programmed_mode;
+      conf.count_mode=(st&COUNTING_MODE_MASK)>>1;
+      if(conf.count_mode==6 || conf.count_mode==7)
+        conf.count_mode-=4; // in case don't care bit is set to 1 for counting mode 2 or 3
       break;
     case tsf_base:
-      aux.bcd=base;
+      conf.bcd=st&BASE_MASK;
       break;
   }
-  timer_print_config(timer,field,aux);
-  return 0;
+  return timer_print_config(timer,field,conf);
 }

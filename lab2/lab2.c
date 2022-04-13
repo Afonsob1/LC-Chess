@@ -5,6 +5,8 @@
 #include <stdint.h>
 
 
+extern int counter;
+
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
   lcf_set_language("EN-US");
@@ -30,51 +32,46 @@ int main(int argc, char *argv[]) {
 }
 
 int(timer_test_read_config)(uint8_t timer, enum timer_status_field field) {
-  /* To be implemented by the students */
-  uint8_t result;
-  if(timer_get_conf(timer,&result)==0)
-    return timer_display_conf(timer,result,field);
-  return 1;
+  uint8_t st;
+  int r;
+  if((r=timer_get_conf(timer,&st))==0)
+    return timer_display_conf(timer,st,field);
+  return r;
 }
 
 int(timer_test_time_base)(uint8_t timer, uint32_t freq) {
-  /* To be implemented by the students */
   return timer_set_frequency(timer,freq);
 }
 
 int(timer_test_int)(uint8_t time) {
-  /* To be implemented by the students */
-  uint8_t bit_no;
-  timer_subscribe_int(&bit_no);
   int ipc_status,r;
+  uint8_t bit_no;
   message msg;
-  extern int counter;
-  counter=0;
-  while(counter<time*60) { /* You may want to use a different condition */
-     /* Get a request message. */
-    if ( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) { 
-        printf("driver_receive failed with: %d", r);
-        continue;
+  if((r=timer_subscribe_int(&bit_no))!=0)
+    return r;
+  uint8_t irq_set = BIT(bit_no);
+  while(counter<60*time){
+    if( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
+      printf("driver_receive failed with: %d", r);
+      continue;
     }
-    if (is_ipc_notify(ipc_status)) { /* received notification */
-        int irq_set=BIT(bit_no);
-        switch (_ENDPOINT_P(msg.m_source)) {
-            case HARDWARE: /* hardware interrupt notification */				
-                if (msg.m_notify.interrupts & irq_set) { /* subscribed interrupt */
-                  timer_int_handler();
-                    if(counter%60==0)
-                      timer_print_elapsed_time();
-                }
-                break;
-
-            default:
-                break; /* no other notifications expected: do nothing */	
-        }
+    if (is_ipc_notify(ipc_status)) {
+      switch (_ENDPOINT_P(msg.m_source)) {
+        case HARDWARE: //hardware interrupt notification
+          if (msg.m_notify.interrupts & irq_set) {
+            timer_int_handler();
+            if(counter%60==0){
+              timer_print_elapsed_time();
+            }
+          }
+          break;
+        default:
+          break; //unexpected notification
+      }
     }
-    else { /* received a standard message, not a notification */
-        /* no standard messages expected: do nothing */
+    else { 
+      //received an unexpected standard message,do nothing
     }
   }
-  timer_unsubscribe_int();
-  return 0;
+  return timer_unsubscribe_int();
 }
