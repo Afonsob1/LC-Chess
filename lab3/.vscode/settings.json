@@ -11,6 +11,7 @@
     "utils.h": "c",
     "stdint.h": "c",
     "keyboard.h": "c",
-    "lcf.h": "c"
+    "lcf.h": "c",
+    "stdbool.h": "c"
   },
 }

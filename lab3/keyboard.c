@@ -1,118 +1,159 @@
-#include <keyboard.h>
+#include "keyboard.h"
 
+int kb_hook_id=1;
+int timer_hook_id=4;
+int counter=0;
+uint8_t code;
 
-void (kbc_ih)(){
-  uint8_t status;
-  util_sys_inb(STAT_REG,&status);
-  if(!(status&0x1))
-    return;
-  util_sys_inb(OUTPUT_BUFFER,&c);
-  if(c==0xe0){
+int (keyboard_subscribe_int)(uint8_t* bit_no){
+  *bit_no=kb_hook_id;
+  return sys_irqsetpolicy(KEYBOARD_IRQ,IRQ_REENABLE|IRQ_EXCLUSIVE,&kb_hook_id);
+}
+
+int (keyboard_unsubscribe_int)(){
+  return sys_irqrmpolicy(&kb_hook_id);
+}
+
+int (keyboard_int_handler)(){
+  uint8_t kbc_state;
+  bool valid_values=false;
+  int r;
+  if((r=util_sys_inb(STAT_REG,&kbc_state))!=0)
+    return r;
+  if((kbc_state&OBF_FULL) && !(kbc_state & (PAR_ERR|TIMEOUT_ERR|AUX))){
+    valid_values=true;
+  }
+  if((r=util_sys_inb(OUT_BUF,&code))!=0)
+    return r;
+  if(code==TWO_BYTES && valid_values){
     uint8_t bytes[2];
-    bytes[0]=c;
-    util_sys_inb(OUTPUT_BUFFER,&c);
-    bytes[1]=c;
-    kbd_print_scancode(!(c&0x80),2,bytes);
+    bytes[0]=code;
+    if((r=util_sys_inb(OUT_BUF,&code))!=0)
+      return r;
+    bytes[1]=code;
+    return kbd_print_scancode(!(code&BREAK_CODE),2,bytes);
   }
-  else{
+  else if (valid_values){
     uint8_t bytes[1];
-    bytes[0]=c;
-    kbd_print_scancode(!(c&0x80),1,bytes);
+    bytes[0]=code;
+    return kbd_print_scancode(!(code&BREAK_CODE),1,bytes);
   }
+  else
+    return OUT_BUF_EMPTY;
 }
 
-int (issue_command)(uint8_t* command,uint8_t args){
-  uint8_t output;
-  switch(*command){
-    case ReadCMDByte:
-      write_kbc(ReadCMDByte);
-      return read_kbc(command);
-      break;
-    case WriteCMDByte:
-      return write_kbc_args(WriteCMDByte,args);
-      break;
-    case checkKBC:
-      write_kbc(checkKBC);
-      read_kbc(&output);
-      if(output==KBCTestOK)
-        return 0;
-      else if(output==KBCTestFailed)
-        return 1;
-      else
-        return 2;
-      break;
-    case CheckKBInterface:
-      read_kbc(&output);
-      return output;
-      break;
-    case DisableKBDInterface:
-      return write_kbc(DisableKBDInterface);
-      break;
-    case EnableKBDInterface:
-      return write_kbc(EnableKBDInterface);
-      break;
-    default:
-      return 2;
-  }
+int (timer_subscribe_int)(uint8_t* bit_no){
+  *bit_no=timer_hook_id;
+  return sys_irqsetpolicy(TIMER0_IRQ,IRQ_REENABLE,&timer_hook_id);
 }
 
-int (read_kbc)(uint8_t *kbc_status){
-  uint8_t counter = 3;
-  while(counter>0) {
-    uint8_t stat;
-    util_sys_inb(KBC_ST_REG, &stat); /* assuming it returns OK */
-    /* loop while 8042 input buffer is not empty */
-    if(stat & KBC_OUT_BUF) {
-        util_sys_inb(OUTPUT_BUFFER,kbc_status);
-        if(!(stat & (KBC_PAR_ERROR |KBC_TO_ERROR)))
-          return EXIT_SUCCESS;
-        else
-          return EXIT_FAILURE;
-    }
-    counter--;
-    tickdelay(micros_to_ticks(DELAY_US)); // e.g. tickdelay()
-  }
-  return -1;
+int (timer_unsubscribe_int)(){
+  return sys_irqrmpolicy(&timer_hook_id);
 }
-
-int (write_kbc)(uint8_t command){
-  uint8_t counter = 3;
-  while(counter>0) {
-    uint8_t stat;
-    util_sys_inb(KBC_ST_REG, &stat); /* assuming it returns OK */
-    /* loop while 8042 input buffer is not empty */
-    if( (stat & KBC_ST_IBF) == 0 ) {
-      sys_outb(KBC_CMD_REG, command);
-      return 0;
-    }
-    counter--;
-    tickdelay(micros_to_ticks(DELAY_US)); // e.g. tickdelay()
-  }
-  return -1;
-}
-
-int (write_kbc_args)(uint8_t command,uint8_t args){
-  uint8_t counter = 3;
-  while(counter>0) {
-    uint8_t stat;
-    util_sys_inb(KBC_ST_REG, &stat); /* assuming it returns OK */
-    /* loop while 8042 input buffer is not empty */
-    if( (stat & KBC_ST_IBF) == 0 ) {
-      sys_outb(KBC_CMD_REG, command);
-      sys_outb(KBC_INPUT_BUFFER, args);
-      return 0;
-    }
-    counter--;
-    tickdelay(micros_to_ticks(DELAY_US)); // e.g. tickdelay()
-  }
-  return -1;
-}
-
 
 void (timer_int_handler)(){
-  counter--;
+  counter ++;
 }
 
+int (read_command_byte)(uint8_t* command_byte){
+  int r;
+  if((r=issue_kbc_command(READ_KBC_CMD,NULL))!=0){
+    return r;
+  }
+  return read_kbc_return(command_byte);
+}
 
+int (write_command_byte)(uint8_t command_byte){
+  return issue_kbc_command(WRITE_KBC_CMD,&command_byte);
+}
 
+int (check_kbc)(){
+  uint8_t return_value;
+  int r;
+  if((r=issue_kbc_command(CHECK_KBC,NULL))!=0)
+    return r;
+  if((r=read_kbc_return(&return_value))!=0)
+    return r;
+  if(return_value==KBC_OK)
+    return 0;
+  else
+    return -1;
+}
 
+int (check_kb_interface)(){
+  int r;
+  uint8_t return_value;
+  if((r=issue_kbc_command(CHECK_KBD_INTERFACE,NULL))!=0)
+    return r;
+  if((r=read_kbc_return(&return_value))!=0)
+    return r;
+  return return_value;
+}
+
+int (disable_kbd_interface)(){
+  return issue_kbc_command(DISABLE_KBD_INTERFACE,NULL);
+}
+
+int (enable_kbd_interface)(){
+  return issue_kbc_command(ENABLE_KBD_INTERFACE,NULL);
+}
+
+int (read_kbc_return)(uint8_t *data){
+  int counter=3;
+  int r;
+  while(counter>0){
+    uint8_t stat;
+    if((r=util_sys_inb(STAT_REG,&stat))!=0){
+      printf("util_sys_inb failed with: %d", r);
+    }
+    if(stat & OBF_FULL){
+      if((r=util_sys_inb(OUT_BUF,data))!=0){
+        printf("util_sys_inb failed with: %d", r);
+      }
+      if(stat&(PAR_ERR|TIMEOUT_ERR|AUX))
+        return -1;
+      else
+        return 0;
+    }
+    counter--;
+    tickdelay(micros_to_ticks(DELAY_US));
+  }
+  printf("Timeout reading return\n");
+  return -1;
+}
+
+int (issue_kbc_command)(uint8_t command,uint8_t* arg){
+  int r=0,counter=3;
+  while(counter>0){
+    uint8_t stat;
+    if((r=util_sys_inb(STAT_REG,&stat))!=0){
+      printf("util_sys_inb failed with: %d", r);
+    }
+    if(!(stat&KBC_ST_IBF)){
+      if((r=sys_outb(KBC_CMD_REG,command))!=0){
+        return r;
+      }
+      if(arg==NULL){ //no args command
+        return 0;
+      }
+      else{
+        if((r=util_sys_inb(STAT_REG,&stat))!=0)
+          return r;
+        if(!(stat&KBC_ST_IBF)){
+          if((r=sys_outb(KBC_IBF,*arg))!=0)
+            return r;
+          else{
+            return 0;
+          }
+        }
+        else{
+          return -1;
+        }
+      }
+    }
+    counter--;
+    tickdelay(micros_to_ticks(DELAY_US));
+  }
+  printf("IBF always full when writing command!\n");
+  return -1;
+}
