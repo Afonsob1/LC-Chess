@@ -5,9 +5,9 @@
 
 #include "i8254.h"
 
-#define READBACK_CMD BIT(7) | BIT(6)
-#define PROGRAM_TIMER(n) n<<6
-#define INIT_MODE_MASK BIT(4)|BIT(5)
+#define READBACK_CMD (BIT(7) | BIT(6))
+#define PROGRAM_TIMER(n) (n<<6)
+#define INIT_MODE_MASK (BIT(4)|BIT(5))
 #define COUNTING_MODE_MASK 0x0E
 #define BASE_MASK 0x01
 

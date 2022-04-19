@@ -118,7 +118,6 @@ int (read_kbc_return)(uint8_t *data){
     counter--;
     tickdelay(micros_to_ticks(DELAY_US));
   }
-  printf("Timeout reading return\n");
   return -1;
 }
 
@@ -154,6 +153,5 @@ int (issue_kbc_command)(uint8_t command,uint8_t* arg){
     counter--;
     tickdelay(micros_to_ticks(DELAY_US));
   }
-  printf("IBF always full when writing command!\n");
   return -1;
 }
