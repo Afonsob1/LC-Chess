@@ -158,6 +158,7 @@ int(kbd_test_timed_scan)(uint8_t n) {
       //received an unexpected standard message,do nothing
     }
   }
-
-  return keyboard_unsubscribe_int() && timer_unsubscribe_int();
+  if((r=timer_unsubscribe_int())!=0)
+    return r;
+  return keyboard_unsubscribe_int();
 }
