@@ -55,7 +55,12 @@ int (map_vram)(uint16_t mode){
   greenMaskSize = vmi_p.GreenMaskSize;
   blueMaskSize = vmi_p.BlueMaskSize;
 
-  unsigned int vram_size = (h_res*v_res*bits_per_pixel)/8;
+  unsigned int vram_size;
+
+  if(bits_per_pixel%8==0)
+    vram_size = (h_res*v_res*bits_per_pixel)/8;
+  else
+    vram_size= (h_res*v_res*(bits_per_pixel+bits_per_pixel%8))/8;
 
 
   mr.mr_base=vram_base;
@@ -111,10 +116,33 @@ int(kb_int_handler)(){
 
 int (vg_draw_hline)(uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 	color ){
   unsigned bytes_per_pixel = bits_per_pixel/8;
+  uint8_t* video_mem_8bit=(uint8_t*)video_mem;
+  uint16_t* video_mem_16bit=(uint16_t*)video_mem;
+  uint32_t* video_mem_32bit=(uint32_t*)video_mem;
   if(bits_per_pixel%8>0)
     bytes_per_pixel++;
   for(unsigned i=x;i<x+len && i<h_res;i++){
-    video_mem[(y*h_res+i)*bytes_per_pixel]=color;
+    switch(bits_per_pixel){
+      case 8:
+        video_mem_8bit[y*h_res+i]=color%BIT(bits_per_pixel);
+        break;
+      case 15:
+        video_mem_16bit[y*h_res+i]=color%BIT(bits_per_pixel);
+        break;
+      case 16:
+        video_mem_16bit[y*h_res+i]=color%BIT(bits_per_pixel);
+        break;
+      case 24:
+        video_mem_8bit[(y*h_res+i)*3]=color%BIT(8);
+        video_mem_8bit[(y*h_res+i)*3+1]=(color%BIT(16))>>8;
+        video_mem_8bit[(y*h_res+i)*3+2]=(color%BIT(bits_per_pixel))>>16;
+        break;
+      case 32:
+        video_mem_32bit[y*h_res+i]=color;
+        break;
+      default:
+        printf("%d\n",(int)bits_per_pixel);
+    }
   }
   return 0;
 }
@@ -122,7 +150,7 @@ int (vg_draw_hline)(uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 	color ){
 
 int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color){
   for(unsigned i=y;i<y+height && i<v_res;i++){
-    vg_draw_hline(x,i,width,color%BIT(bits_per_pixel));
+    vg_draw_hline(x,i,width,color);
   }
   return 0; 
 }
@@ -134,8 +162,6 @@ int (vg_draw_rectangles)(uint16_t mode, uint8_t no_rectangles, uint32_t first, u
   unsigned rectangle_width = h_res/no_rectangles;
   unsigned rectangle_height = v_res/no_rectangles;
 
-
-  first%=BIT(bits_per_pixel);
 
   uint32_t red_first = (first>>(greenMaskSize+blueMaskSize))%BIT(redMaskSize);
   uint32_t green_first = (first>>blueMaskSize)%BIT(greenMaskSize);

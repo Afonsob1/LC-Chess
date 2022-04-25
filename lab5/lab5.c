@@ -79,6 +79,8 @@ int (video_test_pattern)(uint16_t mode, uint8_t no_rectangles, uint32_t first, u
 
   vg_draw_rectangles(mode,no_rectangles,first,step);
 
+
+  printf("done drawing!\n");
   uint8_t bit_no;
   kb_subscribe_int(&bit_no);
   int irq_set=BIT(bit_no);
