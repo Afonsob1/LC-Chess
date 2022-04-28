@@ -1,8 +1,11 @@
 #include "videocard.h"
 
-int hook_id=4;
+int kb_hook_id=4;
+int timer_hook_id=1;
+bool done_drawing=false;
 uint8_t code;
-
+int counter=0;
+int num_frames=0;
 static char *video_mem;		/* Process (virtual) address to which VRAM is mapped */
 static unsigned h_res;	        /* Horizontal resolution in pixels */
 static unsigned v_res;	        /* Vertical resolution in pixels */
@@ -10,6 +13,15 @@ static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 static unsigned redMaskSize;
 static unsigned greenMaskSize;
 static unsigned blueMaskSize;
+static xpm_image_t image;
+static uint16_t x_i;
+static uint16_t current_x;
+static uint16_t current_y;
+static uint16_t y_i;
+static uint16_t x_f;
+static uint16_t y_f;
+static int16_t speed_;
+static uint8_t frRate;
 
 
 int (init_graphics_mode)(uint16_t mode){
@@ -80,13 +92,115 @@ int (map_vram)(uint16_t mode){
 
 
 int(kb_subscribe_int)(uint8_t *bit_no){
-  *bit_no=hook_id;
-  return sys_irqsetpolicy(KEYBOARD_IRQ,IRQ_REENABLE|IRQ_EXCLUSIVE,&hook_id);
+  *bit_no=kb_hook_id;
+  return sys_irqsetpolicy(KEYBOARD_IRQ,IRQ_REENABLE|IRQ_EXCLUSIVE,&kb_hook_id);
 }
 
 int(kb_unsubscribe_int)(){
-  return sys_irqrmpolicy(&hook_id);
+  return sys_irqrmpolicy(&kb_hook_id);
 }
+
+int(timer_subscribe_int)(uint8_t *bit_no){
+  *bit_no=timer_hook_id;
+  return sys_irqsetpolicy(TIMER0_IRQ,IRQ_REENABLE,&timer_hook_id);
+}
+
+int(timer_unsubscribe_int)(){
+  return sys_irqrmpolicy(&timer_hook_id);
+}
+
+
+void(timer_int_handler)(){
+  counter++;
+  if(counter%(60/frRate)==0){
+    if(speed_<0){
+      if(num_frames%(-speed_)==0){
+        if(x_i==x_f){
+          vg_clear_image(image,current_x,current_y-1);
+          vg_draw_image(image,current_x,current_y);
+          if(current_y==y_f)
+            done_drawing=true;
+          else
+            current_y++;
+        }
+        else if(y_i==y_f){
+          vg_clear_image(image,current_x,current_x-1);
+          vg_draw_image(image,current_x,current_y);
+          if(current_x==x_f)
+            done_drawing=true;
+          else
+            current_x++;
+        }
+        num_frames++;
+      }
+      else{
+        num_frames++;
+      }
+    }
+    else{
+      if(x_i==x_f){
+        vg_clear_image(image,current_x,current_y-speed_);
+        vg_draw_image(image,current_x,current_y);
+        if(current_y==y_f)
+          done_drawing=true;
+        current_y+=speed_;
+        if(current_y>y_f)
+          current_y=y_f;
+      }
+      else if(y_i==y_f){
+        vg_clear_image(image,current_x-speed_,current_y);
+        vg_draw_image(image,current_x,current_y);
+        if(current_x==x_f)
+          done_drawing=true;
+        current_x+=speed_;
+        if(current_x>x_f)
+          current_x=x_f;
+      }
+    }
+  }
+}
+
+int (init_graphics)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint16_t yf, int16_t speed, uint8_t fr_rate){
+  map_vram(INDEXED_MODE);
+  init_graphics_mode(INDEXED_MODE);
+  xpm_load(xpm,XPM_INDEXED,&image);
+  vg_draw_image(image,xi,xf);
+  if(xi==xf && yi==yf){
+    done_drawing=true;
+    return 0;
+  }
+  x_i=xi;
+  x_f=xf;
+  y_i=yi;
+  y_f=yf;
+  speed_=speed;
+  frRate=fr_rate;
+  if(speed>0 && xi==xf){
+    current_x=xi;
+    current_y=y_i+speed_;
+    if(current_y>y_f)
+      current_y=y_f;
+  }
+  else if(speed>0 && yi==yf){
+    current_y=yi;
+    current_x=x_i+speed_;
+    if(current_x>x_f)
+      current_x=x_f;
+  }
+  else if(speed<0 && xi==xf){
+    current_x=xi;
+    current_y=yi+1;
+    num_frames++;
+  }
+  else if(speed<0 && yi==yf){
+    current_y=yi;
+    current_x=xi+1;
+    num_frames++;
+  }
+  return 0;
+}
+
+
 
 int (util_sys_inb)(int port, uint8_t *value) {
   uint32_t aux;
@@ -127,8 +241,6 @@ int (vg_draw_hline)(uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 	color ){
         video_mem_8bit[y*h_res+i]=color%BIT(bits_per_pixel);
         break;
       case 15:
-        video_mem_16bit[y*h_res+i]=color%BIT(bits_per_pixel);
-        break;
       case 16:
         video_mem_16bit[y*h_res+i]=color%BIT(bits_per_pixel);
         break;
@@ -183,6 +295,27 @@ int (vg_draw_rectangles)(uint16_t mode, uint8_t no_rectangles, uint32_t first, u
       }
       vg_draw_rectangle(col*rectangle_width,row*rectangle_height,
       rectangle_width,rectangle_height,color);
+    }
+  }
+  return 0;
+}
+
+
+int(vg_draw_image)(xpm_image_t img,uint16_t x,uint16_t y){
+  uint8_t* video_mem_8bit=(uint8_t*)video_mem;
+  for(unsigned i=0;i<img.height && y+i<v_res;i++){
+    for(unsigned j=0;j<img.width && x+j<h_res;j++){
+        video_mem_8bit[(y+i)*h_res+(x+j)]=img.bytes[i*img.width+j];
+    }
+  }
+  return 0;
+}
+
+int(vg_clear_image)(xpm_image_t img,uint16_t x,uint16_t y){
+  uint8_t* video_mem_8bit=(uint8_t*)video_mem;
+  for(unsigned i=0;i<img.height && y+i<v_res;i++){
+    for(unsigned j=0;j<img.width && x+j<h_res;j++){
+        video_mem_8bit[(y+i)*h_res+(x+j)]=0;
     }
   }
   return 0;
