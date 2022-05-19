@@ -23,6 +23,14 @@
 #define Y_SIGN BIT(5)
 #define DELAY_US 20000
 #define TIMER0_IRQ 0
+#define FIRST_PACKET_BYTE BIT(3)
+
+enum machine_state{
+  OFF,
+  GOING_UP,
+  GOING_DOWN,
+  DONE
+};
 
 int (mouse_subscribe_int)(uint8_t* bit_no);
 

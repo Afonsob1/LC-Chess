@@ -7,6 +7,9 @@ bool valid_packet=true;
 uint8_t i=0;
 static uint8_t bytes[3];
 
+
+
+
 int mouse_subscribe_int(uint8_t* bit_no){
   *bit_no=mouse_hook_id;
   return sys_irqsetpolicy(MOUSE_IRQ,IRQ_REENABLE|IRQ_EXCLUSIVE,&mouse_hook_id);
@@ -36,6 +39,11 @@ void (mouse_ih)(){
     util_sys_inb(OUT_BUFF,bytes+i);
     if(status&(PAR_ERR|TIMEOUT_ERR))
       valid_packet=false;
+    if(!(bytes[0]&FIRST_PACKET_BYTE)){
+      printf("Synch error!\n");
+      i=-1;
+    }
+
     if(i==2){
       if(valid_packet){
         uint8_t data_packet = bytes[0];

@@ -8,6 +8,7 @@
 
 extern unsigned packet_counter;
 extern unsigned timer_counter;
+extern enum machine_state machineState;
 
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -119,8 +120,35 @@ int (mouse_test_async)(uint8_t idle_time) {
 }
 
 int (mouse_test_gesture)(uint8_t xlen, uint8_t tolerance) {
-    /* To be completed */
-    printf("%s: under construction\n", __func__);
+  int ipc_status,r;
+  uint8_t bit_no;
+  message msg;
+  mouse_enable_data_reporting();
+  mouse_subscribe_int(&bit_no);
+  uint8_t irq_set = BIT(bit_no);
+  packet_counter = 0;
+  while(machineState!=DONE){
+    if( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
+      printf("driver_receive failed with: %d", r);
+      continue;
+    }
+    if (is_ipc_notify(ipc_status)) {
+      switch (_ENDPOINT_P(msg.m_source)) {
+        case HARDWARE: //hardware interrupt notification
+          if (msg.m_notify.interrupts & irq_set) {
+            mouse_ih();
+          }
+          break;
+        default:
+          break; //unexpected notification
+      }
+    }
+    else { 
+      //received an unexpected standard message,do nothing
+    }
+  }
+  mouse_unsubscribe_int();
+  return mouse_disable_data_reporting();
     return 1;
 }
 
