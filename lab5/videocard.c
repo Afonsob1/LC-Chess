@@ -27,24 +27,12 @@ static uint8_t frRate;
 int (init_graphics_mode)(uint16_t mode){
   reg86_t r;
   memset(&r,0,sizeof(r));
-  r.intno=0x10;
-  r.ax=0x4F02;
-  r.bx=BIT(14)|mode;
-  if( sys_int86(&r) != OK ) {
-    printf("vg_exit(): sys_int86() failed \n");
-    return 1;
-  }
-  return 0;
-}
-
-int (return_text_mode)(){
-  reg86_t r;
-  memset(&r,0,sizeof(r));
-  r.intno=0x10;
-  r.ah=0x00;
-  r.al=0x03;
-  if( sys_int86(&r) != OK ) {
-    printf("vg_exit(): sys_int86() failed \n");
+  r.intno = 0x10;
+  r.ah = 0x4F;
+  r.al = 0x02;
+  r.bx = mode | BIT(14);
+  if(sys_int86(&r)!=OK){
+    printf("sys86 failed\n");
     return 1;
   }
   return 0;
@@ -54,39 +42,28 @@ int (map_vram)(uint16_t mode){
   struct minix_mem_range mr;
   vbe_mode_info_t vmi_p;
   int r;
-
-  if((r=vbe_get_mode_info(mode,&vmi_p))!=OK)
-    return r;
-
+  if((r=vbe_get_mode_info(mode,&vmi_p))!=0){
+    printf("Get mode info failed \n");
+    return 1;
+  }
   unsigned int vram_base = vmi_p.PhysBasePtr;
-
   h_res = vmi_p.XResolution;
   v_res = vmi_p.YResolution;
   bits_per_pixel = vmi_p.BitsPerPixel;
   redMaskSize = vmi_p.RedMaskSize;
   greenMaskSize = vmi_p.GreenMaskSize;
   blueMaskSize = vmi_p.BlueMaskSize;
-
   unsigned int vram_size;
-
-  if(bits_per_pixel%8==0)
-    vram_size = (h_res*v_res*bits_per_pixel)/8;
-  else
-    vram_size= (h_res*v_res*(bits_per_pixel+bits_per_pixel%8))/8;
-
-
-  mr.mr_base=vram_base;
-  mr.mr_limit=mr.mr_base+vram_size;
-
-  if( OK != (r = sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr)))
-   panic("sys_privctl (ADD_MEM) failed: %d\n", r);
-
-  /* Map memory */
-
-  video_mem = vm_map_phys(SELF, (void *)mr.mr_base, vram_size);
-
-  if(video_mem == MAP_FAILED)
-    panic("couldn't map video memory");
+  unsigned int bytes_per_pixel = ((bits_per_pixel + 7)>>3);
+  vram_size = h_res*v_res*bytes_per_pixel;
+  mr.mr_base = (phys_bytes)vram_base;
+  mr.mr_limit = mr.mr_base + vram_size;
+  if((r=sys_privctl(SELF,SYS_PRIV_ADD_MEM,&mr))!=OK)
+    {
+      panic("sys_privtl failed\n");
+  }
+  video_mem = vm_map_phys(SELF,(void*)mr.mr_base,vram_size);
+  if(video_mem == MAP_FAILED) panic("couldn't map video memory");
   return 0;
 }
 
@@ -229,39 +206,17 @@ int(kb_int_handler)(){
 }
 
 int (vg_draw_hline)(uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 	color ){
-  unsigned bytes_per_pixel = bits_per_pixel/8;
-  uint8_t* video_mem_8bit=(uint8_t*)video_mem;
-  uint16_t* video_mem_16bit=(uint16_t*)video_mem;
-  uint32_t* video_mem_32bit=(uint32_t*)video_mem;
-  if(bits_per_pixel%8>0)
-    bytes_per_pixel++;
-  for(unsigned i=x;i<x+len && i<h_res;i++){
-    switch(bits_per_pixel){
-      case 8:
-        video_mem_8bit[y*h_res+i]=color%BIT(bits_per_pixel);
-        break;
-      case 15:
-      case 16:
-        video_mem_16bit[y*h_res+i]=color%BIT(bits_per_pixel);
-        break;
-      case 24:
-        video_mem_8bit[(y*h_res+i)*3]=color%BIT(8);
-        video_mem_8bit[(y*h_res+i)*3+1]=(color%BIT(16))>>8;
-        video_mem_8bit[(y*h_res+i)*3+2]=(color%BIT(bits_per_pixel))>>16;
-        break;
-      case 32:
-        video_mem_32bit[y*h_res+i]=color;
-        break;
-      default:
-        printf("%d\n",(int)bits_per_pixel);
-    }
+  unsigned bytes_per_pixel = ((bits_per_pixel + 7) >>3);
+  for(unsigned int i = x; i<x+len && i<h_res;i++){
+    unsigned position =(y*h_res+i) * bytes_per_pixel;
+    memcpy((void*)((unsigned)video_mem + position),(void *) &color,bytes_per_pixel);
   }
   return 0;
 }
 
 
 int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color){
-  for(unsigned i=y;i<y+height && i<v_res;i++){
+  for(unsigned int i=y;i<y+height && i<v_res;i++){
     vg_draw_hline(x,i,width,color);
   }
   return 0; 

@@ -44,33 +44,7 @@ int (video_test_rectangle)(uint16_t mode, uint16_t x, uint16_t y, uint16_t width
   map_vram(mode);
   init_graphics_mode(mode);
   vg_draw_rectangle(x,y,width,height,color);
-  uint8_t bit_no;
-  kb_subscribe_int(&bit_no);
-  int irq_set=BIT(bit_no);
-  int ipc_status,r;
-  message msg;
-  code=0;
-  while( code!=ESC_BREAKCODE ) { /* You may want to use a different condition */
-    /* Get a request message. */
-    if( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
-      printf("driver_receive failed with: %d", r);
-      continue;
-    }
-    if (is_ipc_notify(ipc_status)) {
-      switch (_ENDPOINT_P(msg.m_source)) {
-      case HARDWARE: /* hardware interrupt notification */
-        if (msg.m_notify.interrupts & irq_set) {
-          kb_int_handler();
-        }
-        break;
-      default:
-        break; 
-      }
-    }
-    else { 
-    }
-  }
-  kb_unsubscribe_int();
+  sleep(5);
   return vg_exit();
 }
 

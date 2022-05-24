@@ -34,3 +34,6 @@ int (create_image)(xpm_map_t xpm, xpm_image_t *image);
 unsigned (get_h_res)();
 
 unsigned (get_v_res)();
+
+
+void vg_clear();

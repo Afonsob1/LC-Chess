@@ -3,9 +3,10 @@
 #include <string.h>
 
 
-static void * video_mem;
+static char * video_mem;
 vbe_mode_info_t vmi_p;
 int bytes_per_pixel;
+static unsigned int vram_size;
 
 
 unsigned (get_h_res)(){
@@ -53,7 +54,7 @@ int (map_vram)(uint16_t mode){
   bytes_per_pixel = ((vmi_p.BitsPerPixel + 7) >> 3);  //arredonda nr_bytes para cima
 
   unsigned int vram_base = vmi_p.PhysBasePtr;
-  unsigned int vram_size = vmi_p.XResolution*vmi_p.YResolution*bytes_per_pixel;
+  vram_size = vmi_p.XResolution*vmi_p.YResolution*bytes_per_pixel;
 
 
   mr.mr_base=vram_base;
@@ -99,17 +100,26 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 int(vg_draw_image)(xpm_image_t img, uint16_t x, uint16_t y){
   unsigned color_transparent = COLOR_TRANSPARENT;
 
-  for(int y_img = 0; y_img < img.height ; y_img++){ 
-    for(int x_img = 0; x_img < img.width; x_img++){
-      unsigned position = ((y+y_img)* vmi_p.XResolution  + x + x_img) * bytes_per_pixel; 
-      unsigned color_position = (y_img*img.height + x_img) * bytes_per_pixel; 
+  unsigned color_position = 0; 
       
-      if(memcmp(&img.bytes[color_position], &color_transparent, bytes_per_pixel) != 0 )
-        memcpy((void*)((unsigned)video_mem + position), (void*)&img.bytes[color_position], bytes_per_pixel);
+  for(int y_img = 0; y_img < img.height && y+y_img< vmi_p.YResolution; y_img++){ 
+    unsigned position = ((y+y_img)* vmi_p.XResolution  + x ) * bytes_per_pixel; 
+      
+    for(int x_img = 0; x_img < img.width && x+x_img< vmi_p.XResolution; x_img++){
+      position += bytes_per_pixel;
+      color_position += bytes_per_pixel;
+
+      if(img.bytes[color_position] == color_transparent)
+        continue;
+      video_mem[position] = img.bytes[color_position];
     }
     
   }
   return 0;
+}
+
+void vg_clear(){
+  memset(video_mem, 0, vram_size);
 }
 
 int(vg_clear_image)(xpm_image_t img,uint16_t x,uint16_t y){

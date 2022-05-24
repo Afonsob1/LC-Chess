@@ -77,6 +77,7 @@ void initBoard(Board* board){
 
 void drawBoard(Board* board){
 
+    vg_clear();
     vg_draw_rectangle(0,0,left_rectangle_width,get_v_res(),COLOR_BLACK);
     vg_draw_rectangle(left_rectangle_width + 8*rectangle_width, 0, 
                         right_rectangle_width,get_v_res(),COLOR_BLACK);
@@ -88,17 +89,20 @@ void drawBoard(Board* board){
     color2 = COLOR_2;
 
     atual_color = color1; 
-
+    drawPieces(board->board[get_position(0,0)]);
+    
     for(in_port_t row=0;row<8;row++){
         for(in_port_t col=0;col<8;col++){
             atual_color = (atual_color==color1 ? color2 : color1); 
             vg_draw_rectangle(col*rectangle_width+left_rectangle_width,row*rectangle_height+vertical_margin/2,
             rectangle_width,rectangle_height,atual_color);
-
+            
+            
             drawPieces(board->board[get_position(col,row)]);
         }
         
         atual_color = (atual_color==color1 ? color2 : color1);
     }
+
 }
 
