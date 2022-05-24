@@ -6,6 +6,7 @@ uint32_t count=0;
 struct packet pp;
 int i=0;
 bool valid_packet=true;
+bool update_count=false;
 
 
 int (timer_subscribe_int)(uint8_t* bit_no){
@@ -68,7 +69,7 @@ void (mouse_ih)(){
             pp.delta_x = delta_x;
             pp.delta_y = delta_y;
             mouse_print_packet(&pp);
-            count=0;
+            update_count=true;
             i=-1;
           }
         }
@@ -124,8 +125,6 @@ int (write_kbc_arg)(uint8_t arg){
     tickdelay(micros_to_ticks(25000));
   }
   return -1;
-
-
 }
 
 int (mouse_disable_data_reporting)(){

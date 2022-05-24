@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 extern uint32_t count;
-
+extern bool update_count;
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
   lcf_set_language("EN-US");
@@ -60,6 +60,10 @@ int (mouse_test_packet)(uint32_t cnt) {
     else { 
       //received an unexpected standard message,do nothing
     }
+    if(update_count){
+      count++;
+      update_count=false;
+    }
 
   }
   mouse_unsubscribe_int();
@@ -103,6 +107,10 @@ int (mouse_test_async)(uint8_t idle_time) {
     }
     else { 
       //received an unexpected standard message,do nothing
+    }
+    if(update_count){
+      count=0;
+      update_count=false;
     }
 
   }
