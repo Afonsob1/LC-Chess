@@ -1,0 +1,82 @@
+#include "piece.h"
+#include <lcom/lcf.h>
+#include "videocard.h"
+#include "imgs/xboard/pdl80.h"
+#include "imgs/xboard/pll80.h"
+#include "imgs/xboard/rdl80.h"
+#include "imgs/xboard/rll80.h"
+#include "imgs/xboard/qll80.h"
+#include "imgs/xboard/qdl80.h"
+#include "imgs/xboard/nll80.h"
+#include "imgs/xboard/ndl80.h"
+#include "imgs/xboard/bll80.h"
+#include "imgs/xboard/bdl80.h"
+#include "imgs/xboard/kll80.h"
+#include "imgs/xboard/kdl80.h"
+
+void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute_y){
+    switch (piece_type){
+        case b_pawn:
+            create_image(pdl80, &(piece->image));
+            break;
+
+        case b_knight:
+            create_image(ndl80, &(piece->image));
+            break;
+            
+        case b_bishop:
+            create_image(bdl80, &(piece->image)); 
+            break;
+            
+        case b_rook:
+            create_image(rdl80, &(piece->image));
+            break;
+            
+        case b_queen:
+            create_image(qdl80, &(piece->image));
+            break;
+            
+        case b_king:
+            create_image(kdl80, &(piece->image));
+            break;
+            
+        case w_pawn:
+            create_image(pll80, &(piece->image));
+            break;
+
+        case w_knight:
+            create_image(nll80, &(piece->image));
+            break;
+            
+        case w_bishop:
+            create_image(bll80, &(piece->image));
+            break;
+            
+        case w_rook:
+            create_image(rll80, &(piece->image));
+            break;
+            
+        case w_queen:
+            create_image(qll80, &(piece->image));
+            break;
+            
+        case w_king:
+            create_image(kll80, &(piece->image));
+            break;
+        
+        default:
+            panic("CRIAR PEÇA");
+            return;
+    }
+
+    
+
+    piece->absolute_x = absolute_x;
+    piece->absolute_y = absolute_y;
+    piece->type = piece_type;
+}
+
+void drawPieces(Piece* piece){
+    if(piece == NULL) return;
+    vg_draw_image(piece->image, piece->absolute_x, piece->absolute_y);
+}
