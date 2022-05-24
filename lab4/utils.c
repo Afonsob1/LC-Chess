@@ -11,10 +11,10 @@ int(util_get_MSB)(uint16_t val, uint8_t *msb) {
 }
 
 int (util_sys_inb)(int port, uint8_t *value) {
-  uint32_t aux;
   int r;
+  uint32_t aux;
   if((r=sys_inb(port,&aux))!=0)
     return r;
-  *value = (uint8_t) aux&LSB_MASK;
-  return 0;   
+  *value = (uint8_t) (aux&LSB_MASK);
+  return 0;
 }

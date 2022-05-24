@@ -1,14 +1,10 @@
 // IMPORTANT: you must include the following line in all your C files
 #include <lcom/lcf.h>
-#include <mouse.h>
+#include "mouse.h"
 #include <stdint.h>
 #include <stdio.h>
 
-// Any header files included below this line should have been created by you
-
-extern unsigned packet_counter;
-extern unsigned timer_counter;
-extern enum machine_state machineState;
+extern uint32_t count;
 
 int main(int argc, char *argv[]) {
   // sets the language of LCF messages (can be either EN-US or PT-PT)
@@ -36,14 +32,16 @@ int main(int argc, char *argv[]) {
 
 
 int (mouse_test_packet)(uint32_t cnt) {
-  int ipc_status,r;
   uint8_t bit_no;
+  int irq_set,ipc_status,r;
   message msg;
+
   mouse_enable_data_reporting();
   mouse_subscribe_int(&bit_no);
-  uint8_t irq_set = BIT(bit_no);
-  packet_counter = 0;
-  while(packet_counter<cnt){
+
+  irq_set = BIT(bit_no);
+
+  while(count<cnt){
     if( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
       printf("driver_receive failed with: %d", r);
       continue;
@@ -62,72 +60,29 @@ int (mouse_test_packet)(uint32_t cnt) {
     else { 
       //received an unexpected standard message,do nothing
     }
+
   }
   mouse_unsubscribe_int();
   return mouse_disable_data_reporting();
+
 }
+
 
 int (mouse_test_async)(uint8_t idle_time) {
-  int ipc_status,r;
-  uint8_t bit_no_mouse,bit_no_timer;
+  uint8_t bit_no_aux,bit_no_timer;
+  int irq_set_aux,irq_set_timer,ipc_status,r;
   message msg;
 
-  if((r=mouse_enable_data_reporting())!=0)
-    return r;
-
-
-  if((r=timer_subscribe_int(&bit_no_timer))!=0)
-    return r;
-
-  if((r=mouse_subscribe_int(&bit_no_mouse))!=0)
-    return r;
-
-
-
-
-
-  uint8_t irq_set_mouse = BIT(bit_no_mouse);
-  uint8_t irq_set_timer = BIT(bit_no_timer);
-  
-  while(timer_counter<=idle_time*60){
-    if( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
-      printf("driver_receive failed with: %d", r);
-      continue;
-    }
-    if (is_ipc_notify(ipc_status)) {
-      switch (_ENDPOINT_P(msg.m_source)) {
-        case HARDWARE: //hardware interrupt notification
-          if (msg.m_notify.interrupts & irq_set_mouse) {
-            timer_counter=0;
-            mouse_ih();
-          }
-          if (msg.m_notify.interrupts & irq_set_timer)
-            timer_ih();
-          break;
-        default:
-          break; //unexpected notification
-      }
-    }
-    else { 
-      //received an unexpected standard message,do nothing
-    }
-  }
-  if((r=mouse_disable_data_reporting())!=0)
-    return r;
-  if((r=timer_unsubscribe_int())!=0)
-    return r;
-  return mouse_unsubscribe_int();
-}
-
-int (mouse_test_gesture)(uint8_t xlen, uint8_t tolerance) {
-  int ipc_status,r;
-  uint8_t bit_no;
-  message msg;
   mouse_enable_data_reporting();
-  mouse_subscribe_int(&bit_no);
-  uint8_t irq_set = BIT(bit_no);
-  packet_counter = 0;
-  while(machineState!=DONE){
+  mouse_subscribe_int(&bit_no_aux);
+
+  irq_set_aux = BIT(bit_no_aux);
+
+  timer_subscribe_int(&bit_no_timer);
+
+  irq_set_timer = BIT(bit_no_timer);
+
+  while(count<idle_time*60){
     if( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
       printf("driver_receive failed with: %d", r);
       continue;
@@ -135,8 +90,11 @@ int (mouse_test_gesture)(uint8_t xlen, uint8_t tolerance) {
     if (is_ipc_notify(ipc_status)) {
       switch (_ENDPOINT_P(msg.m_source)) {
         case HARDWARE: //hardware interrupt notification
-          if (msg.m_notify.interrupts & irq_set) {
+          if (msg.m_notify.interrupts & irq_set_aux) {
             mouse_ih();
+          }
+          if (msg.m_notify.interrupts & irq_set_timer) {
+            timer_int_handler();
           }
           break;
         default:
@@ -146,9 +104,16 @@ int (mouse_test_gesture)(uint8_t xlen, uint8_t tolerance) {
     else { 
       //received an unexpected standard message,do nothing
     }
+
   }
   mouse_unsubscribe_int();
+  timer_unsubscribe_int();
   return mouse_disable_data_reporting();
+}
+
+int (mouse_test_gesture)(uint8_t x_len,uint8_t tolerance) {
+    /* To be completed */
+    printf("%s: under construction\n", __func__);
     return 1;
 }
 
