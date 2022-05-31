@@ -30,7 +30,7 @@ int(vg_draw_rectangles)(uint16_t mode, uint8_t no_rectangles, uint32_t first, ui
 
 void(timer_int_handler)();
 
-int(vg_draw_image)(xpm_image_t img,uint16_t x,uint16_t y);
+int(draw_image)(xpm_image_t img,uint16_t x,uint16_t y);
 
 int(vg_clear_image)(xpm_image_t img,uint16_t x,uint16_t y);
 

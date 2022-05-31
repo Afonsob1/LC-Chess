@@ -4,6 +4,8 @@
 
 
 static char * video_mem;
+char * video_mem_buffer;
+
 vbe_mode_info_t vmi_p;
 int bytes_per_pixel;
 static unsigned int vram_size;
@@ -18,6 +20,12 @@ unsigned (get_v_res)(){
 }
 
 int (init_graphics_mode)(uint16_t mode){
+
+  map_vram(&video_mem, 0, mode);
+  map_vram(&video_mem_buffer, 1, mode);
+
+
+  /* set mode*/
   reg86_t r;
   memset(&r,0,sizeof(r));
   r.intno=0x10;
@@ -43,7 +51,7 @@ int (return_text_mode)(){
   return 0;
 }
 
-int (map_vram)(uint16_t mode){
+int (map_vram)(char ** video_mem_pointer, int n, uint16_t mode){
   struct minix_mem_range mr;
   int r;
 
@@ -53,8 +61,8 @@ int (map_vram)(uint16_t mode){
 
   bytes_per_pixel = ((vmi_p.BitsPerPixel + 7) >> 3);  //arredonda nr_bytes para cima
 
-  unsigned int vram_base = vmi_p.PhysBasePtr;
   vram_size = vmi_p.XResolution*vmi_p.YResolution*bytes_per_pixel;
+  unsigned int vram_base = vmi_p.PhysBasePtr + n*vram_size;
 
 
   mr.mr_base=vram_base;
@@ -65,10 +73,11 @@ int (map_vram)(uint16_t mode){
 
   /* Map memory */
 
-  video_mem = vm_map_phys(SELF, (void *)mr.mr_base, vram_size);
+  *video_mem_pointer = vm_map_phys(SELF, (void *)mr.mr_base, vram_size);
 
-  if(video_mem == MAP_FAILED)
+  if(*video_mem_pointer == MAP_FAILED)
     panic("couldn't map video memory");
+
   return 0;
 }
 
@@ -79,25 +88,25 @@ int (create_image)(xpm_map_t xpm, xpm_image_t *image){
 }
 
 
-int (vg_draw_hline)(uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 	color ){
+int (draw_hline)(char* board_mem,uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 	color ){
 
   for(unsigned i=x;i<x+len && i<vmi_p.XResolution;i++){    
     unsigned position = (y*vmi_p.XResolution + i )* bytes_per_pixel;
-    memcpy((void*)((unsigned)video_mem + position),(void*) &color, bytes_per_pixel);
+    memcpy((void*)((unsigned)board_mem + position),(void*) &color, bytes_per_pixel);
   }
   return 0;
 }
 
 
-int (vg_draw_rectangle)(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color){
+int (draw_rectangle)(char* board_mem, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color){
   for(unsigned i=y;i<y+height && i<vmi_p.YResolution;i++){
-    vg_draw_hline(x,i,width,color);
+    draw_hline(board_mem, x,i,width,color);
   }
   return 0; 
 }
 
 
-int(vg_draw_image)(xpm_image_t img, uint16_t x, uint16_t y){
+int(draw_image)(char* board_mem,xpm_image_t img, uint16_t x, uint16_t y){
   unsigned color_transparent = COLOR_TRANSPARENT;
 
   unsigned color_position = 0; 
@@ -111,19 +120,27 @@ int(vg_draw_image)(xpm_image_t img, uint16_t x, uint16_t y){
 
       if(img.bytes[color_position] == color_transparent)
         continue;
-      video_mem[position] = img.bytes[color_position];
+      board_mem[position] = img.bytes[color_position];
     }
     
   }
   return 0;
 }
 
+void (copy_from_buffer)(){
+  copy_buffers(video_mem, video_mem_buffer);
+}
+
+void (copy_buffers)(void* vm1, void* vm2){
+  memcpy(vm1, vm2, vram_size);
+}
+
 void vg_clear(){
-  memset(video_mem, 0, vram_size);
+  memset(video_mem_buffer, 0, vram_size);
 }
 
 int(vg_clear_image)(xpm_image_t img,uint16_t x,uint16_t y){
-  uint8_t* video_mem_8bit=(uint8_t*)video_mem;
+  uint8_t* video_mem_8bit=(uint8_t*)video_mem_buffer;
   for(unsigned i=0;i<img.height && y+i<vmi_p.YResolution;i++){
     for(unsigned j=0;j<img.width && x+j<vmi_p.XResolution;j++){
         video_mem_8bit[(y+i)*vmi_p.XResolution+(x+j)]=0;

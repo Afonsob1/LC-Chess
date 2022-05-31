@@ -92,7 +92,7 @@ int (video_test_xpm)(xpm_map_t xpm, uint16_t x, uint16_t y){
   init_graphics_mode(INDEXED_MODE);
   xpm_image_t img;
   xpm_load(xpm,XPM_INDEXED,&img);
-  vg_draw_image(img,x,y);
+  draw_image(img,x,y);
 
   uint8_t bit_no;
   kb_subscribe_int(&bit_no);

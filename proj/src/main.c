@@ -20,10 +20,7 @@ int main(int argc, char* argv[]){
 }
 
 int(proj_main_loop)(int argc, char *argv[]) {
-
-    map_vram(INDEXED_MODE);
     init_graphics_mode(INDEXED_MODE);
-
     Board board;
     initBoard(&board);
     int ipc_status, err;
@@ -35,8 +32,10 @@ int(proj_main_loop)(int argc, char *argv[]) {
     timer_subscribe_int(&bit_timer);
     uint8_t irq_set_timer = BIT(bit_timer);
 
-
-     while(n_interrupts < 60*20){
+    drawBoard(&board);
+    copy_from_buffer();
+      
+    while(n_interrupts < 60*20){
     /* Get a request message. */
     if( (err = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
       printf("driver_receive failed with: %d", err);
@@ -48,37 +47,10 @@ int(proj_main_loop)(int argc, char *argv[]) {
         
         if(msg.m_notify.interrupts & irq_set_timer){
             timer_int_handler();
-            board.board[0]->absolute_y += n_interrupts;
-            drawBoard(&board);
-            /*if(speed<0){
-              ticks++;
-              if(ticks==-speed){
-                vg_clear_image(xi,yi,img);
-                if(xi!=xf){
-                  xi++;
-                }
-                else{
-                  yi++;
-                }
-                vg_draw_image(xi,yi,img);
-                ticks=0;
-              }
-            }
-            else{
-                vg_clear_image(xi,yi,img);
-                if(xi!=xf){
-                  xi+=speed;
-                  if(xi>xf)
-                    xi=xf;
-                }
-                else{
-                  yi+=speed;
-                  if(yi>yf)
-                    yi=yf;
-                }
-                vg_draw_image(xi,yi,img);
-            }
-          }*/
+            movePiece(board.board[0], 0, 1);
+            drawBoardPieces(&board);
+            copy_from_buffer();   
+            
         }
         break;
       default:
@@ -88,7 +60,6 @@ int(proj_main_loop)(int argc, char *argv[]) {
     else { 
     }
   }
-    printf("acabou");
 
     timer_unsubscribe_int();
     return return_text_mode();

@@ -17,15 +17,14 @@
 #define COLOR_2 0x0037
 #define INDEXED_MODE 0x105
 
+
 int (init_graphics_mode)(uint16_t mode);
 
 int (init_graphics)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint16_t yf, int16_t speed, uint8_t fr_rate);
 
 int (return_text_mode)();
 
-int (map_vram)(uint16_t mode);
-
-int(vg_draw_image)(xpm_image_t img,uint16_t x,uint16_t y);
+int (map_vram)(char ** video_mem_pointer, int n, uint16_t mode);
 
 int(vg_clear_image)(xpm_image_t img,uint16_t x,uint16_t y);
 
@@ -35,5 +34,15 @@ unsigned (get_h_res)();
 
 unsigned (get_v_res)();
 
+void (copy_from_buffer)();
+
+void (copy_buffers)(void* vm1, void* vm2);
+
+
+int (draw_rectangle)(char* board_mem, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color);
+
+int (draw_hline)(char* board_mem,uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 	color );
+
+int(draw_image)(char *board_mem, xpm_image_t img,uint16_t x,uint16_t y);
 
 void vg_clear();

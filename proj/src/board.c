@@ -3,6 +3,7 @@
 #include "videocard.h"
 #include <string.h>
 
+extern char* video_mem_buffer;
 
 unsigned vertical_margin = 128; //so that rectangle_width and rectangle_weight is an integer(80)
 float horizontal_margin_percentage = 0.20;
@@ -22,6 +23,12 @@ void createPiece(Board* board, PieceType type, int x, int y){
 }
 
 void initBoard(Board* board){
+    board->mem_board = NULL;
+    map_vram(&board->mem_board, 2, INDEXED_MODE);
+
+    board->mem_pieces = NULL;
+    map_vram(&board->mem_pieces, 3, INDEXED_MODE);
+
     /* init variables used for drawing*/
     rectangle_width = (get_v_res() - vertical_margin)/8;
     rectangle_height = (get_v_res() - vertical_margin)/8;
@@ -74,12 +81,11 @@ void initBoard(Board* board){
 }
 
 
-
 void drawBoard(Board* board){
 
-    vg_clear();
-    vg_draw_rectangle(0,0,left_rectangle_width,get_v_res(),COLOR_BLACK);
-    vg_draw_rectangle(left_rectangle_width + 8*rectangle_width, 0, 
+    vg_clear(board->mem_board);
+    draw_rectangle(board->mem_board, 0,0,left_rectangle_width,get_v_res(),COLOR_BLACK);
+    draw_rectangle(board->mem_board, left_rectangle_width + 8*rectangle_width, 0, 
                         right_rectangle_width,get_v_res(),COLOR_BLACK);
 
     
@@ -89,20 +95,44 @@ void drawBoard(Board* board){
     color2 = COLOR_2;
 
     atual_color = color1; 
-    drawPieces(board->board[get_position(0,0)]);
     
     for(in_port_t row=0;row<8;row++){
         for(in_port_t col=0;col<8;col++){
             atual_color = (atual_color==color1 ? color2 : color1); 
-            vg_draw_rectangle(col*rectangle_width+left_rectangle_width,row*rectangle_height+vertical_margin/2,
+            draw_rectangle(board->mem_board, col*rectangle_width+left_rectangle_width,row*rectangle_height+vertical_margin/2,
             rectangle_width,rectangle_height,atual_color);
-            
-            
-            drawPieces(board->board[get_position(col,row)]);
         }
         
         atual_color = (atual_color==color1 ? color2 : color1);
     }
 
 }
+
+void drawBoardPieces(Board* board){
+    
+    copy_buffers(video_mem_buffer, board->mem_board);
+    
+    /*percorrer pecas e desenhar se n se estiver a mover*/
+    for(in_port_t row=0;row<8;row++){
+        for(in_port_t col=0;col<8;col++){
+            Piece * p = board->board[get_position(col,row)];
+            if(p && !p->is_moving)
+                drawPieces(video_mem_buffer, p);
+        }
+    }
+
+
+    /*percorrer pecas e desenhar se se estiver a mover*/
+    for(in_port_t row=0;row<8;row++){
+        for(in_port_t col=0;col<8;col++){
+            Piece * p = board->board[get_position(col,row)];
+            if(p && p->is_moving)
+                drawPieces(video_mem_buffer, p);
+        }
+    }
+    
+
+}
+
+
 

@@ -94,7 +94,7 @@ void(timer_int_handler)(){
       if(num_frames%(-speed_)==0){
         if(x_i==x_f){
           vg_clear_image(image,current_x,current_y-1);
-          vg_draw_image(image,current_x,current_y);
+          draw_image(image,current_x,current_y);
           if(current_y==y_f)
             done_drawing=true;
           else
@@ -102,7 +102,7 @@ void(timer_int_handler)(){
         }
         else if(y_i==y_f){
           vg_clear_image(image,current_x,current_x-1);
-          vg_draw_image(image,current_x,current_y);
+          draw_image(image,current_x,current_y);
           if(current_x==x_f)
             done_drawing=true;
           else
@@ -117,7 +117,7 @@ void(timer_int_handler)(){
     else{
       if(x_i==x_f){
         vg_clear_image(image,current_x,current_y-speed_);
-        vg_draw_image(image,current_x,current_y);
+        draw_image(image,current_x,current_y);
         if(current_y==y_f)
           done_drawing=true;
         current_y+=speed_;
@@ -126,7 +126,7 @@ void(timer_int_handler)(){
       }
       else if(y_i==y_f){
         vg_clear_image(image,current_x-speed_,current_y);
-        vg_draw_image(image,current_x,current_y);
+        draw_image(image,current_x,current_y);
         if(current_x==x_f)
           done_drawing=true;
         current_x+=speed_;
@@ -141,7 +141,7 @@ int (init_graphics)(xpm_map_t xpm, uint16_t xi, uint16_t yi, uint16_t xf, uint16
   map_vram(INDEXED_MODE);
   init_graphics_mode(INDEXED_MODE);
   xpm_load(xpm,XPM_INDEXED,&image);
-  vg_draw_image(image,xi,xf);
+  draw_image(image,xi,xf);
   if(xi==xf && yi==yf){
     done_drawing=true;
     return 0;
@@ -256,7 +256,7 @@ int (vg_draw_rectangles)(uint16_t mode, uint8_t no_rectangles, uint32_t first, u
 }
 
 
-int(vg_draw_image)(xpm_image_t img,uint16_t x,uint16_t y){
+int(draw_image)(xpm_image_t img,uint16_t x,uint16_t y){
   uint8_t* video_mem_8bit=(uint8_t*)video_mem;
   for(unsigned i=0;i<img.height && y+i<v_res;i++){
     for(unsigned j=0;j<img.width && x+j<h_res;j++){

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lcom/lcf.h>
+#include "videocard.h"
 
 typedef enum PieceType{
     b_pawn,
@@ -24,12 +25,14 @@ typedef struct Piece
     uint16_t absolute_y;    // screen x
     xpm_image_t image;
     PieceType type;
+    bool is_moving;
 } Piece;
 
 void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute_y);
 
 
-void drawPieces(Piece* piece);
+void drawPieces(char* mem, Piece* piece);
 
+void movePiece(Piece* piece,int x, int y);
 
 
