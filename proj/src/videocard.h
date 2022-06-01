@@ -27,6 +27,8 @@ int (map_vram)(uint16_t mode);
 
 int(vg_draw_image)(xpm_image_t img,uint16_t x,uint16_t y);
 
+int(vg_draw_mouse)(xpm_image_t img,uint16_t x,uint16_t y);
+
 int(vg_clear_image)(xpm_image_t img,uint16_t x,uint16_t y);
 
 int (create_image)(xpm_map_t xpm, xpm_image_t *image);

@@ -6,6 +6,8 @@
 static void * video_mem;
 vbe_mode_info_t vmi_p;
 int bytes_per_pixel;
+unsigned h_res;
+unsigned v_res;
 
 
 unsigned (get_h_res)(){
@@ -51,7 +53,8 @@ int (map_vram)(uint16_t mode){
 
 
   bytes_per_pixel = ((vmi_p.BitsPerPixel + 7) >> 3);  //arredonda nr_bytes para cima
-
+  h_res = vmi_p.XResolution;
+  v_res = vmi_p.YResolution;
   unsigned int vram_base = vmi_p.PhysBasePtr;
   unsigned int vram_size = vmi_p.XResolution*vmi_p.YResolution*bytes_per_pixel;
 
@@ -112,12 +115,32 @@ int(vg_draw_image)(xpm_image_t img, uint16_t x, uint16_t y){
   return 0;
 }
 
-int(vg_clear_image)(xpm_image_t img,uint16_t x,uint16_t y){
-  uint8_t* video_mem_8bit=(uint8_t*)video_mem;
-  for(unsigned i=0;i<img.height && y+i<vmi_p.YResolution;i++){
-    for(unsigned j=0;j<img.width && x+j<vmi_p.XResolution;j++){
-        video_mem_8bit[(y+i)*vmi_p.XResolution+(x+j)]=0;
+int(vg_draw_mouse)(xpm_image_t img, uint16_t x, uint16_t y){
+  unsigned color_transparent = COLOR_TRANSPARENT;
+  for(int y_img = 0; y_img < img.height ; y_img++){ 
+    for(int x_img = 0; x_img < img.width; x_img++){
+      unsigned position = ((y+y_img)* vmi_p.XResolution  + x + x_img) * bytes_per_pixel; 
+      unsigned color_position = (y_img*img.height + x_img) * bytes_per_pixel; 
+      
+      if(memcmp(&img.bytes[color_position], &color_transparent, bytes_per_pixel) != 0 )
+        memcpy((void*)((unsigned)video_mem + position), (void*)&img.bytes[color_position], bytes_per_pixel);
     }
+    
+  }
+  return 0;
+}
+
+int(vg_clear_image)(xpm_image_t img,uint16_t x,uint16_t y){
+  unsigned color_transparent = COLOR_TRANSPARENT;
+
+  for(int y_img = 0; y_img < img.height ; y_img++){ 
+    for(int x_img = 0; x_img < img.width; x_img++){
+      unsigned color_position = (y_img*img.height + x_img) * bytes_per_pixel; 
+      unsigned position = ((y+y_img)* vmi_p.XResolution  + x + x_img) * bytes_per_pixel; 
+      if(memcmp(&img.bytes[color_position], &color_transparent, bytes_per_pixel) != 0 )
+        memset((void*)((unsigned)video_mem + position),0,bytes_per_pixel);
+    }
+    
   }
   return 0;
 }
