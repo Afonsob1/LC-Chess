@@ -71,7 +71,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
           
           if(msg.m_notify.interrupts & irq_set_timer){
               timer_int_handler();
-              //movePiece(board.board[0], 0, 1);
+              movePiece(board.board[0], 0, 1);
               drawBoardPieces(&board);
               
               draw_image(video_mem_buffer, img_mouse, cursor.cursor_x, cursor.cursor_y);

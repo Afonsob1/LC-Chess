@@ -110,22 +110,18 @@ int (draw_rectangle)(char* board_mem, uint16_t x, uint16_t y, uint16_t width, ui
 
 int(draw_image)(char* board_mem,xpm_image_t img, uint16_t x, uint16_t y){
   unsigned color_transparent = COLOR_TRANSPARENT;
-
-  unsigned color_position = 0; 
+  for(int y_img = 0; y_img < img.height && y + y_img < vmi_p.YResolution; y_img++){ 
+    for(int x_img = 0; x_img < img.width && x + x_img < vmi_p.XResolution; x_img++){
+      unsigned position = ((y+y_img)* vmi_p.XResolution  + x + x_img) * bytes_per_pixel; 
+      unsigned color_position = (y_img*img.height + x_img) * bytes_per_pixel; 
       
-  for(int y_img = 0; y_img < img.height && y+y_img< vmi_p.YResolution; y_img++){ 
-    unsigned position = ((y+y_img)* vmi_p.XResolution  + x ) * bytes_per_pixel; 
-      
-    for(int x_img = 0; x_img < img.width && x+x_img< vmi_p.XResolution; x_img++){
-      position += bytes_per_pixel;
-      color_position += bytes_per_pixel;
-
       if(memcmp(&img.bytes[color_position], &color_transparent, bytes_per_pixel) != 0 )
         memcpy((void*)((unsigned)board_mem + position), (void*)&img.bytes[color_position], bytes_per_pixel);
     }
     
   }
   return 0;
+
 }
 
 
@@ -141,16 +137,4 @@ void vg_clear(){
   memset(video_mem_buffer, 0, vram_size);
 }
 
-int(vg_clear_image)(xpm_image_t img,uint16_t x,uint16_t y){
-  unsigned color_transparent = COLOR_TRANSPARENT;
 
-  for(int y_img = 0; y_img < img.height ; y_img++){ 
-    for(int x_img = 0; x_img < img.width; x_img++){
-      unsigned color_position = (y_img*img.height + x_img) * bytes_per_pixel; 
-      unsigned position = ((y+y_img)* vmi_p.XResolution  + x + x_img) * bytes_per_pixel; 
-      if(memcmp(&img.bytes[color_position], &color_transparent, bytes_per_pixel) != 0 )
-        memset((void*)((unsigned)video_mem_buffer + position),0,bytes_per_pixel);
-    }
-  }
-  return 0;
-}

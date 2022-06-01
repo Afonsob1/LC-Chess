@@ -123,13 +123,13 @@ void drawBoardPieces(Board* board){
 
     
     /*percorrer pecas e desenhar se se estiver a mover*/
-    /*for(in_port_t row=0;row<8;row++){
+    for(in_port_t row=0;row<8;row++){
         for(in_port_t col=0;col<8;col++){
             Piece * p = board->board[get_position(col,row)];
             if(p && p->is_moving)
                 drawPieces(video_mem_buffer, p);
         }
-    }*/
+    }
     
 
 }
