@@ -14,6 +14,8 @@
 #include "imgs/xboard/kll80.h"
 #include "imgs/xboard/kdl80.h"
 
+extern char* video_mem_buffer;
+
 void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute_y){
     switch (piece_type){
         case b_pawn:
@@ -74,9 +76,17 @@ void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute
     piece->absolute_x = absolute_x;
     piece->absolute_y = absolute_y;
     piece->type = piece_type;
+    piece->is_moving = false;
 }
 
-void drawPieces(Piece* piece){
+
+void drawPieces(char* mem, Piece* piece){
     if(piece == NULL) return;
-    vg_draw_image(piece->image, piece->absolute_x, piece->absolute_y);
+    piece->is_moving = false;
+    draw_image(mem, piece->image, piece->absolute_x, piece->absolute_y);
+}
+void movePiece(Piece* piece,int x, int y){
+    piece->is_moving = true;
+    piece->absolute_x +=x;
+    piece->absolute_y +=y;
 }

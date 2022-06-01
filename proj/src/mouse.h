@@ -44,9 +44,3 @@ int (read_kbc_return)(uint8_t* ret);
 int (write_kbc_arg)(uint8_t arg);
 
 int (mouse_disable_data_reporting)();
-
-int (timer_subscribe_int)(uint8_t* bit_no);
-
-int (timer_unsubscribe_int)();
-
-void (timer_int_handler)();

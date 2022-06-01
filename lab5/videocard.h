@@ -42,7 +42,11 @@ int (vg_draw_rectangle)(uint16_t x, uint16_t y,
                           uint16_t width, uint16_t height, uint32_t color);
 
 
+<<<<<<< HEAD
 int (vg_draw_matrix)(uint16_t mode, uint8_t no_rectangles, uint32_t first, uint8_t step);
+=======
+int(draw_image)(xpm_image_t img,uint16_t x,uint16_t y);
+>>>>>>> origin/animation
 
 int(vg_draw_image)(uint16_t x, uint16_t y, xpm_image_t img);
 

@@ -1,26 +1,12 @@
 #include "mouse.h"
 
 int mouse_hook_id=1;
-int timer_hook_id=2;
 uint32_t count=0;
 struct packet pp;
 bool updateMouse=false;
 int i=0;
 bool valid_packet=true;
 
-
-int (timer_subscribe_int)(uint8_t* bit_no){
-  *bit_no = timer_hook_id;
-  return sys_irqsetpolicy(TIMER0_IRQ,IRQ_REENABLE,&timer_hook_id);
-}
-                                                                      
-int (timer_unsubscribe_int)(){
-  return sys_irqrmpolicy(&timer_hook_id);
-}
-
-void (timer_int_handler)(){
-  count++;
-}
 
 int (mouse_subscribe_int)(uint8_t* bit_no){
   *bit_no = mouse_hook_id;
