@@ -57,6 +57,8 @@ int(proj_main_loop)(int argc, char *argv[]) {
     /* draw board*/
     drawBoard(&board);
     copy_from_buffer();
+    
+    movePiece(board.board[get_position(1,7)], getScreenX(2), getScreenY(5));
       
     while(n_interrupts < 60*20){
       /* Get a request message. */
@@ -71,7 +73,9 @@ int(proj_main_loop)(int argc, char *argv[]) {
           
           if(msg.m_notify.interrupts & irq_set_timer){
               timer_int_handler();
-              movePiece(board.board[0], 0, 1);
+              
+              updateBoard(&board);
+              
               drawBoardPieces(&board);
               
               draw_image(video_mem_buffer, img_mouse, cursor.cursor_x, cursor.cursor_y);

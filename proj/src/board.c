@@ -22,6 +22,15 @@ void createPiece(Board* board, PieceType type, int x, int y){
     board->board[get_position(x, y)] = p;
 }
 
+int getScreenX( int col){
+    return col*rectangle_width + left_rectangle_width;
+
+}
+
+int getScreenY( int row){
+    return  vertical_margin/2+row*rectangle_height;
+}
+
 void initBoard(Board* board){
     board->mem_board = NULL;
     map_vram(&board->mem_board, 2, INDEXED_MODE);
@@ -107,6 +116,19 @@ void drawBoard(Board* board){
     }
 
 }
+
+void updateBoard(Board* board){
+    /*percorrer pecas */
+    for(in_port_t row=0;row<8;row++){
+        for(in_port_t col=0;col<8;col++){
+            Piece * p = board->board[get_position(col,row)];
+            if(p && p->is_moving)
+                updatePiece(p);
+        }
+    }
+
+}
+
 
 void drawBoardPieces(Board* board){
     

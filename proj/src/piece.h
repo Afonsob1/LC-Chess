@@ -22,7 +22,11 @@ typedef enum PieceType{
 typedef struct Piece
 {
     uint16_t absolute_x;    // screen x 
-    uint16_t absolute_y;    // screen x
+    uint16_t absolute_y;    // screen y
+    uint16_t x;             // board x 
+    uint16_t y;             // board y
+    uint16_t target_x;      // target x 
+    uint16_t target_y;      // target y 
     xpm_image_t image;
     PieceType type;
     bool is_moving;
@@ -34,5 +38,8 @@ void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute
 void drawPieces(char* mem, Piece* piece);
 
 void movePiece(Piece* piece,int x, int y);
+
+
+void updatePiece(Piece* piece);
 
 

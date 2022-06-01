@@ -23,3 +23,11 @@ void drawBoard(Board* board);
 void drawBoardPieces(Board* board);
 
 
+int getScreenX( int col);
+
+int getScreenY( int row);
+
+
+void updateBoard(Board* board);
+
+

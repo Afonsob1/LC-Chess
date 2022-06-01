@@ -15,6 +15,7 @@
 #include "imgs/xboard/kdl80.h"
 
 extern char* video_mem_buffer;
+#define VELOCITY 1
 
 void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute_y){
     switch (piece_type){
@@ -82,11 +83,40 @@ void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute
 
 void drawPieces(char* mem, Piece* piece){
     if(piece == NULL) return;
-    piece->is_moving = false;
     draw_image(mem, piece->image, piece->absolute_x, piece->absolute_y);
 }
+
+
+void updatePiece(Piece* piece){
+    
+    if(piece->absolute_x == piece->target_x && piece->absolute_y == piece->target_y){
+        piece->is_moving = false;
+        return;
+    }
+
+    int addX = piece->target_x - piece->absolute_x; 
+    if(addX > 0){
+        piece->absolute_x++;
+    }
+    else if (addX < 0){
+        piece->absolute_x--;
+    }
+
+    int addY = piece->target_y - piece->absolute_y; 
+    if(addY > 0){
+        piece->absolute_y++;
+    }else if (addY < 0){
+        piece->absolute_y--;
+    }
+
+}
+
+
 void movePiece(Piece* piece,int x, int y){
     piece->is_moving = true;
-    piece->absolute_x +=x;
-    piece->absolute_y +=y;
+    
+    piece->target_x = x;
+    piece->target_y = y;
 }
+
+
