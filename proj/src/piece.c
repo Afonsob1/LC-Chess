@@ -85,6 +85,8 @@ void drawPieces(char* mem, Piece* piece){
     piece->is_moving = false;
     draw_image(mem, piece->image, piece->absolute_x, piece->absolute_y);
 }
+
+
 void movePiece(Piece* piece,int x, int y){
     piece->is_moving = true;
     piece->absolute_x +=x;
