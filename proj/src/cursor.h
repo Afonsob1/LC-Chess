@@ -1,8 +1,6 @@
 #pragma once
 #include <lcom/lcf.h>
-#include "videocard.h"
 #include "board.h"
-#include "imgs/xboard/cursor.h"
 #include <stdbool.h>
 
 
