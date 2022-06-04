@@ -1,12 +1,11 @@
 #include "videocard.h"
 #include "board.h"
 #include "mouse.h"
-#include "imgs/xboard/cursor.h"
+#include "cursor.h"
+#include "timer.h"
 
 extern struct packet pp;
 extern bool updateMouse;
-#include "timer.h"
-
 extern int n_interrupts;
 extern char * video_mem_buffer;
 extern char * video_mem;
@@ -43,7 +42,8 @@ int(proj_main_loop)(int argc, char *argv[]) {
 
     
     /* subscribe mouse */
-    Cursor cursor = {0,0};
+    Cursor cursor;
+    initCursor(&cursor);
     uint8_t bit_mouse;
     int irq_set_mouse;
 
@@ -52,17 +52,12 @@ int(proj_main_loop)(int argc, char *argv[]) {
 
     irq_set_mouse = BIT(bit_mouse);
 
-    /* mouse image*/
-    xpm_image_t img_mouse;
-    create_image(arrow, &img_mouse);
 
     /* draw board*/
     drawBoard(&board);
     copy_from_buffer();
-    
-    movePiece(board.board[get_position(1,7)], getScreenX(2), getScreenY(5));
       
-    while(n_interrupts < 60*5){
+    while(n_interrupts < 60*3000){
       /* Get a request message. */
       if( (err = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
         printf("driver_receive failed with: %d", err);
@@ -80,8 +75,10 @@ int(proj_main_loop)(int argc, char *argv[]) {
               
               drawBoardPieces(&board);
               
-              copy_from_buffer(); 
-              draw_image(video_mem, img_mouse, cursor.cursor_x, cursor.cursor_y);
+
+
+              drawCursor(video_mem_buffer,&cursor);
+              copy_from_buffer();   
               
           }
           if (msg.m_notify.interrupts & irq_set_mouse) {
@@ -98,20 +95,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
       }
 
       if(updateMouse){
-        /*move mouse*/
-        if(cursor.cursor_x< -pp.delta_x)
-          cursor.cursor_x=0;
-        else if(cursor.cursor_x+pp.delta_x+11>=(int)get_h_res())
-          cursor.cursor_x=get_h_res()-12;
-        else
-          cursor.cursor_x+=pp.delta_x;
-
-        if(cursor.cursor_y< pp.delta_y)
-          cursor.cursor_y=0;
-        else if(cursor.cursor_y-pp.delta_y+19>=(int)get_v_res())
-          cursor.cursor_y=get_v_res()-20;
-        else
-          cursor.cursor_y-=pp.delta_y;
+        updateCursor(&board,&cursor,&pp);
         updateMouse=false;
       }
 

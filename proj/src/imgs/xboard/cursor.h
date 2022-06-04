@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CURSOR_IMAGE_H
+#define CURSOR_IMAGE_H
 /* XPM */
 #include <lcom/lcf.h>
 #include "../../colors.h"
@@ -45,3 +46,5 @@ xpm_row_t const arrow[] = {
   "                                ",
   "                                "
 };
+
+#endif

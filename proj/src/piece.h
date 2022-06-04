@@ -30,14 +30,16 @@ typedef struct Piece
     xpm_image_t image;
     PieceType type;
     bool is_moving;
+    bool pressed;
 } Piece;
 
 void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute_y);
 
-
 void drawPieces(char* mem, Piece* piece);
 
 void movePiece(Piece* piece,int x, int y);
+
+void setPiecePosition(Piece* piece,int x, int y);
 
 
 void updatePiece(Piece* piece);

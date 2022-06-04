@@ -87,6 +87,7 @@ void drawPieces(char* mem, Piece* piece){
 }
 
 
+
 void updatePiece(Piece* piece){
     
     if(piece->absolute_x == piece->target_x && piece->absolute_y == piece->target_y){
@@ -119,4 +120,9 @@ void movePiece(Piece* piece,int x, int y){
     piece->target_y = y;
 }
 
+
+void setPiecePosition(Piece* piece,int x, int y){
+    piece->absolute_x =x;
+    piece->absolute_y =y;
+}
 
