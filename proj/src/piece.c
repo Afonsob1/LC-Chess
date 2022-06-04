@@ -92,3 +92,10 @@ void movePiece(Piece* piece,int x, int y){
     piece->absolute_x +=x;
     piece->absolute_y +=y;
 }
+
+void setPiecePosition(Piece* piece,int x, int y){
+    piece->is_moving = true;
+    piece->absolute_x =x;
+    piece->absolute_y =y;
+}
+

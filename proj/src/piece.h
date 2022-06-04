@@ -35,4 +35,6 @@ void drawPieces(char* mem, Piece* piece);
 
 void movePiece(Piece* piece,int x, int y);
 
+void setPiecePosition(Piece* piece,int x, int y);
+
 

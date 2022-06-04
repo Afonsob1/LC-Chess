@@ -7,6 +7,8 @@
 typedef struct{
     uint16_t x;
     uint16_t y;
+    uint8_t initial_row;
+    uint8_t initial_col;
     bool pressed;
     xpm_image_t image;
     Piece* pressed_piece;
