@@ -9,8 +9,10 @@ extern bool updateMouse;
 
 extern int n_interrupts;
 extern char * video_mem_buffer;
+extern char * video_mem;
 
 int main(int argc, char* argv[]){
+
 
     lcf_set_language("EN-US");
 
@@ -60,7 +62,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     
     movePiece(board.board[get_position(1,7)], getScreenX(2), getScreenY(5));
       
-    while(n_interrupts < 60*20){
+    while(n_interrupts < 60*5){
       /* Get a request message. */
       if( (err = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
         printf("driver_receive failed with: %d", err);
@@ -78,8 +80,8 @@ int(proj_main_loop)(int argc, char *argv[]) {
               
               drawBoardPieces(&board);
               
-              draw_image(video_mem_buffer, img_mouse, cursor.cursor_x, cursor.cursor_y);
-              copy_from_buffer();   
+              copy_from_buffer(); 
+              draw_image(video_mem, img_mouse, cursor.cursor_x, cursor.cursor_y);
               
           }
           if (msg.m_notify.interrupts & irq_set_mouse) {

@@ -3,7 +3,7 @@
 #include <string.h>
 
 
-static char * video_mem;
+char * video_mem;
 char * video_mem_buffer;
 
 vbe_mode_info_t vmi_p;
@@ -133,8 +133,8 @@ void (copy_buffers)(void* vm1, void* vm2){
   memcpy(vm1, vm2, vram_size);
 }
 
-void vg_clear(){
-  memset(video_mem_buffer, 0, vram_size);
+void vg_clear(char * buffer){
+  memset(buffer, 0, vram_size);
 }
 
 

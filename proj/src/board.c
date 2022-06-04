@@ -93,10 +93,10 @@ void initBoard(Board* board){
 void drawBoard(Board* board){
 
     vg_clear(board->mem_board);
-    draw_rectangle(board->mem_board, 0,0,left_rectangle_width,get_v_res(),COLOR_BLACK);
+    /*draw_rectangle(board->mem_board, 0,0,left_rectangle_width,get_v_res(),COLOR_BLACK);
     draw_rectangle(board->mem_board, left_rectangle_width + 8*rectangle_width, 0, 
                         right_rectangle_width,get_v_res(),COLOR_BLACK);
-
+    */
     
 
     gid_t color1,color2, atual_color;
