@@ -2,6 +2,7 @@
 #include "board.h"
 #include "mouse.h"
 #include "imgs/xboard/cursor.h"
+#include "imgs/menu.h"
 
 extern struct packet pp;
 extern bool updateMouse;
@@ -29,7 +30,11 @@ int main(int argc, char* argv[]){
 
 int(proj_main_loop)(int argc, char *argv[]) {
 
-    init_graphics_mode(INDEXED_MODE);
+    init_graphics_mode(0x115);
+    xpm_image_t menu;
+    create_image(menu_xpm,&menu);
+    draw_image(video_mem,menu,100,0);
+      sleep(2);
     Board board;
     initBoard(&board);
     int ipc_status, err;
@@ -46,7 +51,6 @@ int(proj_main_loop)(int argc, char *argv[]) {
     Cursor cursor = {0,0};
     uint8_t bit_mouse;
     int irq_set_mouse;
-
     mouse_enable_data_reporting();
     mouse_subscribe_int(&bit_mouse);
 
@@ -55,6 +59,8 @@ int(proj_main_loop)(int argc, char *argv[]) {
     /* mouse image*/
     xpm_image_t img_mouse;
     create_image(arrow, &img_mouse);
+
+
 
     /* draw board*/
     drawBoard(&board);
@@ -75,7 +81,6 @@ int(proj_main_loop)(int argc, char *argv[]) {
           
           if(msg.m_notify.interrupts & irq_set_timer){
               timer_int_handler();
-              
               updateBoard(&board);
               
               drawBoardPieces(&board);
@@ -86,7 +91,6 @@ int(proj_main_loop)(int argc, char *argv[]) {
           }
           if (msg.m_notify.interrupts & irq_set_mouse) {
               mouse_ih();
-
 
             }
           break;
