@@ -159,4 +159,11 @@ void drawBoardPieces(Board* board){
 }
 
 
+int getBoardX(int absoluteX){
+    return (absoluteX - left_rectangle_width)/rectangle_width;
+}
+
+int getBoardY(int absoluteY){
+    return (absoluteY - vertical_margin/2)/rectangle_height;
+}
 

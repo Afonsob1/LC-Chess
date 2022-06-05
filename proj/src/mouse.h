@@ -1,5 +1,6 @@
 #include <lcom/lcf.h>
 #include "utils.h"
+#include "cursor.h"
 
 #define MOUSE_IRQ_LINE 12
 #define TIMER0_IRQ 0
@@ -23,11 +24,6 @@
 #define SIGN_EXTENSION 0xFF00
 #define BYTE_TO_MOUSE 0xD4
 #define DIS_DATA_REPORTING 0xF5
-
-typedef struct{
-    uint16_t cursor_x;
-    uint16_t cursor_y;
-}Cursor;
 
 int (mouse_subscribe_int)(uint8_t* bit_no);
 
