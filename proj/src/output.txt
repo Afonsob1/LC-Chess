@@ -1,2 +1,3 @@
-SerialWrite: a
-_-_
+Sent fa.
+INTERRUPCAO 
+Received fa.

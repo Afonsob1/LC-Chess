@@ -1,199 +1,268 @@
 #include "serialPort.h"
 #include "utils.h"
 
+int hook_id_sp;
 
-static int serial_hook_id = SERIAL_INITIAL_HOOK_ID;
+static Queue * transmitQueue;
+static Queue * receiveQueue;
 
-int serial_subscribe_int(void) {
-	if (sys_irqsetpolicy(COM1_IRQ, IRQ_REENABLE | IRQ_EXCLUSIVE,
-			&serial_hook_id) != OK) {
-		printf("serial_subscribe_int() -> FAILED sys_irqsetpolicy()\n");
-		return -1;
-	}
 
-	return SERIAL_INITIAL_HOOK_ID;
+
+int sp_set_number_of_bits_per_char(uint8_t number_of_bits) {
+  uint32_t lcr;
+
+	if (sys_inb(SP_COM1 + SP_UART_LCR, &lcr) != 0) {return 1;}
+
+  lcr = (lcr & 0xFC) | number_of_bits;
+
+  if (sys_outb(SP_COM1 + SP_UART_LCR, lcr) != 0) {return 1;}
+
+  return 0;
 }
 
-int serial_unsubscribe_int(void) {
-	if (sys_irqrmpolicy(&serial_hook_id) != OK) {
-		printf("serial_unsubscribe_int() -> FAILED sys_irqrmpolicy()\n");
-		return -1;
-	}
+int sp_set_parity(uint8_t parity) {
+  uint32_t lcr;
 
-	return SERIAL_INITIAL_HOOK_ID;
+	if (sys_inb(SP_COM1 + SP_UART_LCR, &lcr) != 0) {return 1;}
+
+  lcr = (lcr & 0xC7) | parity;
+
+  if (sys_outb(SP_COM1 + SP_UART_LCR, lcr) != 0) {return 1;}
+
+  return 0;
 }
 
+int sp_set_bitrate(int bitrate) {
+  uint16_t rate = 115200 / bitrate;
 
-/* Interrupt Handling */
+  uint8_t ratemsb = 0, ratelsb = 0;
+  util_get_LSB(rate, &ratelsb);
+  util_get_MSB(rate, &ratemsb);
 
-/**
- * "The use of bits 0 and 1 should be obvious: if set, the UART will generate an interrupt whenever
- * a character is received and whenever it is ready to accept a new character for transmission, respectively."
- */
-int serial_enable_interrupts() {
+  //SET DLAB
+  uint32_t lcr;
+	if (sys_inb(SP_COM1 + SP_UART_LCR, &lcr) != 0) {return 1;}
+  lcr = lcr | SP_LCR_DLAB;
+  if (sys_outb(SP_COM1 + SP_UART_LCR, lcr) != 0) {return 1;}
 
-	uint8_t helper_IER = 0;
+  //SET BITRATE
+  if (sys_outb(SP_COM1 + SP_UART_DLL, ratelsb) != 0) {return 1;}
+  if (sys_outb(SP_COM1 + SP_UART_DLM, ratemsb) != 0) {return 1;}
 
-	if (util_sys_inb((COM1_PORT + IER), &helper_IER) != OK) {
-		printf("serial_enable_interrupt -> Failed sys_inb.\n");
-		return 1;
-	}
+  //RESET DLAB
+  if (sys_inb(SP_COM1 + SP_UART_LCR, &lcr) != 0) {return 1;}
+  lcr = lcr & ~SP_LCR_DLAB;
+  if (sys_outb(SP_COM1 + SP_UART_LCR, lcr) != 0) {return 1;}
 
-	//Setting Bit 0 and 1 of the IIR
-	helper_IER = helper_IER | (IER_RDA | IER_RLS);
-
-	if (sys_outb((COM1_PORT + IER), helper_IER) != OK) {
-		printf("serial_enable_interrupt -> Failed sys_outb.\n");
-		return 1;
-	}
-
-	tickdelay(micros_to_ticks(10000));
-
-	return OK;
+  return 0;
 }
 
-//Opposite purpose of serial_enable_interrupt
-int serial_disable_interrupts() {
+int sp_enable_ier(uint8_t macro, bool enable) {
+  uint32_t ier;
 
-	
-    uint32_t helper_IER = 0;
+	if (sys_inb(SP_COM1 + SP_UART_IER, &ier) != 0) {return 1;}
 
-	if (sys_inb((COM1_PORT + IER), &helper_IER) != OK) {
-		printf("serial_disable_interrupt -> Failed sys_inb.\n");
-		return 1;
-	}
+  if (enable)
+    ier = ier | macro;
+  else 
+    ier = ier & ~macro;
 
-	//Changing Bit 0 and 1 of the IIR to 0.
-	helper_IER = helper_IER & (~IER_RDA) ;
-	helper_IER = helper_IER & (~IER_RLS) ;
+  if (sys_outb(SP_COM1 + SP_UART_IER, ier) != 0) {return 1;}
 
-	if (sys_outb((COM1_PORT + IER), helper_IER) != OK) {
-		printf("serial_disable_interrupt -> Failed sys_outb.\n");
-		return 1;
-	}
-
-	tickdelay(micros_to_ticks(10000));
-
-	return OK;
+  return 0;
 }
 
+int sp_enable_fcr(uint8_t macro, bool enable) {
+  uint32_t fcr;
 
-/**
- * " (..)both ends of the serial line must agree on the communication parameters.
- * In the case of asynchronous communication these include the bit rate,
- * the number of bits per character, the number of stop bits and the parity.
- */
-int serial_set_conf() {
+	if (sys_inb(SP_COM1 + SP_UART_FCR, &fcr) != 0) {return 1;}
 
-	uint32_t configuration = 0;
+  if (enable)
+    fcr = fcr | macro;
+  else
+    fcr = fcr & ~macro;
 
-	if (serial_disable_interrupts() != OK) {
-		printf("FAILED serial_enable_interrupts()\n");
-		return 1;
-	}
+  if (sys_outb(SP_COM1 + SP_UART_FCR, fcr) != 0) {return 1;}
 
-	//Fetching LCR
-	if (sys_inb((COM1_PORT + LCR), &configuration) != OK) {
-		printf(" serial_set_conf -> Failed sys_inb for configuration.\n");
-		return 1;
-	}
-
-	//Needed (?)
-	configuration &= 0x40;
-	configuration |= 0x80;
-
-	//Setting Word Length - 8 bits
-	configuration = configuration | (LCR_BPC0 | LCR_BPC1);
-
-	//Setting Number of Stop Bits - 1 bit
-	configuration = configuration & (~LCR_SB);
-	//configuration |= 0;
-
-	//Setting Partiy
-	configuration = configuration & (~LCR_PC0);
-	//configuration |= 0;
-
-	//Updating Configuration
-	if (sys_outb((COM1_PORT + LCR), configuration) != OK) {
-		printf(" serial_set_conf -> Failed sys_outb for configuration.\n");
-		return 1;
-	}
-
-	//Setting the bit-rate frequency dividor
-	uint32_t bit_rate = SERIAL_BASE_BR / SERIAL_BIT_RATE;
-	char msb = (bit_rate >> 8) & 0xFF;
-	char lsb = bit_rate & 0xFF;
-
-	//Setting DLAB to 1
-	uint32_t helper_DLAB = 0;
-
-	if (sys_inb((COM1_PORT + LCR), &helper_DLAB) != OK) {
-		printf(" serial_set_conf -> Failed sys_inb for DLAB.\n");
-		return 1;
-	}
-
-	helper_DLAB = helper_DLAB | LCR_DLAB;
-
-	if (sys_outb((COM1_PORT + LCR), helper_DLAB) != OK) {
-		printf(" serial_set_conf -> Failed sys_outb for DLAB.\n");
-		return 1;
-	}
-
-	//Writing MSB to DLM register
-	if (sys_outb((COM1_PORT + DLM), msb) != OK) {
-		printf(" serial_set_conf -> Failed sys_outb for DLM.\n");
-		return 1;
-	}
-
-	//Writing LSB to DLL register
-	if (sys_outb((COM1_PORT + DLL), lsb) != OK) {
-		printf(" serial_set_conf -> Failed sys_outb for DLL.\n");
-		return 1;
-	}
-
-	//Re setting the DLAB register to 0
-	helper_DLAB ^= LCR_DLAB;
-
-	if (sys_outb((COM1_PORT + LCR), helper_DLAB) != OK) {
-		printf(" serial_set_conf -> Failed sys_outb for DLAB.\n");
-		return 1;
-	}
-
-	return OK;
+  return 0;
 }
 
+int sp_configure_init() {
+  //SET 8 BITS PER CHAR
+  if (sp_set_number_of_bits_per_char(SP_LCR_8BITS) != 0) {return 1;}
 
-unsigned char serial_read() {
-	uint32_t received = 0;
-	uint32_t status = 0;
+  //SET ODD PARITY
+  if (sp_set_parity(SP_LCR_ODDPARITY) != 0) {return 1;}
 
-	sys_inb(COM1_PORT + LSR, &status);
+  //SET BITRATE
+  if (sp_set_bitrate(115200) != 0) {return 1;}
 
-	if (status & SERIAL_RECEIVED_DATA) {
-		sys_inb(COM1_PORT + RBR, &received);
-		return (unsigned char) (received & 0xFF);
-	}
+  //ENABLE INTERRUPTIONS
+  if (sp_enable_ier(SP_IER_RECEIVED_INTERRUPT, true) != 0) {return 1;}
+  if (sp_enable_ier(SP_IER_TRANSMITTER_INTERRUPT, true) != 0) {return 1;}
+  if (sp_enable_ier(SP_IER_RECEIVER_LINE_INTERRUPT, true) != 0) {return 1;}
 
-	return 0;
+  //ENABLE FIFO AND CLEAR TRANSMITTER AND RECEIVER FIFO
+  if (sp_enable_fcr(SP_FCR_ENABLE_FIFO, true) != 0) {return 1;}
+  if (sp_enable_fcr(SP_FCR_CLEAR_TRASMITTER_FIFO, true) != 0) {return 1;}
+  if (sp_enable_fcr(SP_FCR_CLEAR_RECEIVER_FIFO, true) != 0) {return 1;}
+
+  return 0;
 }
 
-int serial_write(unsigned char info) {
-	printf("SerialWrite: %x\n", info);
+int sp_configure_end() {
+  //DISABLE INTERRUPTIONS
+  if (sp_enable_ier(SP_IER_RECEIVED_INTERRUPT, false) != 0) {return 1;}
+  if (sp_enable_ier(SP_IER_TRANSMITTER_INTERRUPT, false) != 0) {return 1;}
+  if (sp_enable_ier(SP_IER_RECEIVER_LINE_INTERRUPT, false) != 0) {return 1;}
 
-	// Transmitter Holding Register is empty ?
-	uint32_t received = 0;
-	do {
-		sys_inb(COM1_PORT + LSR, &received);
-		printf("_-_");
-	} while( ! (received & SERIAL_THR_EMPTY) );
+  if (sp_enable_fcr(SP_FCR_ENABLE_FIFO, false) != 0) {return 1;}
+  if (sp_enable_fcr(SP_FCR_CLEAR_TRASMITTER_FIFO, true) != 0) {return 1;}
+  if (sp_enable_fcr(SP_FCR_CLEAR_RECEIVER_FIFO, true) != 0) {return 1;}
 
-	if (sys_outb((COM1_PORT + THR), info) != OK) {
-		printf(" serial_write -> Failed sys_outb of information.\n");
-		return 1;
-	}
 
-	tickdelay(micros_to_ticks(10000));
-
-	return OK;
+  return 0;
 }
 
+int (sp_subscribe_int)(uint8_t *bit_no) {
+  hook_id_sp = 4;
+  *bit_no = hook_id_sp;
+
+  if (sys_irqsetpolicy(SP_COM1_IRQ, (IRQ_REENABLE | IRQ_EXCLUSIVE), &hook_id_sp) != 0) {return 3;}
+
+  if (sp_configure_init() != 0) {return 1;}
+
+  transmitQueue = createQueue(128);
+  receiveQueue = createQueue(128);
+
+  return 0;
+}
+
+int (sp_unsubscribe_int)() {
+  if (sp_configure_end() != 0) {return 1;}
+
+  if (sys_irqrmpolicy(&hook_id_sp) != 0) {return 3;}
+
+  while (!queueIsEmpty(receiveQueue)) {
+    sp_read();
+  }
+  free(receiveQueue);
+  printf("RECEIVE QUEUE CLEARED. \n");
+
+  while (!queueIsEmpty(transmitQueue)) {
+    sp_write();
+  }
+  free(transmitQueue);
+  printf("TRANSMIT QUEUE CLEARED. \n");
+
+  return 0;
+}
+
+bool sp_check_write() {
+  uint32_t lsr;
+
+  if (sys_inb(SP_COM1 + SP_UART_LSR, &lsr) != 0) {return 1;}
+
+  if ((lsr & SP_LSR_TRANSMITTER_HOLDING_EMPTY) && ~(lsr & SP_LSR_RECEIVER))
+    return true;
+  else
+    return false;
+  
+}
+
+bool sp_check_read() {
+  uint32_t lsr;
+
+  if (sys_inb(SP_COM1 + SP_UART_LSR, &lsr) != 0) {return 1;}
+
+  if (lsr & SP_LSR_RECEIVER)
+    return true;
+  else
+    return false;
+}
+
+int sp_write() {
+  uint8_t data = 0x00;
+
+  if (!queueIsEmpty(transmitQueue) && sp_check_write()) {
+    data = removeFromQueue(transmitQueue);
+    if (sys_outb(SP_COM1 + SP_UART_THR, data) != 0) {printf("NOT Sent %x.\n", data);return 1;}
+    printf("Sent %x.\n", data);
+    //if (queueIsEmpty(transmitQueue))
+      //printf("Transmit Queue is now empty.\n");
+    return 0;
+  }
+  else
+    return 1;
+}
+
+int sp_read() {
+  uint32_t rbr;
+
+  if (!sp_check_read())
+    return 1;
+
+  if (sp_check_read()) {
+    /*
+    if (sys_inb(SP_COM1 + SP_UART_RBR, &rbr) != 0) {return 1;}
+
+    *byte = (uint8_t) rbr;
+
+    handle_data(*byte);
+    */
+
+    if (sys_inb(SP_COM1 + SP_UART_RBR, &rbr) != 0) {return 1;}
+
+    addToQueue(receiveQueue, (uint8_t)rbr);
+    printf("Received %x.\n", (uint8_t)rbr);
+    //printf("Added %x to the receive queue.\n", (uint8_t)rbr);
+  }
+  
+  return 0;
+}
+
+uint8_t (sp_ih)() {
+  uint32_t interruptType = 0x00;
+  uint8_t data = 0x00;
+
+  if (sys_inb(SP_COM1 + SP_UART_IIR, &interruptType) != 0) {return 0;}
+
+  if (interruptType & SP_IIR_NO_PENDING_INTERRUPT)
+    return 0;
+
+  if (interruptType & SP_IIR_RECEIVED_DATA) {
+    sp_read();
+  }
+  else if (interruptType & SP_IIR_TRANSMITTER_HOLDING) {
+    sp_write();
+  }
+  else if (interruptType & SP_IIR_RECEIVER_LINE) {
+    printf("\n\nERROR BIT IS 1 ON LSR\n\n");
+  }
+  else if (interruptType & SP_IIR_MODEM_STATUS) {
+    printf("MODEM STATUS.\n");
+  }
+  else if (interruptType & SP_IIR_CHAR_TIMEOUT) {
+    printf("CHARACTER TIMEOUT.\n");
+  }
+
+  return data;
+}
+
+uint8_t readFromQueue() {
+  uint8_t data = 0x00;
+
+  if (!queueIsEmpty(receiveQueue)) {
+    data = removeFromQueue(receiveQueue);
+    printf("Handled %x.\n", data);
+  }
+
+  return data;
+}
+
+void addToTransmitQueue(uint8_t data) {
+  if (!queueIsFull(transmitQueue)) {
+    addToQueue(transmitQueue, data);
+    //printf("Added %x to the transmit queue.\n", data);
+  }
+}

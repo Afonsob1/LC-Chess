@@ -4,12 +4,15 @@
 #include "cursor.h"
 #include "timer.h"
 #include "serialPort.h"
+#include "serialConst.h"
 
 extern struct packet pp;
 extern bool updateMouse;
 extern int n_interrupts;
 extern char * video_mem_buffer;
 extern char * video_mem;
+
+
 
 int main(int argc, char* argv[]){
 
@@ -30,76 +33,55 @@ int main(int argc, char* argv[]){
 
 int(proj_main_loop)(int argc, char *argv[]) {
   message msg;
-  int ipc_status;
+  int ipc_status, r;
   
-  //Setting Serial configuration
-	if (serial_set_conf() != OK) {
-		printf("FAILED serial_set_conf()\n");
-		return 1;
-	}
+  uint32_t irq_set_sp = BIT(SP_COM1_IRQ);
+  uint8_t sp_bit_no;
+  if (sp_subscribe_int(&sp_bit_no) != 0) {return 1;}
 
-  serial_write(10);
+  uint8_t bit_no_timer;
 
-return 0;
-	int serial_irq_set;
-	if ((serial_irq_set = BIT(serial_subscribe_int())) < 0) {
-		printf("FAILED serial_subscribe_int()\n");
-		return 1;
-	}
+  timer_subscribe_int(&bit_no_timer);
+  uint8_t irq_set_timer = BIT(bit_no_timer);
 
-  int r;
-	int gameRunning = 1;
-	while (gameRunning) {
-		/* Get a request message. */
-		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
-			printf("driver_receive failed with: %d\n", r);
-			continue;
-		}
-		if (is_ipc_notify(ipc_status)) { /* received notification */
-			switch (_ENDPOINT_P(msg.m_source)) {
-			case HARDWARE: /* hardware interrupt notification */
-				if (msg.m_notify.interrupts & serial_irq_set) { /* serial interrupt */
-					printf("Received serial!!!\n");
-					
+	addToTransmitQueue(0xFA);
 
-            // Check type of interrupt
-            
-            uint8_t iir = 0;
-            util_sys_inb(COM1_PORT + IIR, &iir);
-            if ( iir & ~IIR_NPI ) {
-              if(iir & IIR_ID){
-              	uint8_t received = serial_read();
-                printf("Serial Interrupt: Received!!  %d\n" , received);
-              }
+  sp_write();
+  
+  while(1) {
+    if ( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) { 
+      printf("driver_receive failed with: %d", r);
+      continue;
+    }
+    if (is_ipc_notify(ipc_status)) {
+      switch (_ENDPOINT_P(msg.m_source)) {
+          case HARDWARE: 
+          
+            if (msg.m_notify.interrupts & irq_set_timer){
+                printf("Timer \n");
+	             addToTransmitQueue(0x2);
             }
+            if (msg.m_notify.interrupts & irq_set_sp) {
+                printf("INTERRUPCAO \n");
+                
+                sp_ih();
+                
 
+            }
+          
+					
+            break;
+        default:
+          break; 
+			    
+      }
+    }
+  }
 
-				}
-
-				
-
-				
-
-				break;
-			}
-		} else { /* received a standard message, not a notification */
-			/* no standard messages expected: do nothing */
-			printf("Error: received unexpected standard message.\n");
-			return 1;
-		}
-	}
-
-	/* Unsubscribe All Interrupts */
-
-	if (serial_enable_interrupts() < 0) {
-		printf("FAILED serial_enbale_interrupts and the end of the game\n");
-		return 1;
-	}
-	if (serial_unsubscribe_int() < 0) {
-		printf("FAILED serial_unsubscribe_int()\n");
-		return 1;
-	}
-
-  return 0;
+  addToTransmitQueue(VM_DISCONNECTED);
+  timer_unsubscribe_int();
+  if (sp_unsubscribe_int() != 0) {return 1;}
+	return 0;
+	
 
 }
