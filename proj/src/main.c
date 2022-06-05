@@ -3,8 +3,8 @@
 #include "mouse.h"
 #include "imgs/menu.h"
 #include "imgs/player_choice.h"
-#include "cursor.h"
 #include "timer.h"
+#include "cursor.h"
 
 extern struct packet pp;
 extern bool updateMouse;
@@ -39,6 +39,8 @@ int(proj_main_loop)(int argc, char *argv[]) {
     create_image(player_choice_xpm,&player_choice);
     draw_image(video_mem,player_choice,95,15);
     sleep(2);
+
+    
     Board board;
     initBoard(&board);
     int ipc_status, err;
@@ -69,7 +71,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     copy_from_buffer();
 
       
-    while(n_interrupts < 60*300){
+    while(n_interrupts < 60*3){
       /* Get a request message. */
       if( (err = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
         printf("driver_receive failed with: %d", err);
@@ -83,7 +85,6 @@ int(proj_main_loop)(int argc, char *argv[]) {
           if(msg.m_notify.interrupts & irq_set_timer){
               timer_int_handler();
               updateBoard(&board);
-              drawBoard(&board);
               drawBoardPieces(&board);
               
 

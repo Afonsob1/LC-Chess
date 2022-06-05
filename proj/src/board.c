@@ -115,7 +115,6 @@ void drawBoard(Board* board){
         
         atual_color = (atual_color==color1 ? color2 : color1);
     }
-    copy_buffers(video_mem_buffer, board->mem_board);
 
 }
 
