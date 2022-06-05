@@ -48,7 +48,7 @@ void initBoard(Board* board){
     
     /* create pieces*/
     /* Black*/
-    /*
+    
     createPiece(board, b_rook   , 0, 0);
     createPiece(board, b_knight , 1, 0);
     createPiece(board, b_bishop , 2, 0);
@@ -66,9 +66,9 @@ void initBoard(Board* board){
     createPiece(board, b_pawn , 5, 1);
     createPiece(board, b_pawn , 6, 1);
     createPiece(board, b_pawn , 7, 1);
-    */
+    
     /* Whites */
-    /*
+    
     createPiece(board, w_rook   , 0, 7);
     createPiece(board, w_knight , 1, 7);
     createPiece(board, w_bishop , 2, 7);
@@ -86,7 +86,7 @@ void initBoard(Board* board){
     createPiece(board, w_pawn , 5, 6);
     createPiece(board, w_pawn , 6, 6);
     createPiece(board, w_pawn , 7, 6);
-    */
+    
 
 }
 
