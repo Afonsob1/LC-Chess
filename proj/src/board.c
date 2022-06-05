@@ -33,10 +33,10 @@ int getScreenY( int row){
 
 void initBoard(Board* board){
     board->mem_board = NULL;
-    map_vram(&board->mem_board, 2, INDEXED_MODE);
+    map_vram(&board->mem_board, 2, 0x115);
 
     board->mem_pieces = NULL;
-    map_vram(&board->mem_pieces, 3, INDEXED_MODE);
+    map_vram(&board->mem_pieces, 3, 0x115);
 
     /* init variables used for drawing*/
     rectangle_width = (get_v_res() - vertical_margin)/8;
@@ -47,8 +47,8 @@ void initBoard(Board* board){
     memset(board->board, 0, 64*sizeof(Piece*));
     
     /* create pieces*/
-    
     /* Black*/
+    /*
     createPiece(board, b_rook   , 0, 0);
     createPiece(board, b_knight , 1, 0);
     createPiece(board, b_bishop , 2, 0);
@@ -66,9 +66,9 @@ void initBoard(Board* board){
     createPiece(board, b_pawn , 5, 1);
     createPiece(board, b_pawn , 6, 1);
     createPiece(board, b_pawn , 7, 1);
-
+    */
     /* Whites */
-
+    /*
     createPiece(board, w_rook   , 0, 7);
     createPiece(board, w_knight , 1, 7);
     createPiece(board, w_bishop , 2, 7);
@@ -86,6 +86,7 @@ void initBoard(Board* board){
     createPiece(board, w_pawn , 5, 6);
     createPiece(board, w_pawn , 6, 6);
     createPiece(board, w_pawn , 7, 6);
+    */
 
 }
 
@@ -100,8 +101,8 @@ void drawBoard(Board* board){
     
 
     gid_t color1,color2, atual_color;
-    color1 = COLOR_1;
-    color2 = COLOR_2;
+    color1 = 0x3cb043;
+    color2 = 0xFFFDD0;
 
     atual_color = color1; 
     
@@ -114,6 +115,7 @@ void drawBoard(Board* board){
         
         atual_color = (atual_color==color1 ? color2 : color1);
     }
+    copy_buffers(video_mem_buffer, board->mem_board);
 
 }
 

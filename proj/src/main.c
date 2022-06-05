@@ -33,7 +33,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     init_graphics_mode(0x115);
     xpm_image_t menu;
     create_image(menu_xpm,&menu);
-    draw_image(video_mem,menu,100,0);
+    draw_image(video_mem,menu,95,50);
       sleep(2);
     Board board;
     initBoard(&board);
@@ -66,7 +66,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     drawBoard(&board);
     copy_from_buffer();
     
-    movePiece(board.board[get_position(1,7)], getScreenX(2), getScreenY(5));
+    //movePiece(board.board[get_position(1,7)], getScreenX(2), getScreenY(5));
       
     while(n_interrupts < 60*5){
       /* Get a request message. */
@@ -81,8 +81,8 @@ int(proj_main_loop)(int argc, char *argv[]) {
           
           if(msg.m_notify.interrupts & irq_set_timer){
               timer_int_handler();
-              updateBoard(&board);
-              
+              //updateBoard(&board);
+              drawBoard(&board);
               drawBoardPieces(&board);
               
               copy_from_buffer(); 
