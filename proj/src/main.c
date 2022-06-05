@@ -58,6 +58,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     initCursor(&cursor);
     uint8_t bit_mouse;
     int irq_set_mouse;
+    
     mouse_enable_data_reporting();
     mouse_subscribe_int(&bit_mouse);
 
@@ -71,7 +72,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
     copy_from_buffer();
 
       
-    while(n_interrupts < 60*3){
+    while(n_interrupts < 60*30){
       /* Get a request message. */
       if( (err = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
         printf("driver_receive failed with: %d", err);
@@ -84,6 +85,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
           
           if(msg.m_notify.interrupts & irq_set_timer){
               timer_int_handler();
+              
               updateBoard(&board);
               drawBoardPieces(&board);
               

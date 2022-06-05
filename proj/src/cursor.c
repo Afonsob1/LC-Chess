@@ -47,18 +47,18 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
     else{
         if(cursor->x < -x)
             cursor->x=0;
-        else if(cursor->x+x+80>=(int)get_h_res())
-            cursor->x=get_h_res()-81;
+        else if(cursor->x+x+58>=(int)get_h_res())
+            cursor->x=get_h_res()-59;
         else
             cursor->x+=x;
 
         if(cursor->y < y)
             cursor->y=0;
-        else if(cursor->y-y+80>=(int)get_v_res())
-            cursor->y=get_v_res()-81;
+        else if(cursor->y-y+58>=(int)get_v_res())
+            cursor->y=get_v_res()-59;
         else
             cursor->y-=y;
-        setPiecePosition(cursor->pressed_piece,cursor->x-40,cursor->y-40); //-40 so cursor is in the center of the image
+        setPiecePosition(cursor->pressed_piece,cursor->x-29,cursor->y-29); //-29 so cursor is in the center of the image
     }
     
 
