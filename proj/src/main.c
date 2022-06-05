@@ -3,6 +3,7 @@
 #include "mouse.h"
 #include "cursor.h"
 #include "timer.h"
+#include "serialPort.h"
 
 extern struct packet pp;
 extern bool updateMouse;
@@ -15,7 +16,7 @@ int main(int argc, char* argv[]){
 
     lcf_set_language("EN-US");
 
-    //lcf_trace_calls("/home/lcom/labs/proj/src/trace.txt");
+    lcf_trace_calls("/home/lcom/labs/proj/src/trace.txt");
 
     lcf_log_output("/home/lcom/labs/proj/src/output.txt");
 
@@ -25,90 +26,80 @@ int main(int argc, char* argv[]){
 
     return 0;
 }
+#define PLAYER1
 
 int(proj_main_loop)(int argc, char *argv[]) {
+  message msg;
+  int ipc_status;
+  
+  //Setting Serial configuration
+	if (serial_set_conf() != OK) {
+		printf("FAILED serial_set_conf()\n");
+		return 1;
+	}
 
-    init_graphics_mode(INDEXED_MODE);
-    Board board;
-    initBoard(&board);
-    int ipc_status, err;
-    message msg;
+  serial_write(10);
 
-    /* subscribe timer */
-    n_interrupts = 0;
-    uint8_t bit_timer;
-    timer_subscribe_int(&bit_timer);
-    uint8_t irq_set_timer = BIT(bit_timer);
+return 0;
+	int serial_irq_set;
+	if ((serial_irq_set = BIT(serial_subscribe_int())) < 0) {
+		printf("FAILED serial_subscribe_int()\n");
+		return 1;
+	}
 
-    
-    /* subscribe mouse */
-    Cursor cursor;
-    initCursor(&cursor);
-    uint8_t bit_mouse;
-    int irq_set_mouse;
+  int r;
+	int gameRunning = 1;
+	while (gameRunning) {
+		/* Get a request message. */
+		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+			printf("driver_receive failed with: %d\n", r);
+			continue;
+		}
+		if (is_ipc_notify(ipc_status)) { /* received notification */
+			switch (_ENDPOINT_P(msg.m_source)) {
+			case HARDWARE: /* hardware interrupt notification */
+				if (msg.m_notify.interrupts & serial_irq_set) { /* serial interrupt */
+					printf("Received serial!!!\n");
+					
 
-    mouse_enable_data_reporting();
-    mouse_subscribe_int(&bit_mouse);
-
-    irq_set_mouse = BIT(bit_mouse);
-
-
-    /* draw board*/
-    drawBoard(&board);
-    copy_from_buffer();
-      
-    while(n_interrupts < 60*3000){
-      /* Get a request message. */
-      if( (err = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
-        printf("driver_receive failed with: %d", err);
-        continue;
-      }
-
-      if (is_ipc_notify(ipc_status)) {
-        switch (_ENDPOINT_P(msg.m_source)) {
-        case HARDWARE: /* hardware interrupt notification */
-          
-          if(msg.m_notify.interrupts & irq_set_timer){
-              timer_int_handler();
-              
-              updateBoard(&board);
-              
-              drawBoardPieces(&board);
-              
-
-
-              drawCursor(video_mem_buffer,&cursor);
-              copy_from_buffer();   
-              
-          }
-          if (msg.m_notify.interrupts & irq_set_mouse) {
-              mouse_ih();
-
-
+            // Check type of interrupt
+            
+            uint8_t iir = 0;
+            util_sys_inb(COM1_PORT + IIR, &iir);
+            if ( iir & ~IIR_NPI ) {
+              if(iir & IIR_ID){
+              	uint8_t received = serial_read();
+                printf("Serial Interrupt: Received!!  %d\n" , received);
+              }
             }
-          break;
-        default:
-          break; 
-        }
-      }
-      else { 
-      }
-
-      if(updateMouse){
-        updateCursor(&board,&cursor,&pp);
-        updateMouse=false;
-      }
-
-  }
-
-  /*unsubscribe timer*/
-  timer_unsubscribe_int();
 
 
+				}
 
-  /*unsubscribe mouse*/
-  mouse_unsubscribe_int();
-  mouse_disable_data_reporting();
+				
 
-  return return_text_mode();
+				
+
+				break;
+			}
+		} else { /* received a standard message, not a notification */
+			/* no standard messages expected: do nothing */
+			printf("Error: received unexpected standard message.\n");
+			return 1;
+		}
+	}
+
+	/* Unsubscribe All Interrupts */
+
+	if (serial_enable_interrupts() < 0) {
+		printf("FAILED serial_enbale_interrupts and the end of the game\n");
+		return 1;
+	}
+	if (serial_unsubscribe_int() < 0) {
+		printf("FAILED serial_unsubscribe_int()\n");
+		return 1;
+	}
+
+  return 0;
+
 }
