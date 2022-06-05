@@ -5,12 +5,14 @@
 #include "imgs/player_choice.h"
 #include "timer.h"
 #include "cursor.h"
+#include "keyboard.h"
 
 extern struct packet pp;
 extern bool updateMouse;
 extern int n_interrupts;
 extern char * video_mem_buffer;
 extern char * video_mem;
+extern xpm_image_t letterImg;
 
 int main(int argc, char* argv[]){
 
@@ -52,7 +54,12 @@ int(proj_main_loop)(int argc, char *argv[]) {
     timer_subscribe_int(&bit_timer);
     uint8_t irq_set_timer = BIT(bit_timer);
 
-    
+    /* subscribe keyboard */
+    uint8_t bit_kb;
+    keyboard_subscribe_int(&bit_kb);
+    uint8_t irq_set_kb = BIT(bit_kb);
+
+
     /* subscribe mouse */
     Cursor cursor;
     initCursor(&cursor);
@@ -98,7 +105,12 @@ int(proj_main_loop)(int argc, char *argv[]) {
           if (msg.m_notify.interrupts & irq_set_mouse) {
               mouse_ih();
 
-            }
+          }
+          if (msg.m_notify.interrupts & irq_set_kb) {
+              keyboard_int_handler();
+              draw_image(video_mem_buffer, letterImg, 0, 0);
+              copy_from_buffer();
+          }
           break;
         default:
           break; 

@@ -7,7 +7,6 @@
 #define TIMER0_IRQ 0
 #define TIMEOUT_ERR BIT(6)
 #define PARITY_ERR BIT(7)
-#define TWO_BYTES 0xE0
 #define LSB_MASK 0x00FF
 #define COLOR_BLACK 0x0000
 #define COLOR_DARK_BLUE 0x0001
