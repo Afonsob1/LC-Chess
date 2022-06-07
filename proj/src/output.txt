@@ -1,3 +1,829 @@
-Sent fa.
-INTERRUPCAO 
-Received fa.
+Sent fc.
+Sending data
+received data
+Received fc.
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+
+Register 1: F
+Register 2: C1
+Register 3: 8
+Register 5: 60
+

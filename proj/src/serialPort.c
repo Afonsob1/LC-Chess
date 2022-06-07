@@ -2,7 +2,7 @@
 #include "utils.h"
 
 int hook_id_sp;
-
+bool writeToSP=true;
 static Queue * transmitQueue;
 static Queue * receiveQueue;
 
@@ -95,12 +95,13 @@ int sp_configure_init() {
   if (sp_set_parity(SP_LCR_ODDPARITY) != 0) {return 1;}
 
   //SET BITRATE
-  if (sp_set_bitrate(115200) != 0) {return 1;}
+  if (sp_set_bitrate(1000) != 0) {return 1;}
 
   //ENABLE INTERRUPTIONS
   if (sp_enable_ier(SP_IER_RECEIVED_INTERRUPT, true) != 0) {return 1;}
   if (sp_enable_ier(SP_IER_TRANSMITTER_INTERRUPT, true) != 0) {return 1;}
   if (sp_enable_ier(SP_IER_RECEIVER_LINE_INTERRUPT, true) != 0) {return 1;}
+
 
   //ENABLE FIFO AND CLEAR TRANSMITTER AND RECEIVER FIFO
   if (sp_enable_fcr(SP_FCR_ENABLE_FIFO, true) != 0) {return 1;}
@@ -132,8 +133,8 @@ int (sp_subscribe_int)(uint8_t *bit_no) {
 
   if (sp_configure_init() != 0) {return 1;}
 
-  transmitQueue = createQueue(128);
-  receiveQueue = createQueue(128);
+  transmitQueue = createQueue(10);
+  receiveQueue = createQueue(10);
 
   return 0;
 }
@@ -186,7 +187,7 @@ int sp_write() {
 
   if (!queueIsEmpty(transmitQueue) && sp_check_write()) {
     data = removeFromQueue(transmitQueue);
-    if (sys_outb(SP_COM1 + SP_UART_THR, data) != 0) {printf("NOT Sent %x.\n", data);return 1;}
+    if (sys_outb(SP_COM1 + SP_UART_THR, data) != 0){printf("NOT Sent %x.\n", data);return 1;}
     printf("Sent %x.\n", data);
     //if (queueIsEmpty(transmitQueue))
       //printf("Transmit Queue is now empty.\n");
@@ -203,19 +204,11 @@ int sp_read() {
     return 1;
 
   if (sp_check_read()) {
-    /*
-    if (sys_inb(SP_COM1 + SP_UART_RBR, &rbr) != 0) {return 1;}
-
-    *byte = (uint8_t) rbr;
-
-    handle_data(*byte);
-    */
 
     if (sys_inb(SP_COM1 + SP_UART_RBR, &rbr) != 0) {return 1;}
 
     addToQueue(receiveQueue, (uint8_t)rbr);
     printf("Received %x.\n", (uint8_t)rbr);
-    //printf("Added %x to the receive queue.\n", (uint8_t)rbr);
   }
   
   return 0;
@@ -227,13 +220,16 @@ uint8_t (sp_ih)() {
 
   if (sys_inb(SP_COM1 + SP_UART_IIR, &interruptType) != 0) {return 0;}
 
+
   if (interruptType & SP_IIR_NO_PENDING_INTERRUPT)
     return 0;
 
   if (interruptType & SP_IIR_RECEIVED_DATA) {
+	  printf("Received data\n");
     sp_read();
   }
   else if (interruptType & SP_IIR_TRANSMITTER_HOLDING) {
+	  printf("Finished sending data\n");
     sp_write();
   }
   else if (interruptType & SP_IIR_RECEIVER_LINE) {
@@ -247,6 +243,7 @@ uint8_t (sp_ih)() {
   }
 
   return data;
+
 }
 
 uint8_t readFromQueue() {
@@ -263,6 +260,5 @@ uint8_t readFromQueue() {
 void addToTransmitQueue(uint8_t data) {
   if (!queueIsFull(transmitQueue)) {
     addToQueue(transmitQueue, data);
-    //printf("Added %x to the transmit queue.\n", data);
   }
 }

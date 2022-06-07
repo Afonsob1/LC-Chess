@@ -11,6 +11,7 @@ extern bool updateMouse;
 extern int n_interrupts;
 extern char * video_mem_buffer;
 extern char * video_mem;
+extern bool writeToSP;
 
 
 
@@ -19,7 +20,7 @@ int main(int argc, char* argv[]){
 
     lcf_set_language("EN-US");
 
-    lcf_trace_calls("/home/lcom/labs/proj/src/trace.txt");
+    //lcf_trace_calls("/home/lcom/labs/proj/src/trace.txt");
 
     lcf_log_output("/home/lcom/labs/proj/src/output.txt");
 
@@ -44,10 +45,9 @@ int(proj_main_loop)(int argc, char *argv[]) {
   timer_subscribe_int(&bit_no_timer);
   uint8_t irq_set_timer = BIT(bit_no_timer);
 
-	addToTransmitQueue(0xFA);
-
+  addToTransmitQueue(VM_CONNECTED);
   sp_write();
-  
+  int count=0;
   while(1) {
     if ( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) { 
       printf("driver_receive failed with: %d", r);
@@ -56,17 +56,45 @@ int(proj_main_loop)(int argc, char *argv[]) {
     if (is_ipc_notify(ipc_status)) {
       switch (_ENDPOINT_P(msg.m_source)) {
           case HARDWARE: 
-          
             if (msg.m_notify.interrupts & irq_set_timer){
-                printf("Timer \n");
-	             addToTransmitQueue(0x2);
+              count++;
+              if(count%60==0){
+                for(int i=1;i<=5;i++){
+                  if(i!=4){
+                    uint8_t value_read;
+                    util_sys_inb(0x3F8+i,&value_read);
+                    printf("Register %d: %X\n",i,value_read);
+                  }
+                }
+                printf("\n");
+              }
             }
-            if (msg.m_notify.interrupts & irq_set_sp) {
-                printf("INTERRUPCAO \n");
-                
-                sp_ih();
-                
+            if (msg.m_notify.interrupts & irq_set_sp) {         
+              uint32_t interruptType = 0x00;
+              if (sys_inb(SP_COM1 + SP_UART_IIR, &interruptType) != 0) {return 0;}
 
+
+              if (interruptType & SP_IIR_NO_PENDING_INTERRUPT)
+                printf("No pending interrupt\n");
+
+              if (interruptType & SP_IIR_RECEIVED_DATA) {
+                printf("received data\n");
+                sp_read();
+                addToTransmitQueue(0x12);
+              }
+              else if (interruptType & SP_IIR_TRANSMITTER_HOLDING) {
+                printf("Sending data\n");
+                sp_write();
+              }
+              else if (interruptType & SP_IIR_RECEIVER_LINE) {
+                printf("\n\nERROR BIT IS 1 ON LSR\n\n");
+              }
+              else if (interruptType & SP_IIR_MODEM_STATUS) {
+                printf("MODEM STATUS.\n");
+              }
+              else if (interruptType & SP_IIR_CHAR_TIMEOUT) {
+                printf("CHARACTER TIMEOUT.\n");
+              }  
             }
           
 					
