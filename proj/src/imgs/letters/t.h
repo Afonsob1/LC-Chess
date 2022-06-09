@@ -4,8 +4,8 @@
 #include <string.h>
 xpm_row_t t[] = {
 "30 30 2 1",
-" 	g #FFFFFF",
-".	g #000000",
+" 	g #000069",
+".	g #ffffff",
 "                              ",
 "                              ",
 "            ...               ",

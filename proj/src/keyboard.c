@@ -74,82 +74,82 @@ int (keyboard_int_handler)(){
 void drawLetter(uint8_t byte){
   switch (byte)
   {
-  case 0x1e:
+  case 0x1e | BIT(7):
     create_image(a,&letterImg);
     break;
-  case 0x30: 
+  case 0x30 | BIT(7): 
     create_image(b,&letterImg);
     break;
-  case 0x2e:
+  case 0x2e| BIT(7):
     create_image(c,&letterImg);
     break;
-  case 0x20:
+  case 0x20| BIT(7):
     create_image(d,&letterImg);
     break;
-  case 0x12:
+  case 0x12| BIT(7):
     create_image(e,&letterImg);
     break;
-  case 0x21:
+  case 0x21| BIT(7):
     create_image(f,&letterImg);
     break;
-  case 0x22:
+  case 0x22| BIT(7):
     create_image(g,&letterImg);
     break;
-  case 0x23:
+  case 0x23| BIT(7):
     create_image(h,&letterImg);
     break;
-  case 0x17:
+  case 0x17| BIT(7):
     create_image(i_,&letterImg);
     break;
-  case 0x24:
+  case 0x24| BIT(7):
     create_image(j,&letterImg);
     break;
-  case 0x25:
+  case 0x25| BIT(7):
     create_image(k,&letterImg);
     break;
-  case 0x26:
+  case 0x26| BIT(7):
     create_image(l,&letterImg);
     break;
-  case 0x32:
+  case 0x32| BIT(7):
     create_image(m,&letterImg);
     break;
-  case 0x31:
+  case 0x31| BIT(7):
     create_image(n,&letterImg);
     break;
-  case 0x18:
+  case 0x18 | BIT(7):
     create_image(o,&letterImg);
     break;
-  case 0x19:
+  case 0x19 | BIT(7):
     create_image(p,&letterImg);
     break;
-  case 0x10:
+  case 0x10 | BIT(7):
     create_image(q,&letterImg); 
     break;
-  case 0x13:
+  case 0x13 | BIT(7):
     create_image(r,&letterImg);
     break;
-  case 0x1f:
+  case 0x1f | BIT(7):
     create_image(s,&letterImg);
     break;
-  case 0x14:
+  case 0x14 | BIT(7):
     create_image(t,&letterImg);
     break;
-  case 0x16:
+  case 0x16 | BIT(7):
     create_image(u,&letterImg);
     break;
-  case 0x2f: 
+  case 0x2f | BIT(7): 
     create_image(v,&letterImg);
     break;
-  case 0x11: 
+  case 0x11 | BIT(7): 
     create_image(w,&letterImg);
     break;
-  case 0x2d:
+  case 0x2d | BIT(7):
     create_image(x,&letterImg);
     break;
-  case 0x15:
+  case 0x15 :
     create_image(y,&letterImg);
     break;
-  case 0x2c: 
+  case 0x2c | BIT(7) : 
     create_image(z,&letterImg);
     break;
   default:

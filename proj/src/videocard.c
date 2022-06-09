@@ -1,11 +1,12 @@
 #include "videocard.h"
+#include "keyboard.h"
 #include "colors.h"
 #include <string.h>
 
 
 char * video_mem;
 char * video_mem_buffer;
-
+extern xpm_image_t letterImg;
 vbe_mode_info_t vmi_p;
 int bytes_per_pixel;
 unsigned h_res;
@@ -137,4 +138,17 @@ void vg_clear(char * buffer){
   memset(buffer, 0, vram_size);
 }
 
-
+void draw_name(char * video_mem_buffer, uint8_t* make_code){
+  //int base_x = 618;
+  int base_x = 142;
+  int base_y = 312;
+  int spacing = 68;
+  int x = 0;
+  uint8_t* p = &(make_code[0]);
+  for (int c = 0; c < 8; c++, p++){
+    if  (*p == 0) break;
+    x = base_x + (spacing * c);
+    drawLetter(*p);
+    draw_image(video_mem_buffer,letterImg, x, base_y);
+  }
+}
