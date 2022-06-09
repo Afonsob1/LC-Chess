@@ -7,7 +7,7 @@
 #include <string.h>
 xpm_row_t const player_choice_xpm[] = {
 "600 600 361 2",
-"  	c #000000",
+"  	c #000069",
 ". 	c #777777",
 "+ 	c #B3B3B3",
 "@ 	c #DCDCDC",

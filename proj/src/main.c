@@ -39,12 +39,9 @@ int(proj_main_loop)(int argc, char *argv[]) {
     draw_image(video_mem,menu,95,50);
     sleep(2);
     create_image(player_choice_xpm,&player_choice);
-    draw_image(video_mem,player_choice,95,15);
-    sleep(2);
 
     
     Board board;
-    initBoard(&board);
     int ipc_status, err;
     message msg;
 
@@ -73,37 +70,54 @@ int(proj_main_loop)(int argc, char *argv[]) {
 
 
 
+    //initBoard(&board);
+
 
     /* draw board*/
-    drawBoard(&board);
-    copy_from_buffer();
-
-      
-    while(n_interrupts < 60*30){
+    //drawBoard(&board);
+    //copy_from_buffer();
+    bool click = false;
+    int count = 0;
+    while(n_interrupts < 60*60){
       /* Get a request message. */
       if( (err = driver_receive(ANY, &msg, &ipc_status)) != 0 ) {
         printf("driver_receive failed with: %d", err);
         continue;
       }
-
       if (is_ipc_notify(ipc_status)) {
         switch (_ENDPOINT_P(msg.m_source)) {
         case HARDWARE: /* hardware interrupt notification */
           
           if(msg.m_notify.interrupts & irq_set_timer){
               timer_int_handler();
-              
-              updateBoard(&board);
-              drawBoardPieces(&board);
-              
 
-
+              if(click){
+                if (count == 0){
+                  initBoard(&board);
+                  count++;
+                }
+                else{
+                vg_clear(video_mem_buffer);
+                drawBoard(&board);
+                updateBoard(&board);
+                drawBoardPieces(&board);
+                }
+              } 
+              else{
+                vg_clear(video_mem_buffer);
+                 draw_image(video_mem_buffer,player_choice,95,15);
+              }
               drawCursor(video_mem_buffer,&cursor);
               copy_from_buffer();   
               
           }
           if (msg.m_notify.interrupts & irq_set_mouse) {
-              mouse_ih();
+            mouse_ih();
+            
+            if (!click){
+              click = cursorClickPlayer(&cursor);
+            } 
+            
 
           }
           if (msg.m_notify.interrupts & irq_set_kb) {

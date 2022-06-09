@@ -29,7 +29,7 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
     int32_t y = pp->delta_y;
         /*move mouse*/
     
-    if(cursor->pressed_piece==NULL){
+    if(!cursor->cursorMovingPiece){
         if(cursor->x < -x)
             cursor->x=0;
         else if(cursor->x+x+11>=(int)get_h_res())
@@ -44,6 +44,7 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
         else
             cursor->y-=y;
     }
+    
     else{
         if(cursor->x < -x)
             cursor->x=0;
@@ -58,39 +59,62 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
             cursor->y=get_v_res()-59;
         else
             cursor->y-=y;
-        setPiecePosition(cursor->pressed_piece,cursor->x-29,cursor->y-29); //-29 so cursor is in the center of the image
+        
+            setPiecePosition(cursor->pressed_piece,cursor->x-29,cursor->y-29); //-29 so cursor is in the center of the image
     }
     
+    
 
-    if (pp->lb && !cursor->pressed){
-        cursor->pressed = true;
-        if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){
-            cursor->pressed_piece= board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)];
+    if (pp->lb && !cursor->pressed){//clicked something
+        cursor->pressed=true;
+        printf("Clicked mouse on position %d:%d\n",cursor->x,cursor->y);
+        if(getBoardY(cursor->y)>=0 && getBoardY(cursor->y)<8
+        &&getBoardX(cursor->x)>=0 && getBoardX(cursor->x)<8){
+            
+            
+            if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){ //clicked piece
+                cursor->cursorMovingPiece = true;
+                cursor->pressed_piece= board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)];
+                cursor->initial_col = getBoardX(cursor->x);
+                cursor->initial_row = getBoardY(cursor->y);
+            }
+            
         }
-        cursor->initial_col = getBoardX(cursor->x);
-        cursor->initial_row = getBoardY(cursor->y);
+        
+        
     }
     else if(!pp->lb && cursor->pressed){
-        if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){
-            bool sameTeam = (cursor->pressed_piece->type>5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type>5) || (cursor->pressed_piece->type<=5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type<=5);
-            if(!sameTeam){
+        cursor->pressed=false;
+        
+        if(cursor->cursorMovingPiece){
+            if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){
+                bool sameTeam = (cursor->pressed_piece->type>5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type>5) || (cursor->pressed_piece->type<=5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type<=5);
+                if(!sameTeam){
+                    setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
+                    movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
+                    board->board[cursor->initial_row*8+cursor->initial_col]=NULL;
+                    board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
+                }
+                else{
+                    setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
+                }
+            }
+            else{
                 setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
                 movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
                 board->board[cursor->initial_row*8+cursor->initial_col]=NULL;
                 board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
             }
-            else{
-                setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
-            }
+            cursor->cursorMovingPiece=false;
+            cursor->pressed_piece=NULL;
         }
-        else{
-            setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
-            movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
-            board->board[cursor->initial_row*8+cursor->initial_col]=NULL;
-            board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
-        }
-        cursor->pressed = false;
-        cursor->pressed_piece=NULL;
-
+        
     }
+}
+
+bool cursorClickPlayer(Cursor *cursor){
+    return (((cursor->x > 307 && cursor->x < 466 
+    && cursor->y > 62 && cursor->y <104) || (cursor->x > 307 && cursor->x < 466 
+    && cursor->y > 517 && cursor->y <558)) &&
+    cursor->pressed);
 }

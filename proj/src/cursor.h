@@ -9,6 +9,7 @@ typedef struct{
     uint16_t y;
     uint8_t initial_row;
     uint8_t initial_col;
+    bool cursorMovingPiece;
     bool pressed;
     xpm_image_t image;
     Piece* pressed_piece;
@@ -21,3 +22,4 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp);
 
 void drawCursor(char* mem,Cursor* cursor);
 
+bool cursorClickPlayer(Cursor* cursor);
