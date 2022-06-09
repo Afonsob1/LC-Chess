@@ -103,6 +103,11 @@ uint8_t (sp_ih)();
 uint8_t readFromQueue();
 
 /**
+ * @brief Apaga todos os
+ */
+void sp_clear();
+
+/**
  *  @brief Adiciona elemento à Transmit Queue
  *  @param data Elemento a adicionar à Transmit Queue
  */

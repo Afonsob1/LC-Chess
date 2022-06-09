@@ -2,7 +2,6 @@
 #include "utils.h"
 
 int hook_id_sp;
-bool writeToSP=true;
 static Queue * transmitQueue;
 static Queue * receiveQueue;
 
@@ -20,6 +19,13 @@ int sp_set_number_of_bits_per_char(uint8_t number_of_bits) {
   return 0;
 }
 
+void sp_clear(){
+  while(sp_check_read()){
+    sp_read();
+    tickdelay(micros_to_ticks(30000));
+  }
+}
+
 int sp_set_parity(uint8_t parity) {
   uint32_t lcr;
 
@@ -31,6 +37,8 @@ int sp_set_parity(uint8_t parity) {
 
   return 0;
 }
+
+
 
 int sp_set_bitrate(int bitrate) {
   uint16_t rate = 115200 / bitrate;
@@ -200,15 +208,15 @@ int sp_write() {
 int sp_read() {
   uint32_t rbr;
 
-  if (!sp_check_read())
-    return 1;
 
   if (sp_check_read()) {
 
     if (sys_inb(SP_COM1 + SP_UART_RBR, &rbr) != 0) {return 1;}
 
     addToQueue(receiveQueue, (uint8_t)rbr);
-    printf("Received %x.\n", (uint8_t)rbr);
+  }else{
+    
+    return 1;
   }
   
   return 0;
@@ -225,11 +233,11 @@ uint8_t (sp_ih)() {
     return 0;
 
   if (interruptType & SP_IIR_RECEIVED_DATA) {
-	  printf("Received data\n");
+	  printf("\n ** Received data\n");
     sp_read();
   }
   else if (interruptType & SP_IIR_TRANSMITTER_HOLDING) {
-	  printf("Finished sending data\n");
+	  printf(" \n**Finished sending data\n");
     sp_write();
   }
   else if (interruptType & SP_IIR_RECEIVER_LINE) {
@@ -248,10 +256,8 @@ uint8_t (sp_ih)() {
 
 uint8_t readFromQueue() {
   uint8_t data = 0x00;
-
   if (!queueIsEmpty(receiveQueue)) {
     data = removeFromQueue(receiveQueue);
-    printf("Handled %x.\n", data);
   }
 
   return data;

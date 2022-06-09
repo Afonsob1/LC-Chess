@@ -11,8 +11,7 @@ extern bool updateMouse;
 extern int n_interrupts;
 extern char * video_mem_buffer;
 extern char * video_mem;
-extern bool writeToSP;
-
+bool vmConnected=false;
 
 
 int main(int argc, char* argv[]){
@@ -35,7 +34,7 @@ int main(int argc, char* argv[]){
 int(proj_main_loop)(int argc, char *argv[]) {
   message msg;
   int ipc_status, r;
-  
+  sp_clear();
   uint32_t irq_set_sp = BIT(SP_COM1_IRQ);
   uint8_t sp_bit_no;
   if (sp_subscribe_int(&sp_bit_no) != 0) {return 1;}
@@ -45,56 +44,44 @@ int(proj_main_loop)(int argc, char *argv[]) {
   timer_subscribe_int(&bit_no_timer);
   uint8_t irq_set_timer = BIT(bit_no_timer);
 
+  sp_clear();
+  
   addToTransmitQueue(VM_CONNECTED);
-  sp_write();
+
+  
+
   int count=0;
   while(1) {
+    uint8_t received_byte;
     if ( (r = driver_receive(ANY, &msg, &ipc_status)) != 0 ) { 
       printf("driver_receive failed with: %d", r);
       continue;
     }
     if (is_ipc_notify(ipc_status)) {
       switch (_ENDPOINT_P(msg.m_source)) {
+
           case HARDWARE: 
-            if (msg.m_notify.interrupts & irq_set_timer){
+            if (msg.m_notify.interrupts & irq_set_timer) {         
               count++;
-              if(count%60==0){
-                for(int i=1;i<=5;i++){
-                  if(i!=4){
-                    uint8_t value_read;
-                    util_sys_inb(0x3F8+i,&value_read);
-                    printf("Register %d: %X\n",i,value_read);
+              if(count%(60*2)==0){
+                if(!vmConnected){
+                  received_byte=readFromQueue();
+                  printf("RECEIVED BYTE %x\n",received_byte);
+                  if(received_byte==VM_CONNECTED){
+                    vmConnected=true;
+                          printf("VM CONNECTED\n");
+                    addToTransmitQueue(RECEIVE_VM_CONNECTED);
+                  }
+                  else if(received_byte==RECEIVE_VM_CONNECTED){
+                    vmConnected=true;
+                    printf("VM CONNECTED\n");
                   }
                 }
-                printf("\n");
               }
             }
+
             if (msg.m_notify.interrupts & irq_set_sp) {         
-              uint32_t interruptType = 0x00;
-              if (sys_inb(SP_COM1 + SP_UART_IIR, &interruptType) != 0) {return 0;}
-
-
-              if (interruptType & SP_IIR_NO_PENDING_INTERRUPT)
-                printf("No pending interrupt\n");
-
-              if (interruptType & SP_IIR_RECEIVED_DATA) {
-                printf("received data\n");
-                sp_read();
-                addToTransmitQueue(0x12);
-              }
-              else if (interruptType & SP_IIR_TRANSMITTER_HOLDING) {
-                printf("Sending data\n");
-                sp_write();
-              }
-              else if (interruptType & SP_IIR_RECEIVER_LINE) {
-                printf("\n\nERROR BIT IS 1 ON LSR\n\n");
-              }
-              else if (interruptType & SP_IIR_MODEM_STATUS) {
-                printf("MODEM STATUS.\n");
-              }
-              else if (interruptType & SP_IIR_CHAR_TIMEOUT) {
-                printf("CHARACTER TIMEOUT.\n");
-              }  
+              sp_ih();
             }
           
 					
@@ -103,6 +90,9 @@ int(proj_main_loop)(int argc, char *argv[]) {
           break; 
 			    
       }
+    }
+    if(!vmConnected){
+      sp_write();
     }
   }
 
