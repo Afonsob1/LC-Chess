@@ -22,6 +22,7 @@ void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute
         case b_pawn:
             create_image(pdl58, &(piece->image));
             piece->pawn_moved = false;
+
             break;
 
         case b_knight:
@@ -47,6 +48,7 @@ void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute
         case w_pawn:
             create_image(pll58, &(piece->image));
             piece->pawn_moved = false;
+
             break;
 
         case w_knight:
@@ -125,6 +127,7 @@ bool updatePiece_no_animation(Piece* piece){
         }
         return false;;
 }
+
 
 
 void movePiece(Piece* piece,int x, int y){

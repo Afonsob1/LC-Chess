@@ -28,7 +28,7 @@
 #include "imgs/letters/z.h"
 
 
-int kb_hook_id=4;
+int kb_hook_id=KEYBOARD_IRQ;
 int counter=0;
 uint8_t code;
 xpm_image_t letterImg;

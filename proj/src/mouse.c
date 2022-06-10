@@ -1,6 +1,6 @@
 #include "mouse.h"
 
-int mouse_hook_id=1;
+int mouse_hook_id=MOUSE_IRQ_LINE;
 uint32_t count=0;
 struct packet pp;
 bool updateMouse=false;

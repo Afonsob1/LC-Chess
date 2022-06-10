@@ -12,8 +12,8 @@
 #define COLOR_DARK_BLUE 0x0001
 #define COLOR_GREEN 0x0002
 #define COLOR_CYAN 0x0003
-#define COLOR_1 0x0010
-#define COLOR_2 0x0037
+#define COLOR_1 0x3cb043
+#define COLOR_2 0xFFFDD0
 #define INDEXED_MODE 0x105
 
 
@@ -49,4 +49,3 @@ int(draw_image)(char *board_mem, xpm_image_t img,uint16_t x,uint16_t y);
 void vg_clear(char * buffer);
 
 void (draw_name)(char * video_mem_buffer, uint8_t* make_code, int base_x, int base_y, int spacing);
-

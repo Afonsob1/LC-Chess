@@ -1,6 +1,20 @@
 #include "cursor.h"
 #include "videocard.h"
 #include "imgs/xboard/cursor.h"
+#include "serialPort.h"
+
+#define YOUR_TURN 0xF8
+#define BEGIN_MESSAGE 0xF9
+
+bool myTurn=false;
+
+typedef struct{
+  uint8_t old_row;
+  uint8_t old_col;
+  uint8_t new_row;
+  uint8_t new_col;
+}chessMove;
+
 
 extern unsigned vertical_margin; //so that rectangle_width and rectangle_weight is an integer(80)
 extern float horizontal_margin_percentage;
@@ -60,56 +74,84 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
             cursor->y=get_v_res()-59;
         else
             cursor->y-=y;
-        
-            setPiecePosition(cursor->pressed_piece,cursor->x-29,cursor->y-29); //-29 so cursor is in the center of the image
+        setPiecePosition(cursor->pressed_piece,cursor->x-29,cursor->y-29); //-29 so cursor is in the center of the image
     }
     
     
 
     if (pp->lb && !cursor->pressed){//clicked something
         cursor->pressed=true;
-        printf("Clicked mouse on position %d:%d\n",cursor->x,cursor->y);
-        if(getBoardY(cursor->y)>=0 && getBoardY(cursor->y)<8
-        &&getBoardX(cursor->x)>=0 && getBoardX(cursor->x)<8){
-            
-            
-            if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){ //clicked piece
-                cursor->cursorMovingPiece = true;
-                cursor->pressed_piece= board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)];
-                cursor->initial_col = getBoardX(cursor->x);
-                cursor->initial_row = getBoardY(cursor->y);
+        if(board){
+
+            if(getBoardY(cursor->y)>=0 && getBoardY(cursor->y)<8
+            &&getBoardX(cursor->x)>=0 && getBoardX(cursor->x)<8 && myTurn){
+                
+                
+                if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){ //clicked piece
+                    cursor->cursorMovingPiece = true;
+                    cursor->pressed_piece= board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)];
+                    cursor->initial_col = getBoardX(cursor->x);
+                    cursor->initial_row = getBoardY(cursor->y);
+                }
+                
             }
-            
+
         }
         
         
     }
     else if(!pp->lb && cursor->pressed){
         cursor->pressed=false;
-        
-        if(cursor->cursorMovingPiece){
-            if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){
-                bool sameTeam = (cursor->pressed_piece->type>5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type>5) || (cursor->pressed_piece->type<=5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type<=5);
-                if(!sameTeam){
+        if(board){
+            if(cursor->cursorMovingPiece){
+                if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){
+                    bool sameTeam = (cursor->pressed_piece->type>5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type>5) || (cursor->pressed_piece->type<=5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type<=5);
+                    if(!sameTeam){
+                        setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
+                        movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
+                        board->board[cursor->initial_row*8+cursor->initial_col]=NULL;
+                        board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
+
+
+                        uint8_t old_pos = (cursor->initial_col<<3)|cursor->initial_row;
+                        uint8_t new_pos = (getBoardX(cursor->x)<<3)|getBoardY(cursor->y);
+                        addToTransmitQueue(BEGIN_MESSAGE);
+                        addToTransmitQueue(old_pos);
+                        addToTransmitQueue(new_pos);
+                        addToTransmitQueue(YOUR_TURN);
+                        myTurn=false;
+                        
+                    }
+                    else{
+                        setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
+                    }
+                }
+                else{
                     setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
                     movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
                     board->board[cursor->initial_row*8+cursor->initial_col]=NULL;
                     board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
+                    uint8_t old_pos = (cursor->initial_col<<3)|cursor->initial_row;
+                    uint8_t new_pos = ((getBoardX(cursor->x))<<3)|(getBoardY(cursor->y));
+
+                    chessMove move;
+
+                    move.old_col = cursor->initial_col;
+                    move.old_row = cursor->initial_row;
+                    move.new_col = getBoardX(cursor->x);
+                    move.new_row = getBoardY(cursor->y);
+
+                    printf("Sent the following position:\nOld position: %d:%d\nNew position: %d:%d\n",move.old_col,move.old_row,move.new_col,move.new_row);
+                    addToTransmitQueue(BEGIN_MESSAGE);
+                    addToTransmitQueue(old_pos);
+                    addToTransmitQueue(new_pos);
+                    addToTransmitQueue(YOUR_TURN);
+                    myTurn=false;
                 }
-                else{
-                    setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
-                }
+                cursor->cursorMovingPiece=false;
+                cursor->pressed_piece=NULL;
             }
-            else{
-                setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
-                movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
-                board->board[cursor->initial_row*8+cursor->initial_col]=NULL;
-                board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
-            }
-            cursor->cursorMovingPiece=false;
-            cursor->pressed_piece=NULL;
         }
-        
     }
 }
 

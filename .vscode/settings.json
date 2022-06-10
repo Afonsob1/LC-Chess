@@ -3,6 +3,7 @@
     "files.associations": {
         "system_error": "c",
         "utils.h": "c",
-        "cursor.h": "c"
+        "cursor.h": "c",
+        "serialport.h": "c"
     }
 }
