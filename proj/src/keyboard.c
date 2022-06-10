@@ -146,7 +146,7 @@ void drawLetter(uint8_t byte){
   case 0x2d | BIT(7):
     create_image(x,&letterImg);
     break;
-  case 0x15 :
+  case 0x15 | BIT(7):
     create_image(y,&letterImg);
     break;
   case 0x2c | BIT(7) : 

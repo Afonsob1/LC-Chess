@@ -4,6 +4,7 @@
 #include "imgs/menu.h"
 #include "imgs/player_choice.h"
 #include "imgs/name_choice.h"
+#include "imgs/toggle_animation.h"
 #include "timer.h"
 #include "cursor.h"
 #include "keyboard.h"
@@ -16,6 +17,8 @@ extern char * video_mem;
 extern uint8_t code;
 uint8_t name[8];
 extern int player_number;
+bool animation = true;
+
 int main(int argc, char* argv[]){
 
 
@@ -38,12 +41,14 @@ int(proj_main_loop)(int argc, char *argv[]) {
     xpm_image_t menu;
     xpm_image_t player_choice_image;
     xpm_image_t name_choice;
+    xpm_image_t toggle_animation;
     create_image(name_choice_xpm, &name_choice);
     create_image(menu_xpm,&menu);
 
     draw_image(video_mem,menu,95,50);
     sleep(2);
     create_image(player_choice_xpm,&player_choice_image);
+    create_image(toggle_animation_xpm, &toggle_animation);
 
     
     Board board;
@@ -100,6 +105,12 @@ int(proj_main_loop)(int argc, char *argv[]) {
                   }
                 }
               }
+              if(click && !player_choice && code & BIT(7)){
+                if (code == 0xac){
+                  if (animation) animation = false;
+                  else animation = true;
+                  }
+              }
           }
           if(msg.m_notify.interrupts & irq_set_timer){
               timer_int_handler();
@@ -122,8 +133,9 @@ int(proj_main_loop)(int argc, char *argv[]) {
                   else{
                   vg_clear(video_mem_buffer);
                   drawBoard(&board);
-                  updateBoard(&board);
+                  updateBoard(&board,animation);
                   drawBoardPieces(&board);
+                  draw_image(video_mem_buffer,toggle_animation,538,185);
                   if (player_number == 1){
                     draw_name(video_mem_buffer,name,63,560,20);
                   } 

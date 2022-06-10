@@ -111,6 +111,12 @@ void updatePiece(Piece* piece){
     }
 
 }
+void updatePiece_no_animation(Piece* piece){
+        piece->absolute_x = piece->target_x;
+        piece->absolute_y = piece->target_y;
+        piece->is_moving = false;
+        return;
+}
 
 
 void movePiece(Piece* piece,int x, int y){

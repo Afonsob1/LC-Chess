@@ -43,5 +43,6 @@ void setPiecePosition(Piece* piece,int x, int y);
 
 
 void updatePiece(Piece* piece);
+void updatePiece_no_animation(Piece* piece);
 
 

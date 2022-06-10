@@ -33,6 +33,6 @@ int getBoardX(int absoluteX);
 
 int getBoardY(int absoluteY);
 
-void updateBoard(Board* board);
+void updateBoard(Board* board, bool animation);
 
 
