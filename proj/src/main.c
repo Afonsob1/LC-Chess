@@ -15,6 +15,7 @@ extern char * video_mem_buffer;
 extern char * video_mem;
 extern uint8_t code;
 uint8_t name[8];
+extern int player_number;
 int main(int argc, char* argv[]){
 
 
@@ -85,11 +86,19 @@ int(proj_main_loop)(int argc, char *argv[]) {
       if (is_ipc_notify(ipc_status)) {
         switch (_ENDPOINT_P(msg.m_source)) {
         case HARDWARE: /* hardware interrupt notification */
-        if ((msg.m_notify.interrupts & irq_set_kb) && player_choice) {
+        if ((msg.m_notify.interrupts & irq_set_kb)) {
               keyboard_int_handler();
-              if (l < 8){
-              name[l] = code;
-              l++;
+              if(click &&player_choice && code & BIT(7)){
+                if (l < 9){
+                  if(code == 0x8e && l>=1){ //backspace and deleting letters
+                    name[l-1] = 0;
+                    l--;
+                  }
+                  else if(l<8 && code!=0x8e){
+                    name[l] = code;
+                    l++;
+                  }
+                }
               }
           }
           if(msg.m_notify.interrupts & irq_set_timer){
@@ -97,10 +106,13 @@ int(proj_main_loop)(int argc, char *argv[]) {
 
               if(click){
                 player_choice = true;
+                if (l > 0 && name[l-1] == 0x9c){
+                  player_choice=false;
+                }
                 if(player_choice){
                   vg_clear(video_mem_buffer);
-                  draw_image(video_mem_buffer, name_choice,95,15);    
-                  draw_name(video_mem_buffer,name);
+                  draw_image(video_mem_buffer, name_choice,95,15);
+                  draw_name(video_mem_buffer,name,142,312,68);
                 }
                 else{
                   if (count == 0){
@@ -112,6 +124,12 @@ int(proj_main_loop)(int argc, char *argv[]) {
                   drawBoard(&board);
                   updateBoard(&board);
                   drawBoardPieces(&board);
+                  if (player_number == 1){
+                    draw_name(video_mem_buffer,name,63,560,20);
+                  } 
+                  else {
+                    draw_name(video_mem_buffer, name, 63,23,20);
+                  }
                   }
                 }
               } 

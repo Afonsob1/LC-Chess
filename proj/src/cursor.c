@@ -8,6 +8,7 @@ extern float horizontal_margin_percentage;
 extern unsigned rectangle_width;
 extern unsigned rectangle_height;
 extern unsigned left_rectangle_width;
+int player_number;
 //unsigned right_rectangle_width = get_h_res() - 8*rectangle_width - left_rectangle_width;
 
 void initCursor(Cursor* cursor){
@@ -113,8 +114,15 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
 }
 
 bool cursorClickPlayer(Cursor *cursor){
-    return (((cursor->x > 307 && cursor->x < 466 
-    && cursor->y > 62 && cursor->y <104) || (cursor->x > 307 && cursor->x < 466 
-    && cursor->y > 517 && cursor->y <558)) &&
-    cursor->pressed);
+    //player 2
+    if((cursor->x > 307 && cursor->x < 466  && cursor->y > 62 && cursor->y <104) && cursor->pressed){
+        player_number = 2;
+        return true;
+    }
+    //player 1
+    if ((cursor->x > 307 && cursor->x < 466 && cursor->y > 517 && cursor->y <558) &&  cursor->pressed){
+        player_number = 1;
+        return true;
+    }
+    return false;
 }
