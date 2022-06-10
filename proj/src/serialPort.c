@@ -196,7 +196,7 @@ int sp_write() {
   if (!queueIsEmpty(transmitQueue) && sp_check_write()) {
     data = removeFromQueue(transmitQueue);
     if (sys_outb(SP_COM1 + SP_UART_THR, data) != 0){printf("NOT Sent %x.\n", data);return 1;}
-    printf("Sent %x.\n", data);
+    //printf("Sent %x.\n", data);
     //if (queueIsEmpty(transmitQueue))
       //printf("Transmit Queue is now empty.\n");
     return 0;
@@ -233,11 +233,11 @@ uint8_t (sp_ih)() {
     return 0;
 
   if (interruptType & SP_IIR_RECEIVED_DATA) {
-	  printf("\n ** Received data\n");
+	  //printf("\n ** Received data\n");
     sp_read();
   }
   else if (interruptType & SP_IIR_TRANSMITTER_HOLDING) {
-	  printf(" \n**Finished sending data\n");
+	  //printf(" \n**Finished sending data\n");
     sp_write();
   }
   else if (interruptType & SP_IIR_RECEIVER_LINE) {
