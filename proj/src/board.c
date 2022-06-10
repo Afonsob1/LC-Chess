@@ -33,10 +33,10 @@ int getScreenY( int row){
 
 void initBoard(Board* board){
     board->mem_board = NULL;
-    map_vram(&board->mem_board, 2, INDEXED_MODE);
+    map_vram(&board->mem_board, 2, 0x115);
 
     board->mem_pieces = NULL;
-    map_vram(&board->mem_pieces, 3, INDEXED_MODE);
+    map_vram(&board->mem_pieces, 3, 0x115);
 
     /* init variables used for drawing*/
     rectangle_width = (get_v_res() - vertical_margin)/8;
@@ -158,10 +158,15 @@ void drawBoardPieces(Board* board){
 
 
 int getBoardX(int absoluteX){
-    return (absoluteX - left_rectangle_width)/rectangle_width;
+    if(rectangle_width!=0)
+        return (absoluteX - left_rectangle_width)/rectangle_width;
+    else return -1;
 }
 
 int getBoardY(int absoluteY){
-    return (absoluteY - vertical_margin/2)/rectangle_height;
+    if(rectangle_height!=0)
+        return (absoluteY - vertical_margin/2)/rectangle_height;
+    else
+        return -1;
 }
 

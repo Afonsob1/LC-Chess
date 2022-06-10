@@ -5,7 +5,7 @@
 
 char * video_mem;
 char * video_mem_buffer;
-
+extern xpm_image_t letterImg;
 vbe_mode_info_t vmi_p;
 int bytes_per_pixel;
 unsigned h_res;
@@ -84,7 +84,7 @@ int (map_vram)(char ** video_mem_pointer, int n, uint16_t mode){
 }
 
 int (create_image)(xpm_map_t xpm, xpm_image_t *image){
-  if(xpm_load(xpm, XPM_INDEXED, image) == NULL)
+  if(xpm_load(xpm, XPM_8_8_8, image) == NULL)
     return 1;
   return 0;
 }
@@ -109,7 +109,7 @@ int (draw_rectangle)(char* board_mem, uint16_t x, uint16_t y, uint16_t width, ui
 
 
 int(draw_image)(char* board_mem,xpm_image_t img, uint16_t x, uint16_t y){
-  unsigned color_transparent = COLOR_TRANSPARENT;
+  unsigned color_transparent = 0x000069;
   for(int y_img = 0; y_img < img.height && y + y_img < vmi_p.YResolution; y_img++){ 
     for(int x_img = 0; x_img < img.width && x + x_img < vmi_p.XResolution; x_img++){
       unsigned position = ((y+y_img)* vmi_p.XResolution  + x + x_img) * bytes_per_pixel; 
@@ -136,5 +136,3 @@ void (copy_buffers)(void* vm1, void* vm2){
 void vg_clear(char * buffer){
   memset(buffer, 0, vram_size);
 }
-
-

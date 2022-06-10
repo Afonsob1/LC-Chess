@@ -7,14 +7,13 @@
 #define TIMER0_IRQ 0
 #define TIMEOUT_ERR BIT(6)
 #define PARITY_ERR BIT(7)
-#define TWO_BYTES 0xE0
 #define LSB_MASK 0x00FF
 #define COLOR_BLACK 0x0000
 #define COLOR_DARK_BLUE 0x0001
 #define COLOR_GREEN 0x0002
 #define COLOR_CYAN 0x0003
-#define COLOR_1 0x0010
-#define COLOR_2 0x0037
+#define COLOR_1 0x3cb043
+#define COLOR_2 0xFFFDD0
 #define INDEXED_MODE 0x105
 
 
@@ -48,3 +47,5 @@ int (draw_hline)(char* board_mem,uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 
 int(draw_image)(char *board_mem, xpm_image_t img,uint16_t x,uint16_t y);
 
 void vg_clear(char * buffer);
+
+void (draw_name)(char * video_mem_buffer, uint8_t* make_code, int base_x, int base_y, int spacing);

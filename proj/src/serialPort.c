@@ -103,7 +103,7 @@ int sp_configure_init() {
   if (sp_set_parity(SP_LCR_ODDPARITY) != 0) {return 1;}
 
   //SET BITRATE
-  if (sp_set_bitrate(1000) != 0) {return 1;}
+  if (sp_set_bitrate(115200) != 0) {return 1;}
 
   //ENABLE INTERRUPTIONS
   if (sp_enable_ier(SP_IER_RECEIVED_INTERRUPT, true) != 0) {return 1;}

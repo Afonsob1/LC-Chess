@@ -1,0 +1,4 @@
+.gdbinit
+.vscode
+.clang-format
+*.o
