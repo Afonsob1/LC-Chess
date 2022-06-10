@@ -99,7 +99,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
                     name[l-1] = 0;
                     l--;
                   }
-                  else if(l<8 && code!=0x8e){
+                  else if((l<8 && code!=0x8e) || code == 0x9c){
                     name[l] = code;
                     l++;
                   }
@@ -128,11 +128,10 @@ int(proj_main_loop)(int argc, char *argv[]) {
                 else{
                   if (count == 0){
                     initBoard(&board);
+                    drawBoard(&board);
                     count++;
                   }
                   else{
-                  vg_clear(video_mem_buffer);
-                  drawBoard(&board);
                   updateBoard(&board,animation);
                   drawBoardPieces(&board);
                   draw_image(video_mem_buffer,toggle_animation,538,185);

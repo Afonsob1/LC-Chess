@@ -31,6 +31,7 @@ typedef struct Piece
     PieceType type;
     bool is_moving;
     bool pressed;
+    bool pawn_moved;
 } Piece;
 
 void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute_y);
@@ -42,7 +43,7 @@ void movePiece(Piece* piece,int x, int y);
 void setPiecePosition(Piece* piece,int x, int y);
 
 
-void updatePiece(Piece* piece);
-void updatePiece_no_animation(Piece* piece);
+bool updatePiece(Piece* piece);
+bool updatePiece_no_animation(Piece* piece);
 
 

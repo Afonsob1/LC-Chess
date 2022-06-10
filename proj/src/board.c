@@ -11,6 +11,7 @@ unsigned rectangle_width;
 unsigned rectangle_height;
 unsigned left_rectangle_width;
 unsigned right_rectangle_width;
+bool redraw_board =false;
 
 void createPiece(Board* board, PieceType type, int x, int y){
     Piece *p = malloc(sizeof(Piece));
@@ -124,8 +125,8 @@ void updateBoard(Board* board, bool animation){
         for(in_port_t col=0;col<8;col++){
             Piece * p = board->board[get_position(col,row)];
             if(p && p->is_moving){
-                if(animation) updatePiece(p);
-                else updatePiece_no_animation(p);
+                if(animation) redraw_board |= updatePiece(p);
+                else redraw_board |= updatePiece_no_animation(p);
             }
         }
     }
@@ -134,9 +135,12 @@ void updateBoard(Board* board, bool animation){
 
 
 void drawBoardPieces(Board* board){
-    
+     if (redraw_board){
+        drawBoard(board);
+        redraw_board = false;
+     }
     copy_buffers(video_mem_buffer, board->mem_board);
-    
+   
     /*percorrer pecas e desenhar se n se estiver a mover*/
     for(in_port_t row=0;row<8;row++){
         for(in_port_t col=0;col<8;col++){
@@ -174,3 +178,75 @@ int getBoardY(int absoluteY){
         return -1;
 }
 
+
+void possiblePosition(Board* board, Piece* piece, int x, int y){
+    switch (piece->type)
+    {
+    case b_pawn:
+        if(!piece->pawn_moved) draw_rectangle(board->mem_board,getScreenX(x),getScreenY(y + 2),59,59,0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x),getScreenY(y + 1),59,59,0xed820e);
+        break;
+    case w_pawn:
+        if(!piece->pawn_moved) draw_rectangle(board->mem_board,getScreenX(x),getScreenY(y - 2),59,59,0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x) ,getScreenY(y - 1),59,59, 0xed820e);
+        break;
+    case w_knight:
+    case b_knight:
+        draw_rectangle(board->mem_board,getScreenX(x + 2) ,getScreenY(y - 1),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x + 2) ,getScreenY(y + 1),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x - 2) ,getScreenY(y - 1),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x - 2) ,getScreenY(y + 1),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x + 1) ,getScreenY(y + 2),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x + 1) ,getScreenY(y - 2),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x - 1) ,getScreenY(y - 2),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x - 1) ,getScreenY(y + 2),59,59, 0xed820e);
+        break;
+    case w_king:
+    case b_king:
+        draw_rectangle(board->mem_board,getScreenX(x + 1) ,getScreenY(y + 1),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x + 1) ,getScreenY(y),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x + 1) ,getScreenY(y - 1),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x) ,getScreenY(y + 1),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x) ,getScreenY(y -1),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x - 1) ,getScreenY(y + 1),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x - 1) ,getScreenY(y),59,59, 0xed820e);
+        draw_rectangle(board->mem_board,getScreenX(x - 1) ,getScreenY(y - 1),59,59, 0xed820e);
+        break;
+    case b_rook:
+    case w_rook:
+        for (int i = 0; i < 8; i++){
+            draw_rectangle(board->mem_board, getScreenX(x), getScreenY(i),59,59, 0xed820e);
+        }
+        for (int i = 0; i < 8; i++){
+            draw_rectangle(board->mem_board, getScreenX(i), getScreenY(y),59,59, 0xed820e);
+        }
+       break;
+    case b_bishop:
+    case w_bishop:
+        for (int i = 0; i < 8; i++){
+            draw_rectangle(board->mem_board,getScreenX(x+i) ,getScreenY(y + i ),59,59, 0xed820e);
+            draw_rectangle(board->mem_board,getScreenX(x+i) ,getScreenY(y - i ),59,59, 0xed820e);
+            draw_rectangle(board->mem_board,getScreenX(x-i) ,getScreenY(y - i ),59,59, 0xed820e);
+            draw_rectangle(board->mem_board,getScreenX(x-i) ,getScreenY(y + i ),59,59, 0xed820e);
+        }
+        break;
+    case w_queen:
+    case b_queen:
+        for (int i = 0; i < 8; i++){
+            draw_rectangle(board->mem_board,getScreenX(x+i) ,getScreenY(y + i ),59,59, 0xed820e);
+            draw_rectangle(board->mem_board,getScreenX(x+i) ,getScreenY(y - i ),59,59, 0xed820e);
+            draw_rectangle(board->mem_board,getScreenX(x-i) ,getScreenY(y - i ),59,59, 0xed820e);
+            draw_rectangle(board->mem_board,getScreenX(x-i) ,getScreenY(y + i ),59,59, 0xed820e);
+        }
+        for (int i = 0; i < 8; i++){
+            draw_rectangle(board->mem_board, getScreenX(x), getScreenY(i),59,59, 0xed820e);
+        }
+        for (int i = 0; i < 8; i++){
+            draw_rectangle(board->mem_board, getScreenX(i), getScreenY(y),59,59, 0xed820e);
+        }
+        break;
+    default:
+        break;
+    }
+    copy_buffers(video_mem_buffer, board->mem_board);
+}

@@ -1,6 +1,7 @@
 #include "videocard.h"
 #include "keyboard.h"
 #include "colors.h"
+#include "board.h"
 #include <string.h>
 
 
@@ -102,8 +103,10 @@ int (draw_hline)(char* board_mem,uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 
 
 
 int (draw_rectangle)(char* board_mem, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color){
-  for(unsigned i=y;i<y+height && i<vmi_p.YResolution;i++){
-    draw_hline(board_mem, x,i,width,color);
+  if (getBoardX(x)>= 0 && getBoardX(x)<= 7 && getBoardY(y)>= 0 && getBoardY(y) <=7){
+    for(unsigned i=y;i<y+height && i<vmi_p.YResolution;i++){
+      draw_hline(board_mem, x,i,width,color);
+    }
   }
   return 0; 
 }
@@ -149,3 +152,5 @@ void draw_name(char * video_mem_buffer, uint8_t* make_code,  int base_x ,int bas
     draw_image(video_mem_buffer,letterImg, x, base_y);
   }
 }
+
+

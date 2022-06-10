@@ -49,3 +49,4 @@ int(draw_image)(char *board_mem, xpm_image_t img,uint16_t x,uint16_t y);
 void vg_clear(char * buffer);
 
 void (draw_name)(char * video_mem_buffer, uint8_t* make_code, int base_x, int base_y, int spacing);
+

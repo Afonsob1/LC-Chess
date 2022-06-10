@@ -21,6 +21,7 @@ void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute
     switch (piece_type){
         case b_pawn:
             create_image(pdl58, &(piece->image));
+            piece->pawn_moved = false;
             break;
 
         case b_knight:
@@ -45,6 +46,7 @@ void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute
             
         case w_pawn:
             create_image(pll58, &(piece->image));
+            piece->pawn_moved = false;
             break;
 
         case w_knight:
@@ -88,11 +90,13 @@ void drawPieces(char* mem, Piece* piece){
 
 
 
-void updatePiece(Piece* piece){
-    
+bool updatePiece(Piece* piece){
     if(piece->absolute_x == piece->target_x && piece->absolute_y == piece->target_y){
-        piece->is_moving = false;
-        return;
+        if (piece->is_moving){
+            piece->is_moving = false;
+            return true;
+        }
+        return false;
     }
 
     int addX = piece->target_x - piece->absolute_x; 
@@ -109,13 +113,17 @@ void updatePiece(Piece* piece){
     }else if (addY < 0){
         piece->absolute_y--;
     }
-
+    if((piece->type == b_pawn ||piece->type == w_pawn) && !piece->pawn_moved) piece->pawn_moved = true;
+    return false;
 }
-void updatePiece_no_animation(Piece* piece){
+bool updatePiece_no_animation(Piece* piece){
         piece->absolute_x = piece->target_x;
         piece->absolute_y = piece->target_y;
-        piece->is_moving = false;
-        return;
+        if (piece->is_moving){
+            piece->is_moving = false;
+            return true;
+        }
+        return false;;
 }
 
 

@@ -35,4 +35,4 @@ int getBoardY(int absoluteY);
 
 void updateBoard(Board* board, bool animation);
 
-
+void possiblePosition(Board* board, Piece* piece,int x, int y);

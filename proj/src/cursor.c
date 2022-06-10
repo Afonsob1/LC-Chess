@@ -1,6 +1,5 @@
 #include "cursor.h"
 #include "videocard.h"
-#include "board.h"
 #include "imgs/xboard/cursor.h"
 
 extern unsigned vertical_margin; //so that rectangle_width and rectangle_weight is an integer(80)
@@ -47,6 +46,7 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
     }
     
     else{
+        possiblePosition(board, cursor->pressed_piece, cursor->initial_col, cursor->initial_row);
         if(cursor->x < -x)
             cursor->x=0;
         else if(cursor->x+x+58>=(int)get_h_res())
