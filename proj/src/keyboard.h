@@ -7,6 +7,7 @@
 #define OUT_BUF 0x60
 #define TWO_BYTES 0xe0
 #define OUT_BUF_EMPTY -1
+#define KB_IRQ 0x01
 #define BREAK_CODE BIT(7)
 #define OBF_FULL BIT(0)
 #define PAR_ERR BIT(7)

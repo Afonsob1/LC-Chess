@@ -20,9 +20,14 @@ int sp_set_number_of_bits_per_char(uint8_t number_of_bits) {
 }
 
 void sp_clear(){
+
   while(sp_check_read()){
     sp_read();
     tickdelay(micros_to_ticks(30000));
+  }
+
+  while(!queueIsEmpty(receiveQueue)){
+    removeFromQueue(receiveQueue);
   }
 }
 
@@ -197,8 +202,8 @@ int sp_write() {
     data = removeFromQueue(transmitQueue);
     if (sys_outb(SP_COM1 + SP_UART_THR, data) != 0){printf("NOT Sent %x.\n", data);return 1;}
     printf("Sent %x.\n", data);
-    if (queueIsEmpty(transmitQueue))
-      printf("Transmit Queue is now empty.\n");
+    //if (queueIsEmpty(transmitQueue))
+     // printf("Transmit Queue is now empty.\n");
     return 0;
   }
   else
@@ -212,7 +217,7 @@ int sp_read() {
   if (sp_check_read()) {
 
     if (sys_inb(SP_COM1 + SP_UART_RBR, &rbr) != 0) {return 1;}
-
+    printf(" * Receive %x.\n", rbr);
     addToQueue(receiveQueue, (uint8_t)rbr);
   }else{
     
@@ -220,6 +225,14 @@ int sp_read() {
   }
   
   return 0;
+}
+
+void sp_emptyTransmitQueue(){
+  while(queueIsEmpty(transmitQueue)){
+    if(sp_check_write()){
+      sp_write();
+    }
+  }
 }
 
 uint8_t (sp_ih)() {
@@ -233,21 +246,21 @@ uint8_t (sp_ih)() {
     return 0;
 
   if (interruptType & SP_IIR_RECEIVED_DATA) {
-	  //printf("\n ** Received data\n");
+	  printf("\n ** Received data\n");
     sp_read();
   }
   else if (interruptType & SP_IIR_TRANSMITTER_HOLDING) {
-	  //printf(" \n**Finished sending data\n");
+	  printf(" \n**Finished sending data\n");
     sp_write();
   }
   else if (interruptType & SP_IIR_RECEIVER_LINE) {
     printf("\n\nERROR BIT IS 1 ON LSR\n\n");
   }
   else if (interruptType & SP_IIR_MODEM_STATUS) {
-    printf("MODEM STATUS.\n");
+    printf("\n** MODEM STATUS.\n");
   }
   else if (interruptType & SP_IIR_CHAR_TIMEOUT) {
-    printf("CHARACTER TIMEOUT.\n");
+    printf("\n** CHARACTER TIMEOUT.\n");
   }
 
   return data;
@@ -268,3 +281,5 @@ void addToTransmitQueue(uint8_t data) {
     addToQueue(transmitQueue, data);
   }
 }
+
+

@@ -119,13 +119,13 @@ bool updatePiece(Piece* piece){
     return false;
 }
 bool updatePiece_no_animation(Piece* piece){
-        piece->absolute_x = piece->target_x;
-        piece->absolute_y = piece->target_y;
-        if (piece->is_moving){
-            piece->is_moving = false;
-            return true;
-        }
-        return false;;
+    piece->absolute_x = piece->target_x;
+    piece->absolute_y = piece->target_y;
+    if (piece->is_moving){
+        piece->is_moving = false;
+        return true;
+    }
+    return false;;
 }
 
 

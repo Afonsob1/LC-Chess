@@ -7,6 +7,7 @@
 #define BEGIN_MESSAGE 0xF9
 
 bool myTurn=false;
+bool endGame=false;
 
 typedef struct{
   uint8_t old_row;
@@ -87,7 +88,10 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
             &&getBoardX(cursor->x)>=0 && getBoardX(cursor->x)<8 && myTurn){
                 
                 
-                if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){ //clicked piece
+                if((board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL)&&
+                    ((board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type>5 &&player_number==1) || //player 1 can only press white pieces
+                    (board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type<=5 &&player_number==2))){ //player 2 can only press black pieces
+
                     cursor->cursorMovingPiece = true;
                     cursor->pressed_piece= board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)];
                     cursor->initial_col = getBoardX(cursor->x);
@@ -109,8 +113,13 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
                     if(!sameTeam){
                         setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
                         movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
+
+                        if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type==b_king ||board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type==w_king ){
+                            endGame=true;
+                        }
                         board->board[cursor->initial_row*8+cursor->initial_col]=NULL;
                         board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
+                        
 
 
                         uint8_t old_pos = (cursor->initial_col<<3)|cursor->initial_row;
@@ -130,18 +139,14 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
                     setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
                     movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
                     board->board[cursor->initial_row*8+cursor->initial_col]=NULL;
+
+                    if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type==b_king ||board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type==w_king ){
+                        endGame=true;
+                    }
                     board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
+
                     uint8_t old_pos = (cursor->initial_col<<3)|cursor->initial_row;
                     uint8_t new_pos = ((getBoardX(cursor->x))<<3)|(getBoardY(cursor->y));
-
-                    chessMove move;
-
-                    move.old_col = cursor->initial_col;
-                    move.old_row = cursor->initial_row;
-                    move.new_col = getBoardX(cursor->x);
-                    move.new_row = getBoardY(cursor->y);
-
-                    printf("Sent the following position:\nOld position: %d:%d\nNew position: %d:%d\n",move.old_col,move.old_row,move.new_col,move.new_row);
                     addToTransmitQueue(BEGIN_MESSAGE);
                     addToTransmitQueue(old_pos);
                     addToTransmitQueue(new_pos);

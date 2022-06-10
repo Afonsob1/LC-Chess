@@ -112,3 +112,5 @@ void sp_clear();
  *  @param data Elemento a adicionar à Transmit Queue
  */
 void addToTransmitQueue(uint8_t data);
+
+void sp_emptyTransmitQueue();

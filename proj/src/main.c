@@ -18,10 +18,12 @@ extern int n_interrupts;
 extern char * video_mem_buffer;
 extern char * video_mem;
 extern uint8_t code;
+extern bool endGame;
 uint8_t name[8];
 extern int player_number;
 bool animation = true;
 bool connected = false;
+bool won;
 
 extern bool myTurn;
 
@@ -45,6 +47,8 @@ typedef enum {
   START,
   WAITING,
   PLAYING,
+  CHOOSING_PLAYER,
+  WAIT_CHOOSING_PLAYER,
   EXIT
 }GameState;
 
@@ -76,6 +80,7 @@ void name_choice_ih(GameState* gameState, InputType type){
       draw_name(video_mem_buffer,name,142,312,68);
       if(l>0 && name[l-1]==0x9c){
         printf("\nWAITING\n");
+        sp_clear(); //clear vm connected received while writing name if it received
         addToTransmitQueue(VM_CONNECTED); 
         *gameState=WAITING;
       }
@@ -132,11 +137,13 @@ void name_choice_ih(GameState* gameState, InputType type){
 
       
     }
-
-
     uint8_t received_byte;
 
 
+  if(endGame){
+    won=true;
+    *gameState=EXIT;
+  }
    switch(type){
       case Mouse:
         mouse_ih();
@@ -177,8 +184,18 @@ void name_choice_ih(GameState* gameState, InputType type){
           else{
             move.new_col=(received_byte&COL_MASK)>>3;
             move.new_row=received_byte&ROW_MASK;
-            printf("Received the following position:\nOld position: %d:%d\nNew position: %d:%d\n",move.old_col,move.old_row,move.new_col,move.new_row);
+
+
+
+            printf("Received position\n Old position %d:%d \n New position %d:%d\n",move.old_col,move.old_row,move.new_col,move.new_row);
+            if(board->board[move.new_row*8+move.new_col] && (board->board[move.new_row*8+move.new_col]->type==b_king || board->board[move.new_row*8+move.new_col]->type==w_king)){
+                won=false;
+                *gameState=EXIT;
+            }
+            printf("Piece type killed:%d\n",board->board[move.new_row*8+move.new_col]->type);
             movePiece(board->board[move.old_row*8+move.old_col],getScreenX(move.new_col),getScreenY(move.new_row));
+            board->board[move.new_row*8+move.new_col]=board->board[move.old_row*8+move.old_col];
+            board->board[move.old_row*8+move.old_col]=NULL;
           }
         }
         break;
@@ -202,96 +219,141 @@ void name_choice_ih(GameState* gameState, InputType type){
   }
  }
 
-void waiting_ih(GameState* gameState, InputType type){
-  static xpm_image_t waiting_background;
-  xpm_image_t player_choice_image;
+void waiting_choosing_ih(GameState* gameState, InputType type){
+  static xpm_image_t background;
   static bool createdBackground = false;
-  static bool draw_background = true;
-
-  static bool player_choosed = false;
-
-  static uint8_t received_byte;
-
-
+  uint8_t received_byte;
   if(!createdBackground){
-    create_image((xpm_map_t)waiting_xpm, &waiting_background);
-    create_image(player_choice_xpm,&player_choice_image);
+    create_image((xpm_map_t)waiting_xpm, &background);
     createdBackground = true;
-    printf("CREATED BACKGROUND\n");
+    printf("CREATED BACKGROUND");
   }
 
-  
+  switch(type){
+    case Timer: 
+        timer_int_handler();
+        
+        draw_image(video_mem_buffer, background, 0, 0);
+        sp_read();
+        received_byte=readFromQueue();
+        if(received_byte!=0){
+          myTurn=(received_byte==1);
+          player_number=received_byte;
+          *gameState=PLAYING;
+        }
+        break;
+
+    case Mouse:
+      mouse_ih();
+      break;
+    case SerialPort:
+      sp_ih();
+      break;
+    case Keyboard:
+      keyboard_int_handler();
+      break;
+
+   }
+  if(updateMouse){
+      updateCursor(NULL,&cursor,&pp);
+      updateMouse=false;
+  }
+}
+
+
+void waiting_ih(GameState* gameState, InputType type){
+  static xpm_image_t background;
+  static bool createdBackground = false;
+  static bool draw_background = true;
+  uint8_t received_byte;
+  if(!createdBackground){
+    create_image((xpm_map_t)waiting_xpm, &background);
+    createdBackground = true;
+    printf("CREATED BACKGROUND");
+  }
+
+  if(draw_background){
+
+    printf("DRAW BACKGROUND");
+    draw_image(video_mem_buffer, background, 0, 0);
+    draw_background = false;
+  }
   switch(type){
     case Timer: 
         timer_int_handler();
 
         received_byte=readFromQueue();
 
-        if(connected && received_byte!=0x00){
-          player_number = received_byte;
-          *gameState=PLAYING;
-          printf("You are player %d\n",player_number);
-        }
-
         if(received_byte==VM_CONNECTED){
           printf("VM CONNECTED 1 \n");
-          printf("MY TURN!\n");
-          myTurn=true;
-          *gameState=WAITING;
+          *gameState=CHOOSING_PLAYER;
           draw_background = false;
           addToTransmitQueue(RECEIVE_VM_CONNECTED);
-
-          connected = true;
-
-          if(player_choosed){
-            
-          printf("Start playing");
-            addToTransmitQueue((1-received_byte)+2);
-            
-            *gameState=PLAYING;
-          }
         }
         else if(received_byte==RECEIVE_VM_CONNECTED){
-
-          
           printf("VM CONNECTED 2 \n");
-          *gameState=WAITING;
+          *gameState=WAIT_CHOOSING_PLAYER;
           draw_background = false;
-
-          connected = true;
-        }
-        
-
-        
-        if((!connected || myTurn) && !player_choosed){
-          // escolhe jogador
-          
-          vg_clear(video_mem_buffer);
-          draw_image(video_mem_buffer,player_choice_image,95,15);
-        }
-        else{
-          // espera
-          draw_image(video_mem_buffer, waiting_background, 0 , 0);
-    
+          printf("MY TURN!\n");
         }
 
-
-        
         break;
 
     case Mouse:
       mouse_ih();
-      if(!connected || myTurn){
-        if(cursorClickPlayer(&cursor)){
-          player_choosed = true;
-          
-          if(connected){
-            printf("You are player %d\n",player_number);
-            addToTransmitQueue((1-player_number)+2);
-          }
-        }
-        
+      break;
+    case SerialPort:
+      sp_ih();
+      break;
+    default:
+      break;
+
+   }
+  if(updateMouse){
+      updateCursor(NULL,&cursor,&pp);
+      updateMouse=false;
+  }
+}
+
+
+void choosing_ih(GameState* gameState, InputType type){
+  static xpm_image_t player_choice_image;
+  static bool created_player_choice_image = false;
+  static bool player_choosed = false;
+  static char* background_video_mem = NULL;
+
+
+  if(!created_player_choice_image){
+    create_image(player_choice_xpm, &player_choice_image);
+    created_player_choice_image=true;
+  }
+
+  if(background_video_mem==NULL){
+    map_vram(&background_video_mem, 2, 0x115);
+    
+    vg_clear(background_video_mem);
+    draw_image(background_video_mem, player_choice_image,95,15);
+  }
+
+  
+  switch(type){
+    case Timer: 
+        timer_int_handler();
+        copy_buffers(video_mem_buffer, background_video_mem);
+        break;
+
+    case Mouse:
+      mouse_ih();
+      
+      if(cursorClickPlayer(&cursor)){
+        player_choosed = true;
+        *gameState = PLAYING;
+        addToTransmitQueue((1-player_number)+2);
+        myTurn=(player_number==1);
+
+        free(background_video_mem);
       }
+        
       break;
     case SerialPort:
       sp_ih();
@@ -305,10 +367,9 @@ void waiting_ih(GameState* gameState, InputType type){
    if(updateMouse){
       updateCursor(NULL,&cursor,&pp);
       updateMouse=false;
-  }
+    }
   
 }
-
 
 void inputHandler(GameState* gameState, InputType type){
 
@@ -322,6 +383,14 @@ void inputHandler(GameState* gameState, InputType type){
       break;
     case PLAYING:
       playing_ih(gameState, type);
+      break;
+      case CHOOSING_PLAYER:
+      choosing_ih(gameState, type);
+      break;
+      
+      case WAIT_CHOOSING_PLAYER:
+      waiting_choosing_ih(gameState, type);
+
       break;
     default:
       break;
@@ -366,7 +435,6 @@ int(proj_main_loop)(int argc, char *argv[]) {
 
 
   /* subscribe mouse */
-  Cursor cursor;
   initCursor(&cursor);
   uint8_t bit_mouse;
   int irq_set_mouse;
@@ -392,7 +460,6 @@ int(proj_main_loop)(int argc, char *argv[]) {
   create_image(menu_xpm,&menu);
   sp_clear();
   draw_image(video_mem,menu,95,50);
-  sleep(2);
 
 
 
@@ -431,12 +498,20 @@ int(proj_main_loop)(int argc, char *argv[]) {
       }
     }
   }
-
+  if(won)
+    sp_emptyTransmitQueue(); //make sure that you send the winning move
+  
   timer_unsubscribe_int();
   keyboard_unsubscribe_int();
-  if (sp_unsubscribe_int() != 0) {return 1;}
+  sp_unsubscribe_int();
   mouse_disable_data_reporting();
-	return return_text_mode();
+	return_text_mode();
+  if(won){
+    printf("You won!\n");
+  }
+  else{
+    printf("You lost!\n");
+  }
 	
-
+  return 0;
 }
