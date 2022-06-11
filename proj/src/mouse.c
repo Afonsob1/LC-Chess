@@ -24,6 +24,7 @@ void (mouse_ih)(){
     uint8_t byte;
     util_sys_inb(OUT_BUF,&byte);
     if(!(status&(TIMEOUT_ERR|PAR_ERR))){
+
         if(i==0 && !(byte&FIRST_BYTE)){
           i--; //should be first byte of packet but isnt, try again until BIT(3) is set
         }

@@ -1,21 +1,50 @@
 #pragma once
 
+#include <lcom/lcf.h>
+#include <stdint.h>
 #include <stdint.h>
 
-typedef enum{
-    PRESSED,
-    REALEASED
 
-} GameEvent;
+typedef enum{
+    MOUSE,
+    NEW_FRAME,
+    KEYBOARD,
+    NO_EVENT
+
+} EventType;
+
+typedef union 
+{
+  struct packet mouse_packet;
+  uint8_t scanCode;
+}EventData;
+
+typedef struct {
+  EventType type;
+  EventData data;
+} Event;
+
 
 typedef struct {
 
   uint32_t size; 
   uint32_t capacity; 
-  void**  array_elements;
-  GameEvent*  array_type; 
+  Event*  array; 
 
 } EventQueue;
 
+EventQueue* createEventQueue(unsigned capacity);
 
-void initEventQueue(EventQueue * queue);
+bool eventQueueIsFull(EventQueue * queue);
+
+
+bool eventQueueIsEmpty(EventQueue * queue);
+
+void freeEventQueue(EventQueue * queue);
+
+
+void pushEvent(EventQueue * queue, Event event);
+
+
+Event popEvent(EventQueue * queue);
+

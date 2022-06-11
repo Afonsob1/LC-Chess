@@ -4,6 +4,7 @@
         "system_error": "c",
         "utils.h": "c",
         "cursor.h": "c",
-        "serialport.h": "c"
+        "serialport.h": "c",
+        "event_queue.h": "c"
     }
 }

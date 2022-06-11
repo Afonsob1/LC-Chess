@@ -158,26 +158,15 @@ int (sp_subscribe_int)(uint8_t *bit_no) {
 int (sp_unsubscribe_int)() {
   if (sp_configure_end() != 0) {return 1;}
 
-  printf("erro aqui?");
-
   if (sys_irqrmpolicy(&hook_id_sp) != 0) {return 3;}
 
-
-  printf("ou aqui?");
-
   sp_clear();
-
-  
-
   free(receiveQueue);
-  printf("RECEIVE QUEUE CLEARED. \n");
-
 
   while (!queueIsEmpty(transmitQueue)) {
     sp_write();
   }
   free(transmitQueue);
-  printf("TRANSMIT QUEUE CLEARED. \n");
 
   return 0;
 }

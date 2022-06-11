@@ -27,6 +27,19 @@
 #define KBC_OK 0x55
 #define KBC_ERROR 0xFC
 
+
+/*
+ * true if in the last interrupt keyboard read a valid scancode
+*/
+bool readKey;
+
+
+/*
+ * scancode read from the last interrupt
+*/
+uint8_t scancode;
+
+
 /**
  * @brief unsubscribes the interruption line for the keyboard interruptions
  * @param bit_no number of bit that will be put as one
@@ -52,9 +65,5 @@ int (read_command_byte)(uint8_t* command_byte);
  * 
  */
 int (write_command_byte)(uint8_t command_byte);
-/**
- * @brief creates the xpm image depending on the breakcode passed in the argument. the image will be drawn by a function on videocard.c
- * 
- * @param byte breakcode of the character we want to draw.
- */
-void drawLetter(uint8_t byte);
+
+

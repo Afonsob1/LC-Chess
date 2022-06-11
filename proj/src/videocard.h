@@ -112,12 +112,4 @@ int(draw_image)(char *board_mem, xpm_image_t img,uint16_t x,uint16_t y);
  * @param buffer video memory buffer we want to set to 0
  */
 void vg_clear(char * buffer);
-/**
- * @brief draws the name of the player into the buffer on the specified position with the specified spacing
- * @param video_mem_buffer the buffer we will draw the letters into
- * @param make_code pointer to the beginning of the array of break codes
- * @param base_x base horizontal position
- * @param base_y base vertical position
- * @param spacing spacing between each letter 
- */
-void (draw_name)(char * video_mem_buffer, uint8_t* make_code, int base_x, int base_y, int spacing);
+
