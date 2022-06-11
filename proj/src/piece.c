@@ -82,6 +82,7 @@ void initPiece(Piece* piece, PieceType piece_type,  int absolute_x, int absolute
     piece->absolute_y = absolute_y;
     piece->type = piece_type;
     piece->is_moving = false;
+    piece->priority_draw = false;
 }
 
 
@@ -96,6 +97,8 @@ bool updatePiece(Piece* piece){
     if(piece->absolute_x == piece->target_x && piece->absolute_y == piece->target_y){
         if (piece->is_moving){
             piece->is_moving = false;
+            piece->priority_draw = false;
+            piece->change = true;
             return true;
         }
         return false;
@@ -123,15 +126,19 @@ bool updatePiece_no_animation(Piece* piece){
     piece->absolute_y = piece->target_y;
     if (piece->is_moving){
         piece->is_moving = false;
+        piece->priority_draw = false;
+        piece->change = true;
         return true;
     }
-    return false;;
+    return false;
 }
 
 
 
 void movePiece(Piece* piece,int x, int y){
+    piece->change = true;
     piece->is_moving = true;
+    piece->priority_draw = true;
     
     piece->target_x = x;
     piece->target_y = y;

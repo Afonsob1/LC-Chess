@@ -283,6 +283,7 @@ void name_choice_ih(GameState* gameState, Event* event){
                   (piece->type<=5 && player == BLACK))){ //player 2 can only press black pieces
 
                     dragging_piece = board->board[getBoardY(cursor.y)*8+getBoardX(cursor.x)];
+                    changePiecePriority(board, dragging_piece, true);
                     
                     inicialPieceCol = getBoardX(cursor.x);
                     inicialPieceRow = getBoardY(cursor.y);
@@ -296,6 +297,10 @@ void name_choice_ih(GameState* gameState, Event* event){
         }
         
         if(cursor.released && dragging_piece){
+          drawBoard(board); // redraw board to clear possible positions
+
+          
+          changePiecePriority(board, dragging_piece, false);
           printf(" ****** RELEASED\n");
           int y = getBoardY(cursor.y);
           int x = getBoardX(cursor.x);

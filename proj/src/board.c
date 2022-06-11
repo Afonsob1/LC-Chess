@@ -11,7 +11,8 @@ unsigned rectangle_width;
 unsigned rectangle_height;
 unsigned left_rectangle_width;
 unsigned right_rectangle_width;
-bool redraw_board =false;
+
+bool redrawPieces; 
 
 void createPiece(Board* board, PieceType type, int x, int y){
     Piece *p = malloc(sizeof(Piece));
@@ -39,6 +40,7 @@ void initBoard(Board* board){
 
     board->mem_pieces = NULL;
     map_vram(&board->mem_pieces, 3, 0x115);
+    vg_clear(board->mem_pieces);
 
     /* init variables used for drawing*/
     rectangle_width = (get_v_res() - vertical_margin)/8;
@@ -89,11 +91,12 @@ void initBoard(Board* board){
     createPiece(board, w_pawn , 6, 6);
     createPiece(board, w_pawn , 7, 6);
     
-
+    redrawPieces = true;
 }
 
 
 void drawBoard(Board* board){
+    redrawPieces = true;
 
     /*draw_rectangle(board->mem_board, 0,0,left_rectangle_width,get_v_res(),COLOR_BLACK);
     draw_rectangle(board->mem_board, left_rectangle_width + 8*rectangle_width, 0, 
@@ -125,8 +128,13 @@ void updateBoard(Board* board, bool animation){
         for(in_port_t col=0;col<8;col++){
             Piece * p = board->board[get_position(col,row)];
             if(p && p->is_moving){
-                if(animation) redraw_board |= updatePiece(p);
-                else redraw_board |= updatePiece_no_animation(p);
+                if(animation) updatePiece(p);
+                else updatePiece_no_animation(p);
+            }
+
+            if(p && p->change){
+                redrawPieces = true;
+                p->change = false;
             }
         }
     }
@@ -135,27 +143,29 @@ void updateBoard(Board* board, bool animation){
 
 
 void drawBoardPieces(Board* board){
-     if (redraw_board){
-        drawBoard(board);
-        redraw_board = false;
-     }
-    copy_buffers(video_mem_buffer, board->mem_board);
-   
-    /*percorrer pecas e desenhar se n se estiver a mover*/
-    for(in_port_t row=0;row<8;row++){
-        for(in_port_t col=0;col<8;col++){
-            Piece * p = board->board[get_position(col,row)];
-            if(p && !p->is_moving)
-                drawPieces(video_mem_buffer, p);
+    
+    if(redrawPieces){
+        copy_buffers(board->mem_pieces, board->mem_board);
+        /*percorrer pecas e desenhar as que nao temm prioridade*/
+        for(in_port_t row=0;row<8;row++){
+            for(in_port_t col=0;col<8;col++){
+                Piece * p = board->board[get_position(col,row)];
+                if(p && !p->priority_draw)
+                    drawPieces(board->mem_pieces, p);
+            }
         }
+        redrawPieces = false;
     }
 
     
-    /*percorrer pecas e desenhar se se estiver a mover*/
+    copy_buffers(video_mem_buffer, board->mem_pieces);
+
+    
+    /*percorrer pecas e desenhar as que tem prioridade*/
     for(in_port_t row=0;row<8;row++){
         for(in_port_t col=0;col<8;col++){
             Piece * p = board->board[get_position(col,row)];
-            if(p && p->is_moving)
+            if(p && p->priority_draw)
                 drawPieces(video_mem_buffer, p);
         }
     }
@@ -163,6 +173,12 @@ void drawBoardPieces(Board* board){
 
 }
 
+void changePiecePriority(Board* board, Piece* p, bool priority){
+    
+    p->priority_draw = priority;
+    p->change = true;
+
+}
 
 int getBoardX(int absoluteX){
     if(rectangle_width!=0)

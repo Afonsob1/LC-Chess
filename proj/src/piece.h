@@ -29,7 +29,8 @@ typedef struct Piece
     xpm_image_t image;
     PieceType type;
     bool is_moving;
-    bool pressed;
+    bool priority_draw;     // if true only draw after all other pieces
+    bool change;            // if any atribute change
     bool pawn_moved;
 } Piece;
 /**
