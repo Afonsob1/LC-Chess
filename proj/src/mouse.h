@@ -25,18 +25,40 @@
 #define BYTE_TO_MOUSE 0xD4
 #define DIS_DATA_REPORTING 0xF5
 
+/**
+ * @brief subscribes the interruption line for the keyboard interruptions
+ * @param bit_no number of bit we want to set as one.
+ */
 int (mouse_subscribe_int)(uint8_t* bit_no);
-
+/**
+ * @brief unsubscribes the interruption line for the mouse interruptions
+ * 
+ */
 int (mouse_unsubscribe_int)();
-
+/**
+ * @brief this functions deals with the mouse interruptions. reads every packet and updates the pp struct
+ * 
+ */
 void (mouse_ih)();
 
-int (mouse_disable_data_reporting)();
-
+/**
+ * @brief writes the kbc command on the kbc 0x64 register
+ * @param command command we want to write to the kbc
+ */
 int (write_kbc_command)(uint8_t command);
-
+/**
+ * @brief reads kbc from the 0x60 buffer and then passes it by reference.
+ * @param ret variable passes by reference where the return byte will be placed
+ */
 int (read_kbc_return)(uint8_t* ret);
-
+/**
+ * @brief writes the argument arg on the kbc register 0x60
+ * @param arg argument to be written
+ */
 int (write_kbc_arg)(uint8_t arg);
-
+/**
+ * @brief disables the data reporting on the mouse by sending specific commands to the kbc
+ * 
+ */
 int (mouse_disable_data_reporting)();
+

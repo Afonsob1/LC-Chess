@@ -2,6 +2,7 @@
 #include "utils.h"
 
 int hook_id_sp;
+
 static Queue * transmitQueue;
 static Queue * receiveQueue;
 

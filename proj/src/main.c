@@ -67,28 +67,51 @@ void name_choice_ih(GameState* gameState, InputType type){
   static xpm_image_t name_choice;
   static int l=0;
   static bool initialize_name_choice = false;
+  static bool redraw = true;
+  static char* background_video_mem = NULL;
+
   if(!initialize_name_choice){
     create_image(name_choice_xpm,&name_choice);
     initialize_name_choice=true;
+  }
+
+  if(background_video_mem == NULL){
+    map_vram(&background_video_mem, 2, 0x115);
+
+
+    vg_clear(background_video_mem);
+    draw_image(background_video_mem, name_choice,95,15);
+    draw_name(background_video_mem,name,142,312,68);
+    redraw = false;
   }
   
   switch(type){
     case Timer:
       timer_int_handler();
-      vg_clear(video_mem_buffer);
-      draw_image(video_mem_buffer, name_choice,95,15);
-      draw_name(video_mem_buffer,name,142,312,68);
+      
+      if(redraw){
+        vg_clear(background_video_mem);
+        draw_image(background_video_mem, name_choice,95,15);
+        draw_name(background_video_mem,name,142,312,68);
+        redraw = false;
+      }
+
+      copy_buffers(video_mem_buffer, background_video_mem);
+      
       if(l>0 && name[l-1]==0x9c){
         printf("\nWAITING\n");
         sp_clear(); //clear vm connected received while writing name if it received
         addToTransmitQueue(VM_CONNECTED); 
         *gameState=WAITING;
+        free(background_video_mem);
+        background_video_mem=NULL;
       }
       break;
    
     case Keyboard:
       keyboard_int_handler();
       if(code & BIT(7)){  
+        redraw = true;
         if (l < 9){
           if(code == 0x8e && l>=1){ //backspace and deleting letters
             name[l-1] = 0;
@@ -135,6 +158,8 @@ void name_choice_ih(GameState* gameState, InputType type){
       drawBoard(board);
       printf("Copy form buffer\n");
 
+      draw_image(board->mem_board,toggle_animation,538,185);
+
       
     }
     uint8_t received_byte;
@@ -155,7 +180,6 @@ void name_choice_ih(GameState* gameState, InputType type){
         updateBoard(board, animation);
         drawBoardPieces(board);
         
-        draw_image(video_mem_buffer,toggle_animation,538,185);
 
         if (player_number == 1){
           draw_name(video_mem_buffer,name,63,560,20);
@@ -223,23 +247,31 @@ void waiting_choosing_ih(GameState* gameState, InputType type){
   static xpm_image_t background;
   static bool createdBackground = false;
   uint8_t received_byte;
+  static char* background_video_mem = NULL;
+
   if(!createdBackground){
     create_image((xpm_map_t)waiting_xpm, &background);
     createdBackground = true;
     printf("CREATED BACKGROUND");
+    map_vram(&background_video_mem, 2, 0x115);
+    vg_clear(background_video_mem);
+    draw_image(background_video_mem, background, 0, 0);
   }
 
   switch(type){
     case Timer: 
         timer_int_handler();
         
-        draw_image(video_mem_buffer, background, 0, 0);
+        
+        copy_buffers(video_mem_buffer, background_video_mem);
         sp_read();
         received_byte=readFromQueue();
         if(received_byte!=0){
           myTurn=(received_byte==1);
           player_number=received_byte;
           *gameState=PLAYING;
+          free(background_video_mem);
+          background_video_mem=NULL;
         }
         break;
 
@@ -306,6 +338,7 @@ void waiting_ih(GameState* gameState, InputType type){
       sp_ih();
       break;
     default:
+    
       break;
 
    }
@@ -352,6 +385,7 @@ void choosing_ih(GameState* gameState, InputType type){
         myTurn=(player_number==1);
 
         free(background_video_mem);
+        background_video_mem=NULL;
       }
         
       break;

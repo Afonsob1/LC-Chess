@@ -1,6 +1,6 @@
 
  ** Received data
- * ReceiCREATED–“—“–—œ
+ * ReCREATED BAž¡˜±Ÿ˜œ
 WAITING
 Sent fc.
 CREATED BACKGROUNDDRAW BACKGROUND
@@ -8,22 +8,6 @@ CREATED BACKGROUNDDRAW BACKGROUND
  * Receive fb.
 VM CONNECTED 2 
 MY TURN!
-CREATED BACKGROUND * Receive 1.
-Create animatInitInit boDrawDraw boCopyCopy form buf 
-**Sent f9.
-Sent 1f.
-Sent
- ** Received data
- * Receive f9.
-
- ** Received data
- * ReceiveYou won!
- Received data
- * Receive 20.
-Received position
- Old position 3:7 
- New position 4:0
-Piece type killed:5
-RECEIVE QUEUE CLEARED. 
-TRANSMIT QUEUE CLEARED. 
-You lost!
+CREATED BACKGROUNS * ReceCreate Create aniInit boInitDraw boDraw board
+Copy form buffer
+ished sending data

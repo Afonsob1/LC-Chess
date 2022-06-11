@@ -35,6 +35,7 @@ int getScreenY( int row){
 void initBoard(Board* board){
     board->mem_board = NULL;
     map_vram(&board->mem_board, 2, 0x115);
+    vg_clear(board->mem_board);
 
     board->mem_pieces = NULL;
     map_vram(&board->mem_pieces, 3, 0x115);
@@ -94,7 +95,6 @@ void initBoard(Board* board){
 
 void drawBoard(Board* board){
 
-    vg_clear(board->mem_board);
     /*draw_rectangle(board->mem_board, 0,0,left_rectangle_width,get_v_res(),COLOR_BLACK);
     draw_rectangle(board->mem_board, left_rectangle_width + 8*rectangle_width, 0, 
                         right_rectangle_width,get_v_res(),COLOR_BLACK);

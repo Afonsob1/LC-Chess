@@ -27,14 +27,34 @@
 #define KBC_OK 0x55
 #define KBC_ERROR 0xFC
 
+/**
+ * @brief unsubscribes the interruption line for the keyboard interruptions
+ * @param bit_no number of bit that will be put as one
+ */
 int (keyboard_subscribe_int)(uint8_t * bit_no);
-
+/**
+ * @brief unsubscribes the interruption line for the keyboard interruptions
+ * 
+ */
 int (keyboard_unsubscribe_int)();
-
+/**
+ * @brief interruption handler for every keyboard interruption it reads every make code and break code and handles them
+ * 
+ */
 int (keyboard_int_handler)();
-
+/**
+ * @brief reads commandbyte from the register 0x60 on the kbc
+ * 
+ */
 int (read_command_byte)(uint8_t* command_byte);
-
+/**
+ * @brief writes a command byte to the register 0x64 on the kbc
+ * 
+ */
 int (write_command_byte)(uint8_t command_byte);
-
+/**
+ * @brief creates the xpm image depending on the breakcode passed in the argument. the image will be drawn by a function on videocard.c
+ * 
+ * @param byte breakcode of the character we want to draw.
+ */
 void drawLetter(uint8_t byte);
