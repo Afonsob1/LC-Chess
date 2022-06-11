@@ -72,6 +72,8 @@ int sp_set_bitrate(int bitrate) {
 }
 
 int sp_enable_ier(uint8_t macro, bool enable) {
+  printf("\nENABLE %d\n", macro);
+
   uint32_t ier;
 
 	if (sys_inb(SP_COM1 + SP_UART_IER, &ier) != 0) {return 1;}
@@ -156,13 +158,20 @@ int (sp_subscribe_int)(uint8_t *bit_no) {
 int (sp_unsubscribe_int)() {
   if (sp_configure_end() != 0) {return 1;}
 
+  printf("erro aqui?");
+
   if (sys_irqrmpolicy(&hook_id_sp) != 0) {return 3;}
 
-  while (!queueIsEmpty(receiveQueue)) {
-    sp_read();
-  }
+
+  printf("ou aqui?");
+
+  sp_clear();
+
+  
+
   free(receiveQueue);
   printf("RECEIVE QUEUE CLEARED. \n");
+
 
   while (!queueIsEmpty(transmitQueue)) {
     sp_write();
@@ -188,7 +197,7 @@ bool sp_check_write() {
 bool sp_check_read() {
   uint32_t lsr;
 
-  if (sys_inb(SP_COM1 + SP_UART_LSR, &lsr) != 0) {return 1;}
+  if (sys_inb(SP_COM1 + SP_UART_LSR, &lsr) != 0) {return false;}
 
   if (lsr & SP_LSR_RECEIVER)
     return true;

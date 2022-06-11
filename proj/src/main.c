@@ -214,13 +214,18 @@ void name_choice_ih(GameState* gameState, InputType type){
             printf("Received position\n Old position %d:%d \n New position %d:%d\n",move.old_col,move.old_row,move.new_col,move.new_row);
             if(board->board[move.new_row*8+move.new_col] && (board->board[move.new_row*8+move.new_col]->type==b_king || board->board[move.new_row*8+move.new_col]->type==w_king)){
                 won=false;
+
+                printf("END GAME\n");
                 *gameState=EXIT;
             }
-            printf("Moving\n",move.old_col,move.old_row,move.new_col,move.new_row);
+            printf("Moving %d %d %d %d\n",move.old_col,move.old_row,move.new_col,move.new_row);
             
             movePiece(board->board[move.old_row*8+move.old_col],getScreenX(move.new_col),getScreenY(move.new_row));
             board->board[move.new_row*8+move.new_col]=board->board[move.old_row*8+move.old_col];
             board->board[move.old_row*8+move.old_col]=NULL;
+
+            
+            printf("END Moving\n");
           }
         }
         break;
@@ -241,6 +246,9 @@ void name_choice_ih(GameState* gameState, InputType type){
   if(updateMouse){
       updateCursor(board,&cursor,&pp);
       updateMouse=false;
+  }
+  if(*gameState == EXIT){
+      printf("GO EXIT\n");
   }
  }
 
@@ -536,13 +544,20 @@ int(proj_main_loop)(int argc, char *argv[]) {
       }
     }
   }
+
+  printf("AT THE END");
   if(won)
     sp_emptyTransmitQueue(); //make sure that you send the winning move
   
   timer_unsubscribe_int();
   keyboard_unsubscribe_int();
+  
+  printf("un sub sp");
   sp_unsubscribe_int();
+  
+  printf("un  mmouse sidable");
   mouse_disable_data_reporting();
+  mouse_unsubscribe_int();
 	return_text_mode();
   if(won){
     printf("You won!\n");
