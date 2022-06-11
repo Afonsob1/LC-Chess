@@ -61,7 +61,6 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
     }
     
     else{
-        possiblePosition(board, cursor->pressed_piece, cursor->initial_col, cursor->initial_row);
         if(cursor->x < -x)
             cursor->x=0;
         else if(cursor->x+x+58>=(int)get_h_res())
@@ -76,6 +75,7 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
         else
             cursor->y-=y;
         setPiecePosition(cursor->pressed_piece,cursor->x-29,cursor->y-29); //-29 so cursor is in the center of the image
+        
     }
     
     
@@ -84,8 +84,8 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
         cursor->pressed=true;
         if(board){
 
-            if(getBoardY(cursor->y)>=0 && getBoardY(cursor->y)<8
-            &&getBoardX(cursor->x)>=0 && getBoardX(cursor->x)<8 && myTurn){
+            if( myTurn && getBoardY(cursor->y)>=0 && getBoardY(cursor->y)<8
+            &&getBoardX(cursor->x)>=0 && getBoardX(cursor->x)<8){
                 
                 
                 if((board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL)&&
@@ -96,6 +96,10 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
                     cursor->pressed_piece= board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)];
                     cursor->initial_col = getBoardX(cursor->x);
                     cursor->initial_row = getBoardY(cursor->y);
+
+                    
+                    printf(" ****** Possibel solutions\n");
+                    possiblePosition(board, cursor->pressed_piece, cursor->initial_col, cursor->initial_row);
                 }
                 
             }
@@ -105,14 +109,22 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
         
     }
     else if(!pp->lb && cursor->pressed){
+        printf(" ****** RELEASED\n");
         cursor->pressed=false;
         if(board){
             if(cursor->cursorMovingPiece){
+                printf(" ****** RELEASED PIECE\n");
                 if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]!=NULL){
+                    
+                    printf(" ****** COMER\n");
                     bool sameTeam = (cursor->pressed_piece->type>5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type>5) || (cursor->pressed_piece->type<=5 && board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type<=5);
                     if(!sameTeam){
+                        
+                        printf(" ****** not same team\n");
                         setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
                         movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
+                        
+                        printf(" ****** end same team\n");
 
                         if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type==b_king ||board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type==w_king ){
                             endGame=true;
@@ -121,6 +133,7 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
                         board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
                         
 
+                        printf(" ****** WTF\n");
 
                         uint8_t old_pos = (cursor->initial_col<<3)|cursor->initial_row;
                         uint8_t new_pos = (getBoardX(cursor->x)<<3)|getBoardY(cursor->y);
@@ -130,21 +143,32 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
                         addToTransmitQueue(YOUR_TURN);
                         myTurn=false;
                         
+                        
                     }
                     else{
+                        
+                        printf(" ****** setPiecePosition\n");
                         setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
                     }
+
+                    
+                    printf(" ****** end valid\n");
                 }
                 else{
+                    printf(" ****** position livre\n");
                     setPiecePosition(cursor->pressed_piece,getScreenX(cursor->initial_col),getScreenY(cursor->initial_row));
                     movePiece(cursor->pressed_piece,getScreenX(getBoardX(cursor->x)),getScreenY(getBoardY(cursor->y)));
                     board->board[cursor->initial_row*8+cursor->initial_col]=NULL;
 
-                    if(board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type==b_king ||board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]->type==w_king ){
-                        endGame=true;
-                    }
-                    board->board[getBoardY(cursor->y)*8+getBoardX(cursor->x)]=cursor->pressed_piece;
+                    printf(" ****** mokito\n");
 
+                    int boardY = getBoardY(cursor->y);
+                    int boardX = getBoardY(cursor->x);
+                   
+                    
+                    board->board[boardY*8+boardX]=cursor->pressed_piece;
+
+                    printf(" ****** fu\n");
                     uint8_t old_pos = (cursor->initial_col<<3)|cursor->initial_row;
                     uint8_t new_pos = ((getBoardX(cursor->x))<<3)|(getBoardY(cursor->y));
                     addToTransmitQueue(BEGIN_MESSAGE);
@@ -152,9 +176,12 @@ void updateCursor(Board* board,Cursor* cursor, struct packet* pp){
                     addToTransmitQueue(new_pos);
                     addToTransmitQueue(YOUR_TURN);
                     myTurn=false;
+                    
+                    printf(" ****** end turn\n");
                 }
                 cursor->cursorMovingPiece=false;
                 cursor->pressed_piece=NULL;
+                    printf(" ****** END\n");
             }
         }
     }

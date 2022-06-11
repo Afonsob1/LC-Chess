@@ -1,13 +1,112 @@
 
  ** Received data
- * ReCREATED BAž¡˜±Ÿ˜œ
+ * CREATED BACKžžŸ œ
 WAITING
 Sent fc.
-CREATED BACKGROUNDDRAW BACKGROUND
- ** Received data
- * Receive fb.
+CREATED BACKGROUND * Receive fb.
+ 
+**Finished sending data
 VM CONNECTED 2 
 MY TURN!
-CREATED BACKGROUNS * ReceCreate Create aniInit boInitDraw boDraw board
+CREATED BASent 2.
+Create animation
+Init board
+Draw board
 Copy form buffer
-ished sending data
+ 
+**Finished senCopy form  ******
+ ** Received data
+ * Receive f9.
+ * Receive 1e.
+ * Receive 1c.
+
+ ** Received data
+ * Receive f8.
+Received position
+ Old position 3:6 
+ New position 3:4
+Moving
+MY TURN!
+ ****** Possibel solutions
+ ****** RELEASED
+ ****** RELEASED PIECE
+ ****** position livre
+  * Receive f9.
+
+ ** Received data
+ * Receive 10.
+ * Receive 3d.
+ * Receive f8.
+Received position
+ Old position 2:0 
+ New position 7:5
+Moving
+M * Receive f9.
+ * Receive 37.
+
+ ** Received data
+ * Receive 2d.
+ * Receive f8.
+Received position
+ Old position 6:7 
+ New position 5:5
+Moving
+MY TURN!
+ ****** Possibel solutions
+ ****** RELEASED
+ ****** RELEASED PIECE
+ ****** COMER
+ ****** no * Receive f9.
+
+ ** Received data
+ * Receive 18.
+ * Receive 1c.
+ * Receive f8.
+Received position
+ Old position 3:0 
+ New position 3:4
+Moving
+MY TURN!
+ ****** Possib * Receive f9.
+ * Receive 2d.
+
+ ** Received data
+ * Receive 1c.
+ * Receive f8.
+Received position
+ Old position 5:5 
+ New position 3:4
+Moving
+MY TURN!
+ ****** Possibel solutions
+ ****** RELEASED
+ ****** RELEASED PIECE
+ ****** position livre
+  * Receive f9.
+ * Receive 8.
+ * Receive 12.
+ * Receive f8.
+Received position
+ Old position 1:0 
+ New position 2:2
+Moving
+MY TURN!
+ ****** Pos * Receive f9.
+ * Receive 1f.
+
+ ** Received data
+ * Receive 20.
+ * Receive f8.
+Received position
+ Old position 3:7 
+ New position 4:0
+Moving
+id
+ ****** END
+Sent f9.
+Sent 1f.
+Sent 20.
+RECEIVE QUEUE CLEARED. 
+Sent f8.
+TRANSMIT QUEUE CLEARED. 
+You won!

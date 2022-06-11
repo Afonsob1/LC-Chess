@@ -216,7 +216,8 @@ void name_choice_ih(GameState* gameState, InputType type){
                 won=false;
                 *gameState=EXIT;
             }
-            printf("Piece type killed:%d\n",board->board[move.new_row*8+move.new_col]->type);
+            printf("Moving\n",move.old_col,move.old_row,move.new_col,move.new_row);
+            
             movePiece(board->board[move.old_row*8+move.old_col],getScreenX(move.new_col),getScreenY(move.new_row));
             board->board[move.new_row*8+move.new_col]=board->board[move.old_row*8+move.old_col];
             board->board[move.old_row*8+move.old_col]=NULL;
@@ -296,7 +297,7 @@ void waiting_choosing_ih(GameState* gameState, InputType type){
 void waiting_ih(GameState* gameState, InputType type){
   static xpm_image_t background;
   static bool createdBackground = false;
-  static bool draw_background = true;
+  static char* background_video_mem = NULL;
   uint8_t received_byte;
   if(!createdBackground){
     create_image((xpm_map_t)waiting_xpm, &background);
@@ -304,28 +305,30 @@ void waiting_ih(GameState* gameState, InputType type){
     printf("CREATED BACKGROUND");
   }
 
-  if(draw_background){
-
-    printf("DRAW BACKGROUND");
-    draw_image(video_mem_buffer, background, 0, 0);
-    draw_background = false;
+  if(background_video_mem==NULL){
+    
+    map_vram(&background_video_mem, 2, 0x115);
+    vg_clear(background_video_mem);
+    draw_image(background_video_mem, background, 0, 0);
+    
   }
+  
   switch(type){
     case Timer: 
         timer_int_handler();
+
+        copy_buffers(video_mem_buffer, background_video_mem);
 
         received_byte=readFromQueue();
 
         if(received_byte==VM_CONNECTED){
           printf("VM CONNECTED 1 \n");
           *gameState=CHOOSING_PLAYER;
-          draw_background = false;
           addToTransmitQueue(RECEIVE_VM_CONNECTED);
         }
         else if(received_byte==RECEIVE_VM_CONNECTED){
           printf("VM CONNECTED 2 \n");
           *gameState=WAIT_CHOOSING_PLAYER;
-          draw_background = false;
           printf("MY TURN!\n");
         }
 
@@ -431,6 +434,7 @@ void inputHandler(GameState* gameState, InputType type){
   }
 
   sp_write();
+  sp_read();
 }
 
 
@@ -494,7 +498,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
   create_image(menu_xpm,&menu);
   sp_clear();
   draw_image(video_mem,menu,95,50);
-
+  sleep(2);
 
 
   GameState state = START;
