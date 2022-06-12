@@ -10,102 +10,45 @@ ENABLE 4
 ** EVENT keyboard 
 ** EVENT keyboard 
 ** EVENT keyboard 
-INICIO - 98 
-entrou - 98 
-˜** EVENT keyboard 
-** EVENT keyboard 
-INICIO - 9e 
-entrou - 9e 
-ž** EVENT keyboard 
-INICIO - 9f 
-entrou - 9f 
-Ÿ** EVENT keyboard 
-** EVENT keyboard 
-INICIO - b9 
-entrou - b9 
-¹** EVENT keyboa
+INICIO - b0 
+entrou - b0 
+°** EVENT keyboard 
+INICIO - 9c 
+
+WAITING 
+Sent fc.
+CREATED BACKGROUND
  ** Received data
- * Receive fc.
-VM CONNECTED 1 
-Sent fb.
- 
-**Finished sending data
- ****** PRESSED
-Sent 1.
+ * Receive fb.
+VM CONNECTED 2 
+MY TURN!
+CREATED BACKGROUND * Receive 1.
 Create animation
 Init board
 Draw board
 Copy form buffer
- 
-**Finished sending data
- ****** RELEASED
- ****** PRESSED
- ****** Possibel solutions
- ****** RELEASED
- ****** RELEASED
- ****** setPiecePosition
- ****** PRESSED
- ****** Possibel solutions
- ****** RELEASED
- ****** RELEASED
- ****** not same team
- ****** end same team
- ****** WTF
-Sent f9.
- 
-**Finished sending data
-Sent 27.
-Sent 11.
- 
-**Finished sending data
-Sent f8.
- 
-**Finished sending data
-
- ** Received data
  * Receive f9.
- * Receive 20.
-
- ** Received data
- * Receive 2a.
+ * Receive 1e.
+ * Receive 1c.
 Received position
- Old position 4:0 
- New position 5:2
-Moving 4 0 5 2
+ Old position 3:6 
+ New position 3:4
+Moving 3 6 3 4
 END Moving
  * Receive f8.
 MY TURN!
+osition
  ****** PRESSED
- ****** Possibel solutions
+ ****** Possible solutions
  ****** RELEASED
  ****** RELEASED
+67
  ****** setPiecePosition
  ****** PRESSED
- ****** Possibel solutions
+ ****** Possible solutions
  ****** RELEASED
  ****** RELEASED
- ****** setPiecePosition
- ****** PRESSED
- ****** Possibel solutions
- ****** RELEASED
- ****** RELEASED
- ****** setPiecePosition
- ****** PRESSED
- ****** Possibel solutions
- ****** RELEASED
- ****** RELEASED
- ****** setPiecePosition
-** EVENT keyboard 
-** EVENT keyboard 
- ****** PRESSED
- ****** Possibel solutions
- ****** RELEASED
- ****** RELEASED
- ****** setPiecePosition
- ****** PRESSED
- ****** Possibel solutions
- ****** RELEASED
- ****** RELEASED
+14
  ****** position livre
  ****** mokito
  ****** fu
@@ -114,43 +57,7 @@ Sent f9.
  
 **Finished sending data
 Sent 1e.
-Sent 23.
- 
-**Finished sending data
-Sent f8.
- 
-**Finished sending data
-
- ** Received data
- * Receive f9.
-
- ** Received data
- * Receive 2a.
- * Receive 2d.
-
- ** Received data
- * Receive f8.
-Received position
- Old position 5:2 
- New position 5:5
-Moving 5 2 5 5
-END Moving
-MY TURN!
-** EVENT keyboard 
-** EVENT keyboard 
- ****** PRESSED
- ****** Possibel solutions
- ****** RELEASED
- ****** RELEASED
- ****** position livre
- ****** mokito
- ****** fu
- ****** end turn
-Sent f9.
- 
-**Finished sending data
-Sent 37.
-Sent 3d.
+Sent 1c.
  
 **Finished sending data
 Sent f8.
@@ -158,55 +65,3 @@ Sent f8.
 **Finished sending data
  ****** PRESSED
  ****** RELEASED
-
- ** Received data
- * Receive f9.
-
- ** Received data
- * Receive 18.
- * Receive 11.
-
- ** Received data
- * Receive f8.
-Received position
- Old position 3:0 
- New position 2:1
-END GAME
-Moving 3 0 2 1
-END Moving
-
-ENABLE 1
-
-ENABLE 2
-
-ENABLE 4
-You lost!
-on
- Old position 6:7 
- New position 7:5
-Moving 6 7 7 5
-END Moving
-
- ** Received data
- * Receive f8.
-MY TURN!
- ****** PRESSED
- ****** RELEASED
- ****** PRESSED
- ****** Possibel solutions
- ****** RELEASED
- ****** RELEASED
- ****** not same team
- ****** end same team
- ****** WTF
-Sent f9.
-
-ENABLE 1
-
-ENABLE 2
-
-ENABLE 4
-Sent 18.
-Sent 11.
-Sent f8.
-You won!

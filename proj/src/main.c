@@ -282,14 +282,14 @@ void name_choice_ih(GameState* gameState, Event* event){
                   (piece->type>5 && player == WHITE) || //player 1 can only press white pieces
                   (piece->type<=5 && player == BLACK))){ //player 2 can only press black pieces
 
-                    dragging_piece = board->board[y*8+x];
+                    dragging_piece = board->board[getBoardY(cursor.y)*8+getBoardX(cursor.x)];
                     changePiecePriority(board, dragging_piece, true);
                     
-                    inicialPieceCol = x;
-                    inicialPieceRow = y;
+                    inicialPieceCol = getBoardX(cursor.x);
+                    inicialPieceRow = getBoardY(cursor.y);
 
                     
-                    printf(" ****** Possibel solutions\n");
+                    printf(" ****** Possible solutions\n");
                     possiblePosition(board, dragging_piece, inicialPieceCol, inicialPieceRow);
                 }
             }
@@ -297,14 +297,19 @@ void name_choice_ih(GameState* gameState, Event* event){
         }
         
         if(cursor.released && dragging_piece){
-          drawBoard(board); // redraw board to clear possible positions
+          
 
           
           changePiecePriority(board, dragging_piece, false);
+
+
           printf(" ****** RELEASED\n");
           int y = getBoardY(cursor.y);
           int x = getBoardX(cursor.x);
-          if( y>=0 && y<8 && x >=0 && x<8){
+
+          uint32_t orange = 0xed820e;
+          printf("%d\n",board->mem_board[3*(getScreenY(y)*get_h_res()+getScreenX(x))]);
+          if( y>=0 && y<8 && x >=0 && x<8 && memcmp(&board->mem_board[3*(getScreenY(y)*get_h_res()+getScreenX(x))],&orange,3)==0){
             Piece* newPosition = board->board[y*8+x];
             if(newPosition != NULL){
               
@@ -312,9 +317,11 @@ void name_choice_ih(GameState* gameState, Event* event){
 
               if(!sameTeam){
                 // comer
+                printf(" ****** not same team\n");
                 setPiecePosition(dragging_piece,getScreenX(inicialPieceCol),getScreenY(inicialPieceRow));
                 movePiece(dragging_piece, getScreenX(x), getScreenY(y));
                 
+                printf(" ****** end same team\n");
 
                 if(newPosition->type==b_king || newPosition->type==w_king ){
                     endGame=true;
@@ -323,6 +330,8 @@ void name_choice_ih(GameState* gameState, Event* event){
                 board->board[inicialPieceRow*8+inicialPieceCol]=NULL;
                 board->board[y*8+x] = dragging_piece;
                 
+
+                printf(" ****** WTF\n");
 
                 uint8_t old_pos = (inicialPieceCol <<3) | inicialPieceRow;
                 uint8_t new_pos = (x << 3) | y;
@@ -334,16 +343,22 @@ void name_choice_ih(GameState* gameState, Event* event){
 
               }else{
                 //nao pode ir para esta posicao voltar a meter a peca na posicao inicial
+                printf(" ****** setPiecePosition\n");
                 setPiecePosition(dragging_piece,getScreenX(inicialPieceCol),getScreenY(inicialPieceRow));
               }
               
             }else{
+              printf(" ****** position livre\n");
               setPiecePosition(dragging_piece,getScreenX(inicialPieceCol),getScreenY(inicialPieceRow));
               movePiece(dragging_piece, getScreenX(x), getScreenY(y));
-              board->board[inicialPieceRow*8+inicialPieceCol]=NULL;              
+              board->board[inicialPieceRow*8+inicialPieceCol]=NULL;
+
+              printf(" ****** mokito\n");
+              
               
               board->board[y*8+x] = dragging_piece;
 
+              printf(" ****** fu\n");
               uint8_t old_pos = (inicialPieceCol <<3) | inicialPieceRow;
               uint8_t new_pos = (x << 3) | y;
               addToTransmitQueue(BEGIN_MESSAGE);
@@ -351,13 +366,16 @@ void name_choice_ih(GameState* gameState, Event* event){
               addToTransmitQueue(new_pos);
               addToTransmitQueue(YOUR_TURN);
               myTurn=false;
+              printf(" ****** end turn\n");
             }
           
           }else{
+            printf(" ****** setPiecePosition\n");
             setPiecePosition(dragging_piece,getScreenX(inicialPieceCol),getScreenY(inicialPieceRow));
                     
           }
           dragging_piece=NULL;
+          drawBoard(board); // redraw board to clear possible positions
         }
 
         

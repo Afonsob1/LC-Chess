@@ -200,11 +200,38 @@ void possiblePosition(Board* board, Piece* piece, int x, int y){
     {
     case b_pawn:
         if(!piece->pawn_moved) draw_rectangle(board->mem_board,getScreenX(x),getScreenY(y + 2),59,59,0xed820e);
-        draw_rectangle(board->mem_board,getScreenX(x),getScreenY(y + 1),59,59,0xed820e);
+            draw_rectangle(board->mem_board,getScreenX(x),getScreenY(y + 1),59,59,0xed820e);
+        
+        if(y<7 && x<7){
+            if(board->board[(y+1)*8+x+1] && board->board[(y+1)*8+x+1]->type>=5){
+                draw_rectangle(board->mem_board,getScreenX(x+1),getScreenY(y + 1),59,59,0xed820e);
+            }
+        }
+        
+        if(x>0 && y<7){
+            if(board->board[(y+1)*8+x-1] && board->board[(y+1)*8+x-1]->type>=5){
+                draw_rectangle(board->mem_board,getScreenX(x-1),getScreenY(y + 1),59,59,0xed820e);
+            }
+        }
         break;
     case w_pawn:
-        if(!piece->pawn_moved) draw_rectangle(board->mem_board,getScreenX(x),getScreenY(y - 2),59,59,0xed820e);
+        if(!piece->pawn_moved)
+            draw_rectangle(board->mem_board,getScreenX(x),getScreenY(y - 2),59,59,0xed820e);
         draw_rectangle(board->mem_board,getScreenX(x) ,getScreenY(y - 1),59,59, 0xed820e);
+
+
+        if(y>0 && x<7){
+            if(board->board[(y-1)*8+x+1] && board->board[(y-1)*8+x+1]->type<5){
+                draw_rectangle(board->mem_board,getScreenX(x+1),getScreenY(y - 1),59,59,0xed820e);
+            }
+        }
+        
+        if(y>0 && x>0){
+            if(board->board[(y-1)*8+x-1] && board->board[(y-1)*8+x-1]->type<5){
+                draw_rectangle(board->mem_board,getScreenX(x-1),getScreenY(y - 1),59,59,0xed820e);
+            }
+        }
+
         break;
     case w_knight:
     case b_knight:
