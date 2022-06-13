@@ -1,0 +1,5 @@
+<map id="draw_name" name="draw_name">
+<area shape="rect" id="node1" title="draws the name of the player into the buffer on the specified position with the specified spacing" alt="" coords="5,31,93,57"/>
+<area shape="rect" id="node2" href="$videocard_8c.html#aefcdcf7096caac964badbd95fad717bc" title="draws a xpm image (img) into the buffer in the argument in the position x and y" alt="" coords="141,5,232,32"/>
+<area shape="rect" id="node3" href="$letter_8c.html#adb21e8b17e646cf0ae6495c479c50eb2" title="return the xpm image depending on the breakcode passed in the argument." alt="" coords="150,56,223,83"/>
+</map>

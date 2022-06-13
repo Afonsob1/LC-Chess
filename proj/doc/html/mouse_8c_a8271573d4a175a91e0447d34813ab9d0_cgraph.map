@@ -1,0 +1,4 @@
+<map id="read_kbc_return" name="read_kbc_return">
+<area shape="rect" id="node1" title="reads kbc from the 0x60 buffer and then passes it by reference." alt="" coords="5,5,120,32"/>
+<area shape="rect" id="node2" href="$utils_8c.html#a79a031a8611f5b2d6afa4158e92b0fb4" title="read a byte from port" alt="" coords="168,5,259,32"/>
+</map>

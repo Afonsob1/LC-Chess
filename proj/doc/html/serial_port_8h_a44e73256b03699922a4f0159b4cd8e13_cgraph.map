@@ -1,0 +1,5 @@
+<map id="sp_set_bitrate" name="sp_set_bitrate">
+<area shape="rect" id="node1" title="set the bitrate" alt="" coords="5,31,109,57"/>
+<area shape="rect" id="node2" href="$utils_8c.html#a81621440b3d65680979425e39aa8c789" title="calcule the least significant byte" alt="" coords="159,5,255,32"/>
+<area shape="rect" id="node3" href="$utils_8c.html#a6a880076cd2ec468834438b6e0c58836" title="calcule the most significant byte" alt="" coords="157,56,257,83"/>
+</map>

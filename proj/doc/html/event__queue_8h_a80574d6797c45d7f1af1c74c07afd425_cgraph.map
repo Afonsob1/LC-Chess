@@ -1,0 +1,4 @@
+<map id="pushEvent" name="pushEvent">
+<area shape="rect" id="node1" title="add a new event to the queue" alt="" coords="5,5,88,32"/>
+<area shape="rect" id="node2" href="$event__queue_8c.html#a29fa18558afb86673b4f7e9c5aec188e" title="Checks if the event queue is full." alt="" coords="136,5,257,32"/>
+</map>

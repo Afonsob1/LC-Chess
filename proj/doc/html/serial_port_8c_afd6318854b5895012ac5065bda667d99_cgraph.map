@@ -1,0 +1,4 @@
+<map id="addToTransmitQueue" name="addToTransmitQueue">
+<area shape="rect" id="node1" title="Adds an element to the transmit queue." alt="" coords="5,5,151,32"/>
+<area shape="rect" id="node2" href="$queue_8c.html#af4e82852438367eaf3ecdf47887ecb9d" title="checks if the queue is full" alt="" coords="199,5,287,32"/>
+</map>

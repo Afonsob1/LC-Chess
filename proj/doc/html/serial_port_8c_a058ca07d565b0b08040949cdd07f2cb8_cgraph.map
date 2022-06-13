@@ -1,0 +1,4 @@
+<map id="sp_write" name="sp_write">
+<area shape="rect" id="node1" title="send a byte to serial port from transmit queue" alt="" coords="5,5,76,32"/>
+<area shape="rect" id="node2" href="$queue_8c.html#ab1f6625e397bfad97b22aa372f0b15e5" title="checks if the queue is empty" alt="" coords="124,5,229,32"/>
+</map>

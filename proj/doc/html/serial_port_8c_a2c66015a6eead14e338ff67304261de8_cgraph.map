@@ -1,0 +1,4 @@
+<map id="sp_configure_end" name="sp_configure_end">
+<area shape="rect" id="node1" title="disable all interrupts of Serial Port" alt="" coords="5,5,128,32"/>
+<area shape="rect" id="node2" href="$serial_port_8c.html#a20fd098e008d9fb260049721cf1f99d1" title="enable or disable the bit in the port given" alt="" coords="176,5,257,32"/>
+</map>

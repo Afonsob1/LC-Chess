@@ -1,0 +1,10 @@
+<map id="initBoard" name="initBoard">
+<area shape="rect" id="node1" title="Board Constructor: create video mem buffers that board use and all pieces of the game." alt="" coords="5,107,79,133"/>
+<area shape="rect" id="node2" href="$board_8c.html#a883bad1172755d1f5746803537756f96" title=" " alt="" coords="127,5,217,32"/>
+<area shape="rect" id="node5" href="$videocard_8c.html#a8f160900992f5072114e760d6ce5766d" title="get the horizontal resolution" alt="" coords="133,56,211,83"/>
+<area shape="rect" id="node6" href="$videocard_8c.html#aa5f86c75ab4d62e735b9517567a2fb43" title="get the vertical resolution" alt="" coords="133,107,211,133"/>
+<area shape="rect" id="node7" href="$videocard_8c.html#a4c21470c18345e2d1cf57a04cbd66d75" title="maps the vram into a physical adress" alt="" coords="131,157,213,184"/>
+<area shape="rect" id="node8" href="$videocard_8c.html#a774e91638b15969a1211627535356ff1" title="sets all the memory starting at the buffer pointer to contain the value 0 (black screen)" alt="" coords="137,208,207,235"/>
+<area shape="rect" id="node3" href="$piece_8c.html#a4fa718281bd05de6954101159a15f920" title="initialize a piece with a specific type in a given x and y" alt="" coords="265,5,337,32"/>
+<area shape="rect" id="node4" href="$videocard_8c.html#a8f88db7b889d23f4f33e08153cc6c523" title="creates a xpm_imate_t with a xpm_map_t" alt="" coords="385,5,485,32"/>
+</map>

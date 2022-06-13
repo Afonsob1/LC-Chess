@@ -1,0 +1,6 @@
+<map id="sp_read" name="sp_read">
+<area shape="rect" id="node1" title="Reads a byte from the serial port and adds it to the receive queue." alt="" coords="5,31,73,57"/>
+<area shape="rect" id="node2" href="$queue_8c.html#ae63457f729849c954e9c9842571c982b" title="adds item to the queu" alt="" coords="129,5,224,32"/>
+<area shape="rect" id="node4" href="$serial_port_8c.html#aef3e72bfe1aa38562baeb5673f4cb552" title="check if there is something to read in the serial port" alt="" coords="121,56,232,83"/>
+<area shape="rect" id="node3" href="$queue_8c.html#af4e82852438367eaf3ecdf47887ecb9d" title="checks if the queue is full" alt="" coords="280,5,368,32"/>
+</map>

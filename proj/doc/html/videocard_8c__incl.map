@@ -1,0 +1,13 @@
+<map id="videocard.c" name="videocard.c">
+<area shape="rect" id="node1" title=" " alt="" coords="221,5,308,32"/>
+<area shape="rect" id="node2" href="$videocard_8h.html" title=" " alt="" coords="5,229,92,256"/>
+<area shape="rect" id="node4" href="$keyboard_8h.html" title=" " alt="" coords="221,80,308,107"/>
+<area shape="rect" id="node8" href="$colors_8h.html" title=" " alt="" coords="332,80,400,107"/>
+<area shape="rect" id="node9" href="$board_8h.html" title=" " alt="" coords="123,80,188,107"/>
+<area shape="rect" id="node11" title=" " alt="" coords="424,80,489,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="119,304,197,331"/>
+<area shape="rect" id="node5" title=" " alt="" coords="273,155,363,181"/>
+<area shape="rect" id="node6" title=" " alt="" coords="387,155,462,181"/>
+<area shape="rect" id="node7" title=" " alt="" coords="487,155,552,181"/>
+<area shape="rect" id="node10" href="$piece_8h.html" title=" " alt="" coords="83,155,147,181"/>
+</map>

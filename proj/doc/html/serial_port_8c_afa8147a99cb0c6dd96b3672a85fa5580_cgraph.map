@@ -1,0 +1,11 @@
+<map id="sp_unsubscribe_int" name="sp_unsubscribe_int">
+<area shape="rect" id="node1" title="unsubscribe interrupt serial port" alt="" coords="5,107,140,133"/>
+<area shape="rect" id="node2" href="$serial_port_8c.html#a2a7d8fe7c45cedd2711575b9edb1ea95" title="While there are messages to be received through the serial port, receive clear them...." alt="" coords="214,69,285,96"/>
+<area shape="rect" id="node8" href="$serial_port_8c.html#a2c66015a6eead14e338ff67304261de8" title="disable all interrupts of Serial Port" alt="" coords="188,132,311,159"/>
+<area shape="rect" id="node3" href="$queue_8c.html#ab1f6625e397bfad97b22aa372f0b15e5" title="checks if the queue is empty" alt="" coords="359,5,464,32"/>
+<area shape="rect" id="node4" href="$serial_port_8c.html#aef3e72bfe1aa38562baeb5673f4cb552" title="check if there is something to read in the serial port" alt="" coords="512,56,623,83"/>
+<area shape="rect" id="node5" href="$serial_port_8c.html#aef8686f46f6c0580e48f6544191ab748" title="Reads a byte from the serial port and adds it to the receive queue." alt="" coords="377,107,445,133"/>
+<area shape="rect" id="node6" href="$queue_8c.html#ae63457f729849c954e9c9842571c982b" title="adds item to the queu" alt="" coords="520,107,615,133"/>
+<area shape="rect" id="node7" href="$queue_8c.html#af4e82852438367eaf3ecdf47887ecb9d" title="checks if the queue is full" alt="" coords="671,107,759,133"/>
+<area shape="rect" id="node9" href="$serial_port_8c.html#a20fd098e008d9fb260049721cf1f99d1" title="enable or disable the bit in the port given" alt="" coords="371,157,452,184"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="write_kbc_command" name="write_kbc_command">
+<area shape="rect" id="node1" title="writes the kbc command on the kbc 0x64 register" alt="" coords="5,5,147,32"/>
+<area shape="rect" id="node2" href="$utils_8c.html#a79a031a8611f5b2d6afa4158e92b0fb4" title="read a byte from port" alt="" coords="195,5,285,32"/>
+</map>

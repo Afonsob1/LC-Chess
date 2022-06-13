@@ -1,0 +1,4 @@
+<map id="drawPieces" name="drawPieces">
+<area shape="rect" id="node1" title="draws the piece in the piece&#39;s position" alt="" coords="5,5,95,32"/>
+<area shape="rect" id="node2" href="$videocard_8c.html#aefcdcf7096caac964badbd95fad717bc" title="draws a xpm image (img) into the buffer in the argument in the position x and y" alt="" coords="143,5,233,32"/>
+</map>

@@ -58,7 +58,7 @@ void drawPieces(char* mem, Piece* piece);
  * @param x where we want to move the piecex 
  * @param y where we want to move the piecey 
  */
-void movePiece(Piece* piece,int x, int y)
+void movePiece(Piece* piece,int x, int y);
 
 /**
  * @brief Set the Piece's position to the position given
@@ -66,7 +66,7 @@ void movePiece(Piece* piece,int x, int y)
  * @param piece piece that we want to set the position
  * @param x x of the position that we want to set
  * @param y y of the position that we want to set
- */;
+ */
 
 void setPiecePosition(Piece* piee,int x, int y);
 /**

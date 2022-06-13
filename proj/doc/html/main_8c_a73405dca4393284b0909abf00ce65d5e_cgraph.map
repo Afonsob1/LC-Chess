@@ -1,0 +1,17 @@
+<map id="name_choice_ih" name="name_choice_ih">
+<area shape="rect" id="node1" title=" " alt="" coords="5,165,121,191"/>
+<area shape="rect" id="node2" href="$serial_port_8c.html#afd6318854b5895012ac5065bda667d99" title="Adds an element to the transmit queue." alt="" coords="471,114,616,141"/>
+<area shape="rect" id="node4" href="$videocard_8c.html#aff7399df0aa957d7e05aadbc00913342" title="copies one buffer to other buffer" alt="" coords="172,38,267,65"/>
+<area shape="rect" id="node5" href="$videocard_8c.html#a8f88db7b889d23f4f33e08153cc6c523" title="creates a xpm_imate_t with a xpm_map_t" alt="" coords="169,89,269,115"/>
+<area shape="rect" id="node6" href="$videocard_8c.html#aefcdcf7096caac964badbd95fad717bc" title="draws a xpm image (img) into the buffer in the argument in the position x and y" alt="" coords="325,139,415,166"/>
+<area shape="rect" id="node7" href="$letter_8c.html#af3d998e7196df5f1dc8beffbce337d0b" title="draws the name of the player into the buffer on the specified position with the specified spacing" alt="" coords="175,190,263,217"/>
+<area shape="rect" id="node9" href="$videocard_8c.html#a4c21470c18345e2d1cf57a04cbd66d75" title="maps the vram into a physical adress" alt="" coords="179,241,260,267"/>
+<area shape="rect" id="node10" href="$serial_port_8c.html#a2a7d8fe7c45cedd2711575b9edb1ea95" title="While there are messages to be received through the serial port, receive clear them...." alt="" coords="184,291,255,318"/>
+<area shape="rect" id="node15" href="$videocard_8c.html#a774e91638b15969a1211627535356ff1" title="sets all the memory starting at the buffer pointer to contain the value 0 (black screen)" alt="" coords="185,342,254,369"/>
+<area shape="rect" id="node3" href="$queue_8c.html#af4e82852438367eaf3ecdf47887ecb9d" title="checks if the queue is full" alt="" coords="664,291,752,318"/>
+<area shape="rect" id="node8" href="$letter_8c.html#adb21e8b17e646cf0ae6495c479c50eb2" title="return the xpm image depending on the breakcode passed in the argument." alt="" coords="333,190,407,217"/>
+<area shape="rect" id="node11" href="$queue_8c.html#ab1f6625e397bfad97b22aa372f0b15e5" title="checks if the queue is empty" alt="" coords="317,241,423,267"/>
+<area shape="rect" id="node12" href="$serial_port_8c.html#aef3e72bfe1aa38562baeb5673f4cb552" title="check if there is something to read in the serial port" alt="" coords="488,291,599,318"/>
+<area shape="rect" id="node13" href="$serial_port_8c.html#aef8686f46f6c0580e48f6544191ab748" title="Reads a byte from the serial port and adds it to the receive queue." alt="" coords="336,342,404,369"/>
+<area shape="rect" id="node14" href="$queue_8c.html#ae63457f729849c954e9c9842571c982b" title="adds item to the queu" alt="" coords="496,342,591,369"/>
+</map>

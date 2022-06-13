@@ -1,0 +1,10 @@
+<map id="possiblePosition" name="possiblePosition">
+<area shape="rect" id="node1" title="calcule the possibles positions for the piece to move, and paint them in board with other color" alt="" coords="5,81,123,108"/>
+<area shape="rect" id="node2" href="$videocard_8c.html#aff7399df0aa957d7e05aadbc00913342" title="copies one buffer to other buffer" alt="" coords="178,5,273,32"/>
+<area shape="rect" id="node3" href="$videocard_8c.html#adbeec709ce09657d8724ad5445fd5270" title="draws an rectangle into the buffer in the argument in the position x and y with width ,..." alt="" coords="171,56,280,83"/>
+<area shape="rect" id="node7" href="$board_8c.html#a257d71a021c74491657a6a7b1db9959a" title="convert col into screen x" alt="" coords="181,107,269,133"/>
+<area shape="rect" id="node8" href="$board_8c.html#ac09e894727c0afa5992148aa799fd532" title="convert row into screen y" alt="" coords="180,157,271,184"/>
+<area shape="rect" id="node4" href="$videocard_8c.html#a90b9d263e366c02b02e9dd2fcbc56525" title="draws an horizontal line into the buffer in the argument in the position x and y with len and color" alt="" coords="328,5,411,32"/>
+<area shape="rect" id="node5" href="$board_8c.html#a0c346efb59e63a8ec1ae2a26df8a4f91" title="convert screen x into board x" alt="" coords="329,56,410,83"/>
+<area shape="rect" id="node6" href="$board_8c.html#a19b5e594d07d29eeb6ec30e284c1bc36" title="convert screen y into board y" alt="" coords="328,107,411,133"/>
+</map>

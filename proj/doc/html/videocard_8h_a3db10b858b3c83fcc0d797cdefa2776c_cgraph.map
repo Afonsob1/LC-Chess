@@ -1,0 +1,4 @@
+<map id="copy_from_buffer" name="copy_from_buffer">
+<area shape="rect" id="node1" title="copies to the video_mem the video_mem_buffer" alt="" coords="5,5,125,32"/>
+<area shape="rect" id="node2" href="$videocard_8c.html#aff7399df0aa957d7e05aadbc00913342" title="copies one buffer to other buffer" alt="" coords="173,5,268,32"/>
+</map>

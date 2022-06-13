@@ -1,0 +1,11 @@
+<map id="choosing_ih" name="choosing_ih">
+<area shape="rect" id="node1" title=" " alt="" coords="5,157,96,184"/>
+<area shape="rect" id="node2" href="$serial_port_8c.html#afd6318854b5895012ac5065bda667d99" title="Adds an element to the transmit queue." alt="" coords="144,5,289,32"/>
+<area shape="rect" id="node4" href="$videocard_8c.html#aff7399df0aa957d7e05aadbc00913342" title="copies one buffer to other buffer" alt="" coords="169,56,264,83"/>
+<area shape="rect" id="node5" href="$videocard_8c.html#a8f88db7b889d23f4f33e08153cc6c523" title="creates a xpm_imate_t with a xpm_map_t" alt="" coords="167,107,267,133"/>
+<area shape="rect" id="node6" href="$main_8c.html#a03105a443da5a11283797d3569b09b80" title=" " alt="" coords="155,157,279,184"/>
+<area shape="rect" id="node7" href="$videocard_8c.html#aefcdcf7096caac964badbd95fad717bc" title="draws a xpm image (img) into the buffer in the argument in the position x and y" alt="" coords="171,208,262,235"/>
+<area shape="rect" id="node8" href="$videocard_8c.html#a4c21470c18345e2d1cf57a04cbd66d75" title="maps the vram into a physical adress" alt="" coords="176,259,257,285"/>
+<area shape="rect" id="node9" href="$videocard_8c.html#a774e91638b15969a1211627535356ff1" title="sets all the memory starting at the buffer pointer to contain the value 0 (black screen)" alt="" coords="182,309,251,336"/>
+<area shape="rect" id="node3" href="$queue_8c.html#af4e82852438367eaf3ecdf47887ecb9d" title="checks if the queue is full" alt="" coords="337,5,425,32"/>
+</map>

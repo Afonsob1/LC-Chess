@@ -107,6 +107,7 @@ int (draw_hline)(char* board_mem,uint16_t 	x,uint16_t 	y,uint16_t 	len,uint32_t 
  * @param y vertical position
  */
 int(draw_image)(char *board_mem, xpm_image_t img,uint16_t x,uint16_t y);
+
 /**
  * @brief sets all the memory starting at the buffer pointer to contain the value 0 (black screen)
  * @param buffer video memory buffer we want to set to 0

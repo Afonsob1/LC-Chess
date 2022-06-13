@@ -1,0 +1,6 @@
+<map id="draw_rectangle" name="draw_rectangle">
+<area shape="rect" id="node1" title="draws an rectangle into the buffer in the argument in the position x and y with width ,..." alt="" coords="5,56,115,83"/>
+<area shape="rect" id="node2" href="$videocard_8c.html#a90b9d263e366c02b02e9dd2fcbc56525" title="draws an horizontal line into the buffer in the argument in the position x and y with len and color" alt="" coords="163,5,245,32"/>
+<area shape="rect" id="node3" href="$board_8c.html#a0c346efb59e63a8ec1ae2a26df8a4f91" title="convert screen x into board x" alt="" coords="163,56,245,83"/>
+<area shape="rect" id="node4" href="$board_8c.html#a19b5e594d07d29eeb6ec30e284c1bc36" title="convert screen y into board y" alt="" coords="163,107,245,133"/>
+</map>

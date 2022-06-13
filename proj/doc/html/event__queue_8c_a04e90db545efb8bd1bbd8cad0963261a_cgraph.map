@@ -1,0 +1,4 @@
+<map id="popEvent" name="popEvent">
+<area shape="rect" id="node1" title="return the first element of the queue" alt="" coords="5,5,80,32"/>
+<area shape="rect" id="node2" href="$event__queue_8c.html#ab49c8ee30fa14fec5a70613ad44ddce9" title="Checks if the the event queue if empty." alt="" coords="128,5,267,32"/>
+</map>

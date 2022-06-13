@@ -1,0 +1,7 @@
+<map id="drawBoard" name="drawBoard">
+<area shape="rect" id="node1" title=" " alt="" coords="5,56,88,83"/>
+<area shape="rect" id="node2" href="$videocard_8c.html#adbeec709ce09657d8724ad5445fd5270" title="draws an rectangle into the buffer in the argument in the position x and y with width ,..." alt="" coords="136,56,245,83"/>
+<area shape="rect" id="node3" href="$videocard_8c.html#a90b9d263e366c02b02e9dd2fcbc56525" title="draws an horizontal line into the buffer in the argument in the position x and y with len and color" alt="" coords="293,5,376,32"/>
+<area shape="rect" id="node4" href="$board_8c.html#a0c346efb59e63a8ec1ae2a26df8a4f91" title="convert screen x into board x" alt="" coords="294,56,375,83"/>
+<area shape="rect" id="node5" href="$board_8c.html#a19b5e594d07d29eeb6ec30e284c1bc36" title="convert screen y into board y" alt="" coords="293,107,376,133"/>
+</map>

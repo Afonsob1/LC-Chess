@@ -1,0 +1,52 @@
+<map id="proj_main_loop" name="proj_main_loop">
+<area shape="rect" id="node1" title=" " alt="" coords="5,919,115,946"/>
+<area shape="rect" id="node2" href="$videocard_8c.html#a3db10b858b3c83fcc0d797cdefa2776c" title="copies to the video_mem the video_mem_buffer" alt="" coords="397,539,517,566"/>
+<area shape="rect" id="node4" href="$videocard_8c.html#a8f88db7b889d23f4f33e08153cc6c523" title="creates a xpm_imate_t with a xpm_map_t" alt="" coords="611,235,711,262"/>
+<area shape="rect" id="node5" href="$event__queue_8c.html#afdfdbcc1e6d75180c6417fa6791b8bcb" title="Create a Event Queue object with a capacity given." alt="" coords="185,134,313,160"/>
+<area shape="rect" id="node6" href="$videocard_8c.html#aefcdcf7096caac964badbd95fad717bc" title="draws a xpm image (img) into the buffer in the argument in the position x and y" alt="" coords="615,336,706,363"/>
+<area shape="rect" id="node7" href="$cursor_8c.html#a17cc7b76a63dd20ccd460c5a719eae00" title="draws in cursor in a buffer" alt="" coords="413,286,500,312"/>
+<area shape="rect" id="node8" href="$event__queue_8c.html#ab49c8ee30fa14fec5a70613ad44ddce9" title="Checks if the the event queue if empty." alt="" coords="387,792,526,819"/>
+<area shape="rect" id="node9" href="$event__queue_8c.html#ab605b385c60780ed423140566b8074e8" title="frees the memory allocated to the EventQueue" alt="" coords="193,387,306,414"/>
+<area shape="rect" id="node10" href="$videocard_8c.html#a3480b98d1433177188ec5ea322b8439c" title="initializes the videocard with the mode given and maps the vram into a physical adress" alt="" coords="389,590,524,616"/>
+<area shape="rect" id="node12" href="$cursor_8c.html#aad08202ae1806c6d211d5778fb3225b7" title="initializes ther cursor in the position x = 0 e y = 0 with image arrow" alt="" coords="418,83,495,110"/>
+<area shape="rect" id="node13" href="$letter_8c.html#a15caf8e93d856f33cfb51089a6b87e53" title=" " alt="" coords="421,134,493,160"/>
+<area shape="rect" id="node14" href="$main_8c.html#a72552921f480f2fa068823e6fb54f3ed" title=" " alt="" coords="202,438,297,464"/>
+<area shape="rect" id="node16" href="$videocard_8c.html#a774e91638b15969a1211627535356ff1" title="sets all the memory starting at the buffer pointer to contain the value 0 (black screen)" alt="" coords="626,488,695,515"/>
+<area shape="rect" id="node18" href="$serial_port_8c.html#a2a7d8fe7c45cedd2711575b9edb1ea95" title="While there are messages to be received through the serial port, receive clear them...." alt="" coords="625,742,696,768"/>
+<area shape="rect" id="node21" href="$serial_port_8c.html#aef8686f46f6c0580e48f6544191ab748" title="Reads a byte from the serial port and adds it to the receive queue." alt="" coords="811,792,879,819"/>
+<area shape="rect" id="node26" href="$keyboard_8c.html#a75a0b054945899a3da61c3b94f814b26" title="interruption handler for every keyboard interruption it reads every make code and break code and hand..." alt="" coords="384,1130,529,1156"/>
+<area shape="rect" id="node28" href="$keyboard_8c.html#a178b1db0b319dccad2840cc3fd273132" title="unsubscribes the interruption line for the keyboard interruptions" alt="" coords="170,868,329,895"/>
+<area shape="rect" id="node29" href="$keyboard_8c.html#a32cc4de66854f8a7bd909e7aa8b901ed" title="unsubscribes the interruption line for the keyboard interruptions" alt="" coords="163,919,336,946"/>
+<area shape="rect" id="node30" href="$mouse_8c.html#a7e311379d4d64f88873ef8ade5c82a25" title="disables the data reporting on the mouse by sending specific commands to the kbc" alt="" coords="179,1224,320,1265"/>
+<area shape="rect" id="node34" href="$mouse_8c.html#a210374b50462acdedab00df64d5cea3c" title="this functions deals with the mouse interruptions. reads every packet and updates the pp struct" alt="" coords="417,1050,496,1076"/>
+<area shape="rect" id="node35" href="$mouse_8c.html#a20285aed4b3ef45812cd967532dd09db" title="subscribes the interruption line for the keyboard interruptions" alt="" coords="177,1071,322,1098"/>
+<area shape="rect" id="node36" href="$mouse_8c.html#a3ecf823d80520009ae5e0d76ae40a3c3" title="unsubscribes the interruption line for the mouse interruptions" alt="" coords="170,1122,329,1148"/>
+<area shape="rect" id="node37" href="$event__queue_8c.html#a04e90db545efb8bd1bbd8cad0963261a" title="return the first element of the queue" alt="" coords="212,818,287,844"/>
+<area shape="rect" id="node38" href="$event__queue_8c.html#a80574d6797c45d7f1af1c74c07afd425" title="add a new event to the queue" alt="" coords="208,1340,291,1367"/>
+<area shape="rect" id="node40" href="$videocard_8c.html#ae985c2cbcc981f40985f2584a24ecfec" title="sets the videocard mode to text mode" alt="" coords="188,1290,311,1316"/>
+<area shape="rect" id="node41" href="$serial_port_8c.html#a2c0e8c38b361407e0bbb49c0a94418cb" title=" " alt="" coords="577,1518,744,1544"/>
+<area shape="rect" id="node42" href="$serial_port_8c.html#a378083447f6441983a5c4e34893e1451" title="Serial port interrup." alt="" coords="223,1391,276,1418"/>
+<area shape="rect" id="node43" href="$serial_port_8c.html#a058ca07d565b0b08040949cdd07f2cb8" title="send a byte to serial port from transmit queue" alt="" coords="421,1442,492,1468"/>
+<area shape="rect" id="node44" href="$serial_port_8c.html#a9a12920f3599af907d786ddda7c42ab3" title="subscribe serial port interrupst" alt="" coords="189,1492,309,1519"/>
+<area shape="rect" id="node46" href="$serial_port_8c.html#afa8147a99cb0c6dd96b3672a85fa5580" title="unsubscribe interrupt serial port" alt="" coords="182,666,317,692"/>
+<area shape="rect" id="node47" href="$timer_8c.html#a91a2072306c68353712a6b771287dc2c" title="interruption handler for all timer interruptions. it increments the counter." alt="" coords="189,1594,310,1620"/>
+<area shape="rect" id="node48" href="$timer_8c.html#ac57a7e1140a7e00ad95ac5488d2a671b" title="it subscribes the interrutpion line for timer" alt="" coords="182,1644,317,1671"/>
+<area shape="rect" id="node49" href="$timer_8c.html#afabd21de449be154dd65d5fdb2d8045d" title="it unsubscribes the interrutpion line for timer" alt="" coords="175,1695,324,1722"/>
+<area shape="rect" id="node50" href="$cursor_8c.html#a6f7c56da6393029593320ee5a01e1dee" title="updates cursor with the mouse packet given by the mouse interrupt handler" alt="" coords="200,1746,299,1772"/>
+<area shape="rect" id="node3" href="$videocard_8c.html#aff7399df0aa957d7e05aadbc00913342" title="copies one buffer to other buffer" alt="" coords="613,387,708,414"/>
+<area shape="rect" id="node11" href="$videocard_8c.html#a4c21470c18345e2d1cf57a04cbd66d75" title="maps the vram into a physical adress" alt="" coords="620,438,701,464"/>
+<area shape="rect" id="node15" href="$main_8c.html#a54fbcd0a9d2a1628cb3f8718c40a7876" title=" " alt="" coords="411,387,502,414"/>
+<area shape="rect" id="node17" href="$main_8c.html#a73405dca4393284b0909abf00ce65d5e" title=" " alt="" coords="399,488,515,515"/>
+<area shape="rect" id="node23" href="$main_8c.html#a8cd0dd20f9df62ba063a035ae966a77d" title=" " alt="" coords="417,235,497,262"/>
+<area shape="rect" id="node24" href="$main_8c.html#a62ebcbded89271d4a252b0f9b781943d" title=" " alt="" coords="387,336,526,363"/>
+<area shape="rect" id="node25" href="$main_8c.html#a5335359d1575594dd494e22cb7a6f21f" title=" " alt="" coords="417,438,496,464"/>
+<area shape="rect" id="node19" href="$queue_8c.html#ab1f6625e397bfad97b22aa372f0b15e5" title="checks if the queue is empty" alt="" coords="792,1442,897,1468"/>
+<area shape="rect" id="node20" href="$serial_port_8c.html#aef3e72bfe1aa38562baeb5673f4cb552" title="check if there is something to read in the serial port" alt="" coords="945,742,1056,768"/>
+<area shape="rect" id="node22" href="$queue_8c.html#ae63457f729849c954e9c9842571c982b" title="adds item to the queu" alt="" coords="953,792,1048,819"/>
+<area shape="rect" id="node27" href="$utils_8c.html#a79a031a8611f5b2d6afa4158e92b0fb4" title="read a byte from port" alt="" coords="615,1180,706,1207"/>
+<area shape="rect" id="node31" href="$mouse_8c.html#a8271573d4a175a91e0447d34813ab9d0" title="reads kbc from the 0x60 buffer and then passes it by reference." alt="" coords="399,1282,514,1308"/>
+<area shape="rect" id="node32" href="$mouse_8c.html#afe41d8ae7e9b1809dbd78385eff93305" title="writes the argument arg on the kbc register 0x60" alt="" coords="405,1180,508,1207"/>
+<area shape="rect" id="node33" href="$mouse_8c.html#ad95470e18e89ba8577e7d0c9c07322e7" title="writes the kbc command on the kbc 0x64 register" alt="" coords="386,1231,527,1258"/>
+<area shape="rect" id="node39" href="$event__queue_8c.html#a29fa18558afb86673b4f7e9c5aec188e" title="Checks if the event queue is full." alt="" coords="396,1340,517,1367"/>
+<area shape="rect" id="node45" href="$serial_port_8c.html#afd78ce37c9652df446c6fbc15418f897" title="enable all interrupts, set the number of bits per menssage, and bitrate" alt="" coords="397,1492,516,1519"/>
+</map>

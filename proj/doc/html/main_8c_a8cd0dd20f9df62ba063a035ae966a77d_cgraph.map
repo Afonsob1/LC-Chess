@@ -1,0 +1,35 @@
+<map id="playing_ih" name="playing_ih">
+<area shape="rect" id="node1" title=" " alt="" coords="5,639,85,665"/>
+<area shape="rect" id="node2" href="$serial_port_8c.html#afd6318854b5895012ac5065bda667d99" title="Adds an element to the transmit queue." alt="" coords="133,5,279,32"/>
+<area shape="rect" id="node4" href="$board_8c.html#ac7d54b24d28372273723a3f4f21084a4" title="change priority of the piece, if true the board will draw this piece in the last place" alt="" coords="137,56,275,83"/>
+<area shape="rect" id="node5" href="$videocard_8c.html#a8f88db7b889d23f4f33e08153cc6c523" title="creates a xpm_imate_t with a xpm_map_t" alt="" coords="692,145,792,172"/>
+<area shape="rect" id="node6" href="$videocard_8c.html#aefcdcf7096caac964badbd95fad717bc" title="draws a xpm image (img) into the buffer in the argument in the position x and y" alt="" coords="553,512,644,539"/>
+<area shape="rect" id="node7" href="$letter_8c.html#af3d998e7196df5f1dc8beffbce337d0b" title="draws the name of the player into the buffer on the specified position with the specified spacing" alt="" coords="162,461,250,488"/>
+<area shape="rect" id="node9" href="$board_8c.html#a037f22059b7c568a31da880e27d41e43" title=" " alt="" coords="165,664,247,691"/>
+<area shape="rect" id="node12" href="$board_8c.html#a0c346efb59e63a8ec1ae2a26df8a4f91" title="convert screen x into board x" alt="" coords="558,664,639,691"/>
+<area shape="rect" id="node13" href="$board_8c.html#a19b5e594d07d29eeb6ec30e284c1bc36" title="convert screen y into board y" alt="" coords="557,816,640,843"/>
+<area shape="rect" id="node14" href="$board_8c.html#ab7c018b550df2717d3519121b361de32" title="draw board and pieces in the video_mem_buffer" alt="" coords="145,563,267,589"/>
+<area shape="rect" id="node17" href="$videocard_8c.html#a8f160900992f5072114e760d6ce5766d" title="get the horizontal resolution" alt="" coords="377,157,455,184"/>
+<area shape="rect" id="node18" href="$board_8c.html#a257d71a021c74491657a6a7b1db9959a" title="convert col into screen x" alt="" coords="372,765,460,792"/>
+<area shape="rect" id="node19" href="$board_8c.html#ac09e894727c0afa5992148aa799fd532" title="convert row into screen y" alt="" coords="371,816,461,843"/>
+<area shape="rect" id="node20" href="$board_8c.html#a482bbee01164d1f5821bad0abc6d7fbd" title="Board Constructor: create video mem buffers that board use and all pieces of the game." alt="" coords="169,284,243,311"/>
+<area shape="rect" id="node26" href="$piece_8c.html#a33383056cbf6dd753c75b0d37af64743" title="sets the targe (target_x and target_y) position of the piece to the position where we want to move th..." alt="" coords="163,917,249,944"/>
+<area shape="rect" id="node27" href="$board_8c.html#a6d8dfcc20aad348bde68d95aa89a45b3" title="calcule the possibles positions for the piece to move, and paint them in board with other color" alt="" coords="147,715,265,741"/>
+<area shape="rect" id="node28" href="$serial_port_8c.html#a0a2e671d326fba89869f91ec5abe072e" title="returns the first element from the receiver queue and removes it" alt="" coords="149,968,263,995"/>
+<area shape="rect" id="node30" href="$piece_8c.html#ac215621a813f4c56d4b26b062f91f146" title="Set the Piece&#39;s position to the position given." alt="" coords="146,1019,266,1045"/>
+<area shape="rect" id="node31" href="$board_8c.html#a1aef77b6db9bb62de33e4d8105e4ab3b" title="update all the pieces in the board" alt="" coords="159,1069,253,1096"/>
+<area shape="rect" id="node3" href="$queue_8c.html#af4e82852438367eaf3ecdf47887ecb9d" title="checks if the queue is full" alt="" coords="372,5,460,32"/>
+<area shape="rect" id="node8" href="$letter_8c.html#adb21e8b17e646cf0ae6495c479c50eb2" title="return the xpm image depending on the breakcode passed in the argument." alt="" coords="379,461,453,488"/>
+<area shape="rect" id="node10" href="$videocard_8c.html#adbeec709ce09657d8724ad5445fd5270" title="draws an rectangle into the buffer in the argument in the position x and y with width ,..." alt="" coords="361,715,471,741"/>
+<area shape="rect" id="node11" href="$videocard_8c.html#a90b9d263e366c02b02e9dd2fcbc56525" title="draws an horizontal line into the buffer in the argument in the position x and y with len and color" alt="" coords="557,715,640,741"/>
+<area shape="rect" id="node15" href="$videocard_8c.html#aff7399df0aa957d7e05aadbc00913342" title="copies one buffer to other buffer" alt="" coords="369,613,463,640"/>
+<area shape="rect" id="node16" href="$piece_8c.html#a7eb3b1cb69d667d6b3b2fcbef133ca06" title="draws the piece in the piece&#39;s position" alt="" coords="371,563,461,589"/>
+<area shape="rect" id="node21" href="$board_8c.html#a883bad1172755d1f5746803537756f96" title=" " alt="" coords="371,208,461,235"/>
+<area shape="rect" id="node23" href="$videocard_8c.html#aa5f86c75ab4d62e735b9517567a2fb43" title="get the vertical resolution" alt="" coords="377,259,455,285"/>
+<area shape="rect" id="node24" href="$videocard_8c.html#a4c21470c18345e2d1cf57a04cbd66d75" title="maps the vram into a physical adress" alt="" coords="375,309,457,336"/>
+<area shape="rect" id="node25" href="$videocard_8c.html#a774e91638b15969a1211627535356ff1" title="sets all the memory starting at the buffer pointer to contain the value 0 (black screen)" alt="" coords="381,360,451,387"/>
+<area shape="rect" id="node22" href="$piece_8c.html#a4fa718281bd05de6954101159a15f920" title="initialize a piece with a specific type in a given x and y" alt="" coords="563,183,635,209"/>
+<area shape="rect" id="node29" href="$queue_8c.html#ab1f6625e397bfad97b22aa372f0b15e5" title="checks if the queue is empty" alt="" coords="363,968,469,995"/>
+<area shape="rect" id="node32" href="$piece_8c.html#a64eff06ee6e5b102b1b55560178b257e" title="updates the position by 1 until the piece reaches the target position" alt="" coords="369,1044,463,1071"/>
+<area shape="rect" id="node33" href="$piece_8c.html#a3c59f821d28c7537b1e917d2aa69fcc7" title="update the position to the target position" alt="" coords="327,1095,505,1121"/>
+</map>

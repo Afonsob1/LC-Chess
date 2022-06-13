@@ -1,0 +1,5 @@
+<map id="createPiece" name="createPiece">
+<area shape="rect" id="node1" title=" " alt="" coords="5,5,96,32"/>
+<area shape="rect" id="node2" href="$piece_8c.html#a4fa718281bd05de6954101159a15f920" title="initialize a piece with a specific type in a given x and y" alt="" coords="144,5,216,32"/>
+<area shape="rect" id="node3" href="$videocard_8c.html#a8f88db7b889d23f4f33e08153cc6c523" title="creates a xpm_imate_t with a xpm_map_t" alt="" coords="264,5,364,32"/>
+</map>

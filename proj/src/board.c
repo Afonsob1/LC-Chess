@@ -173,7 +173,7 @@ void drawBoardPieces(Board* board){
 
 }
 
-void changePiecePriority(Board* board, Piece* p, bool priority){
+void changePiecePriority(Piece* p, bool priority){
     
     p->priority_draw = priority;
     p->change = true;

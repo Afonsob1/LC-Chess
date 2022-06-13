@@ -6,112 +6,103 @@
 
 
 /**
- *  @brief Configura o UART para meter o número especificado de bits por char
- *  @param val Número de bits por char a configurar no UART
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief Configures UART to place the specified number of bits per char
+ *  @param val number of bits per cher to configurate in the UART
+ *  @return 0 in case of sucess, 1 otherwise
  */
 int sp_set_number_of_bits_per_char(uint8_t number_of_bits);
 
-/**
- *  @brief Configura o UART para meter a paridade especificada
- *  @param parity Paridade a configurar no UART
- *  @return 0 em caso de sucesso, 1 caso contrário
- */
-int sp_set_parity(uint8_t parity);
 
 /**
- *  @brief Configura o UART para meter o bitrate especificado
- *  @param bitrate Bitrate a configurar no UART
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief set the  bitrate
+ *  @param bitrate Bitrate to set
+ *  @return 0 if successful, -1 otherwise
  */
 int sp_set_bitrate(int bitrate);
 
 /**
- *  @brief Mete os bits da macro especificada a 1 ou 0, consoante o boleano especificado, para o registo IER
- *  @param macro Macro a alterar
- *  @param enable Boleano: 1 se for para meter os bits a 1, 0 caso contrário
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief enable or disable the bit in the port given
+ * 
+ *  @param port  where to change
+ *  @param bit bit to change
+ *  @param enable true to enable the interrupt, false otherwise
+ *  @return 0 if successful, -1 otherwise
  */
-int sp_enable_ier(uint8_t macro, bool enable);
+int sp_enable(uint8_t port ,uint8_t bit, bool enable);
 
 /**
- *  @brief Mete os bits da macro especificada a 1 ou 0, consoante o boleano especificado, para o registo FCR
- *  @param macro Macro a alterar
- *  @param enable Boleano: 1 se for para meter os bits a 1, 0 caso contrário
- *  @return 0 em caso de sucesso, 1 caso contrário
- */
-int sp_enable_fcr(uint8_t macro, bool enable);
-
-/**
- *  @brief Chama todas as funções necessárias para configurar a Serial Port no início do programa
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief enable all interrupts, set the number of bits per menssage, and bitrate
+ *  @return 0 if successful
  */
 int sp_configure_init();
 
 /**
- *  @brief Chama todas as funções necessárias para desativar as Interrupções da Serial Port
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief disable all interrupts of Serial Port
+ *  @return 0 if successful, -1 otherwise
  */
 int sp_configure_end();
 
 /**
- *  @brief Subscreve as interrupções da Serial Port
- *  @param bit_no Variavél que armazena o valor da IRQ da Serial Port
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief subscribe serial port interrupst
+ *  @param bit_no store Serial Port IRQ line
+ *  @return 0 if successful, -1 otherwise
  */
 int (sp_subscribe_int)(uint8_t *bit_no);
 
 /**
- *  @brief Torna as interrupções da Serial Port não subscritas
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief unsubscribe interrupt serial port
+ *  @return 0 if successful, -1 otherwise
  */
 int (sp_unsubscribe_int)();
 
 /**
- *  @brief Leitura do registo LSR e verificação da possibilidade de escrita deste
- *  @return Boleano: true se puder escrever, false caso contrário
+ *  @brief check if can write in the serial port 
+ *  @return true if can write, false otherwise
  */
 bool sp_check_write();
 
 /**
- *  @brief Leitura do registo LSR e verificação da possibilidade de leitura deste
- *  @return Boleano: true se puder ler, false caso contrário
+ *  @brief check if there is something to read in the serial port
+ *  @return true if there is, false otherwise
  */
 bool sp_check_read();
 
 /**
- *  @brief Envio de mensagem para a Serial Port
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief send a byte to serial port from transmit queue
+ * @return 0 if no error  occurred
  */
 int sp_write();
 
 /**
- *  @brief Receção de mensagem da Serial Port
- *  @return 0 em caso de sucesso, 1 caso contrário
+ * @brief Reads a byte from the serial port and adds it to the receive queue
+ * @return 0 if no error  occurred
  */
 int sp_read();
 
 /**
- *  @brief Controlo das interrupções da Serial Port
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief Serial port interrup
+ *  @return 0 if no error  occurred
  */
 uint8_t (sp_ih)();
 
 /**
- *  @brief Leitura do Primeiro elemento da Receive Queue
- *  @return Primeiro elemento da Receive Queue
+ *  @brief returns the first element from the receiver queue and removes it 
+ *  @return  the first element of the receiver queue 
  */
 uint8_t readFromQueue();
 
 /**
- * @brief Apaga todos os
+ * @brief While there are messages to be received through the serial port, receive clear them. Also clears the receive queue.
  */
 void sp_clear();
 
 /**
- *  @brief Adiciona elemento à Transmit Queue
- *  @param data Elemento a adicionar à Transmit Queue
+ *  @brief Adds an element to the transmit queue
+ *  @param data element to add to the transmit queue
  */
 void addToTransmitQueue(uint8_t data);
 
+/**
+* sends all the data in the transmit queue to the serial port
+*/
 void sp_emptyTransmitQueue();

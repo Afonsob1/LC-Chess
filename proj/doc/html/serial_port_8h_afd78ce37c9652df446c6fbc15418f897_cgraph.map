@@ -1,0 +1,8 @@
+<map id="sp_configure_init" name="sp_configure_init">
+<area shape="rect" id="node1" title="enable all interrupts, set the number of bits per menssage, and bitrate" alt="" coords="5,56,124,83"/>
+<area shape="rect" id="node2" href="$serial_port_8c.html#a20fd098e008d9fb260049721cf1f99d1" title="enable or disable the bit in the port given" alt="" coords="209,5,291,32"/>
+<area shape="rect" id="node3" href="$serial_port_8c.html#a44e73256b03699922a4f0159b4cd8e13" title="set the bitrate" alt="" coords="198,56,302,83"/>
+<area shape="rect" id="node6" href="$serial_port_8c.html#ab4d7312f3f2b54bf9e9230729b3ee29c" title="Configures UART to place the specified number of bits per char." alt="" coords="172,107,328,149"/>
+<area shape="rect" id="node4" href="$utils_8c.html#a81621440b3d65680979425e39aa8c789" title="calcule the least significant byte" alt="" coords="378,31,474,57"/>
+<area shape="rect" id="node5" href="$utils_8c.html#a6a880076cd2ec468834438b6e0c58836" title="calcule the most significant byte" alt="" coords="376,81,476,108"/>
+</map>

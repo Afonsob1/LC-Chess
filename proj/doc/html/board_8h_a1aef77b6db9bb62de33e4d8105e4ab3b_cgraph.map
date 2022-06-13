@@ -1,0 +1,5 @@
+<map id="updateBoard" name="updateBoard">
+<area shape="rect" id="node1" title="update all the pieces in the board" alt="" coords="5,31,100,57"/>
+<area shape="rect" id="node2" href="$piece_8c.html#a64eff06ee6e5b102b1b55560178b257e" title="updates the position by 1 until the piece reaches the target position" alt="" coords="190,5,285,32"/>
+<area shape="rect" id="node3" href="$piece_8c.html#a3c59f821d28c7537b1e917d2aa69fcc7" title="update the position to the target position" alt="" coords="148,56,327,83"/>
+</map>
