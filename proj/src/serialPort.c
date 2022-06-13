@@ -11,11 +11,11 @@ static Queue * receiveQueue;
 int sp_set_number_of_bits_per_char(uint8_t number_of_bits) {
   uint32_t lcr;
 
-	if (sys_inb(SP_COM1 + SP_UART_LCR, &lcr) != 0) {return 1;}
+	if (sys_inb(SP_COM + SP_LCR, &lcr) != 0) {return 1;}
 
   lcr = (lcr & 0xFC) | number_of_bits;
 
-  if (sys_outb(SP_COM1 + SP_UART_LCR, lcr) != 0) {return 1;}
+  if (sys_outb(SP_COM + SP_LCR, lcr) != 0) {return 1;}
 
   return 0;
 }
@@ -32,111 +32,76 @@ void sp_clear(){
   }
 }
 
-int sp_set_parity(uint8_t parity) {
-  uint32_t lcr;
-
-	if (sys_inb(SP_COM1 + SP_UART_LCR, &lcr) != 0) {return 1;}
-
-  lcr = (lcr & 0xC7) | parity;
-
-  if (sys_outb(SP_COM1 + SP_UART_LCR, lcr) != 0) {return 1;}
-
-  return 0;
-}
-
 
 
 int sp_set_bitrate(int bitrate) {
-  uint16_t rate = 115200 / bitrate;
+  uint16_t actualRate = 115200 / bitrate;
 
-  uint8_t ratemsb = 0, ratelsb = 0;
-  util_get_LSB(rate, &ratelsb);
-  util_get_MSB(rate, &ratemsb);
+  uint8_t actualRatemsb = 0, actualRatelsb = 0;
+  util_get_LSB(actualRate, &actualRatelsb);
+  util_get_MSB(actualRate, &actualRatemsb);
 
   //SET DLAB
   uint32_t lcr;
-	if (sys_inb(SP_COM1 + SP_UART_LCR, &lcr) != 0) {return 1;}
-  lcr = lcr | SP_LCR_DLAB;
-  if (sys_outb(SP_COM1 + SP_UART_LCR, lcr) != 0) {return 1;}
+	if (sys_inb(SP_COM + SP_LCR, &lcr) != 0) {return -1;}
+  lcr = lcr | SP_DLAB;
+  if (sys_outb(SP_COM + SP_LCR, lcr) != 0) {return -1;}
 
   //SET BITRATE
-  if (sys_outb(SP_COM1 + SP_UART_DLL, ratelsb) != 0) {return 1;}
-  if (sys_outb(SP_COM1 + SP_UART_DLM, ratemsb) != 0) {return 1;}
+  if (sys_outb(SP_COM + SP_DLL, actualRatelsb) != 0) {return -1;}
+  if (sys_outb(SP_COM + SP_DLM, actualRatemsb) != 0) {return -1;}
 
   //RESET DLAB
-  if (sys_inb(SP_COM1 + SP_UART_LCR, &lcr) != 0) {return 1;}
-  lcr = lcr & ~SP_LCR_DLAB;
-  if (sys_outb(SP_COM1 + SP_UART_LCR, lcr) != 0) {return 1;}
+  if (sys_inb(SP_COM + SP_LCR, &lcr) != 0) {return -1;}
+  lcr = lcr & ~SP_DLAB;
+  if (sys_outb(SP_COM + SP_LCR, lcr) != 0) {return -1;}
 
   return 0;
 }
 
-int sp_enable_ier(uint8_t macro, bool enable) {
-  printf("\nENABLE %d\n", macro);
+int sp_enable(uint8_t port,uint8_t bit, bool enable) {
+   uint32_t aux;
 
-  uint32_t ier;
-
-	if (sys_inb(SP_COM1 + SP_UART_IER, &ier) != 0) {return 1;}
+	if (sys_inb(SP_COM + port, &aux) != 0) {return -1;}
 
   if (enable)
-    ier = ier | macro;
+    aux = aux | bit;
   else 
-    ier = ier & ~macro;
+    aux = aux & ~bit;
 
-  if (sys_outb(SP_COM1 + SP_UART_IER, ier) != 0) {return 1;}
-
-  return 0;
-}
-
-int sp_enable_fcr(uint8_t macro, bool enable) {
-  uint32_t fcr;
-
-	if (sys_inb(SP_COM1 + SP_UART_FCR, &fcr) != 0) {return 1;}
-
-  if (enable)
-    fcr = fcr | macro;
-  else
-    fcr = fcr & ~macro;
-
-  if (sys_outb(SP_COM1 + SP_UART_FCR, fcr) != 0) {return 1;}
+  if (sys_outb(SP_COM + port, aux) != 0) {return -1;}
 
   return 0;
 }
+
 
 int sp_configure_init() {
-  //SET 8 BITS PER CHAR
-  if (sp_set_number_of_bits_per_char(SP_LCR_8BITS) != 0) {return 1;}
+  if (sp_set_number_of_bits_per_char(SP_8BITS) != 0) {return -1;}
 
-  //SET ODD PARITY
-  if (sp_set_parity(SP_LCR_ODDPARITY) != 0) {return 1;}
-
-  //SET BITRATE
   if (sp_set_bitrate(115200) != 0) {return 1;}
 
-  //ENABLE INTERRUPTIONS
-  if (sp_enable_ier(SP_IER_RECEIVED_INTERRUPT, true) != 0) {return 1;}
-  if (sp_enable_ier(SP_IER_TRANSMITTER_INTERRUPT, true) != 0) {return 1;}
-  if (sp_enable_ier(SP_IER_RECEIVER_LINE_INTERRUPT, true) != 0) {return 1;}
+  if (sp_enable(SP_IER, SP_RECEIVED_INTERRUPT, true) != 0) {return -1;}
+  if (sp_enable(SP_IER, SP_TRANSMITTER_INTERRUPT, true) != 0) {return -1;}
+  if (sp_enable(SP_IER, SP_RECEIVER_LINE_INTERRUPT, true) != 0) {return -1;}
 
 
-  //ENABLE FIFO AND CLEAR TRANSMITTER AND RECEIVER FIFO
-  if (sp_enable_fcr(SP_FCR_ENABLE_FIFO, true) != 0) {return 1;}
-  if (sp_enable_fcr(SP_FCR_CLEAR_TRASMITTER_FIFO, true) != 0) {return 1;}
-  if (sp_enable_fcr(SP_FCR_CLEAR_RECEIVER_FIFO, true) != 0) {return 1;}
+  if (sp_enable(SP_FCR, SP_ENABLE_FIFO, true) != 0) {return -1;}
+  if (sp_enable(SP_FCR, SP_CLEAR_TRASMITTER_FIFO, true) != 0) {return -1;}
+  if (sp_enable(SP_FCR, SP_CLEAR_RECEIVER_FIFO, true) != 0) {return -1;}
 
   return 0;
 }
 
 int sp_configure_end() {
-  //DISABLE INTERRUPTIONS
-  if (sp_enable_ier(SP_IER_RECEIVED_INTERRUPT, false) != 0) {return 1;}
-  if (sp_enable_ier(SP_IER_TRANSMITTER_INTERRUPT, false) != 0) {return 1;}
-  if (sp_enable_ier(SP_IER_RECEIVER_LINE_INTERRUPT, false) != 0) {return 1;}
 
-  if (sp_enable_fcr(SP_FCR_ENABLE_FIFO, false) != 0) {return 1;}
-  if (sp_enable_fcr(SP_FCR_CLEAR_TRASMITTER_FIFO, true) != 0) {return 1;}
-  if (sp_enable_fcr(SP_FCR_CLEAR_RECEIVER_FIFO, true) != 0) {return 1;}
+  if (sp_enable(SP_FCR, SP_ENABLE_FIFO, false) ) {return -1;}
+  if (sp_enable(SP_FCR, SP_CLEAR_RECEIVER_FIFO, true)) {return -1;}
+  if (sp_enable(SP_FCR, SP_CLEAR_TRASMITTER_FIFO, true)) {return -1;}
 
+  if (sp_enable(SP_IER, SP_RECEIVER_LINE_INTERRUPT, false) ) {return -1;}
+  if (sp_enable(SP_IER, SP_TRANSMITTER_INTERRUPT, false) ) {return -1;}
+  if (sp_enable(SP_IER, SP_RECEIVED_INTERRUPT, false)) {return -1;}  
+  
 
   return 0;
 }
@@ -145,9 +110,9 @@ int (sp_subscribe_int)(uint8_t *bit_no) {
   hook_id_sp = 4;
   *bit_no = hook_id_sp;
 
-  if (sys_irqsetpolicy(SP_COM1_IRQ, (IRQ_REENABLE | IRQ_EXCLUSIVE), &hook_id_sp) != 0) {return 3;}
+  if (sys_irqsetpolicy(SP_IRQ, (IRQ_REENABLE | IRQ_EXCLUSIVE), &hook_id_sp) != 0) {return -1;}
 
-  if (sp_configure_init() != 0) {return 1;}
+  if (sp_configure_init() != 0) {return -1;}
 
   transmitQueue = createQueue(10);
   receiveQueue = createQueue(10);
@@ -156,9 +121,9 @@ int (sp_subscribe_int)(uint8_t *bit_no) {
 }
 
 int (sp_unsubscribe_int)() {
-  if (sp_configure_end() != 0) {return 1;}
+  if (sp_configure_end() != 0) {return -1;}
 
-  if (sys_irqrmpolicy(&hook_id_sp) != 0) {return 3;}
+  if (sys_irqrmpolicy(&hook_id_sp) != 0) {return -1;}
 
   sp_clear();
   free(receiveQueue);
@@ -174,9 +139,9 @@ int (sp_unsubscribe_int)() {
 bool sp_check_write() {
   uint32_t lsr;
 
-  if (sys_inb(SP_COM1 + SP_UART_LSR, &lsr) != 0) {return 1;}
+  if (sys_inb(SP_COM + SP_LSR, &lsr) != 0) {return -1;}
 
-  if ((lsr & SP_LSR_TRANSMITTER_HOLDING_EMPTY) && ~(lsr & SP_LSR_RECEIVER))
+  if ((lsr & SP_TRANSMITTER_HOLDING_EMPTY) && ~(lsr & SP_RECEIVER))
     return true;
   else
     return false;
@@ -186,9 +151,9 @@ bool sp_check_write() {
 bool sp_check_read() {
   uint32_t lsr;
 
-  if (sys_inb(SP_COM1 + SP_UART_LSR, &lsr) != 0) {return false;}
+  if (sys_inb(SP_COM + SP_LSR, &lsr) != 0) {return false;}
 
-  if (lsr & SP_LSR_RECEIVER)
+  if (lsr & SP_RECEIVER)
     return true;
   else
     return false;
@@ -199,14 +164,12 @@ int sp_write() {
 
   if (!queueIsEmpty(transmitQueue) && sp_check_write()) {
     data = removeFromQueue(transmitQueue);
-    if (sys_outb(SP_COM1 + SP_UART_THR, data) != 0){printf("NOT Sent %x.\n", data);return 1;}
-    printf("Sent %x.\n", data);
-    //if (queueIsEmpty(transmitQueue))
-     // printf("Transmit Queue is now empty.\n");
+    if (sys_outb(SP_COM + SP_THR, data) != 0){return -1;}
+    
     return 0;
   }
   else
-    return 1;
+    return -1;
 }
 
 int sp_read() {
@@ -215,12 +178,11 @@ int sp_read() {
 
   if (sp_check_read()) {
 
-    if (sys_inb(SP_COM1 + SP_UART_RBR, &rbr) != 0) {return 1;}
-    printf(" * Receive %x.\n", rbr);
+    if (sys_inb(SP_COM + SP_RBR, &rbr) != 0) {return -1;}
     addToQueue(receiveQueue, (uint8_t)rbr);
   }else{
     
-    return 1;
+    return -1;
   }
   
   return 0;
@@ -238,28 +200,17 @@ uint8_t (sp_ih)() {
   uint32_t interruptType = 0x00;
   uint8_t data = 0x00;
 
-  if (sys_inb(SP_COM1 + SP_UART_IIR, &interruptType) != 0) {return 0;}
+  if (sys_inb(SP_COM + SP_IIR, &interruptType) != 0) {return 0;}
 
 
-  if (interruptType & SP_IIR_NO_PENDING_INTERRUPT)
+  if (interruptType & SP_NO_PENDING_INTERRUPT)
     return 0;
 
-  if (interruptType & SP_IIR_RECEIVED_DATA) {
-	  printf("\n ** Received data\n");
+  if (interruptType & SP_RECEIVED_DATA) {
     sp_read();
   }
-  else if (interruptType & SP_IIR_TRANSMITTER_HOLDING) {
-	  printf(" \n**Finished sending data\n");
+  else if (interruptType & SP_TRANSMITTER_HOLDING) {
     sp_write();
-  }
-  else if (interruptType & SP_IIR_RECEIVER_LINE) {
-    printf("\n\nERROR BIT IS 1 ON LSR\n\n");
-  }
-  else if (interruptType & SP_IIR_MODEM_STATUS) {
-    printf("\n** MODEM STATUS.\n");
-  }
-  else if (interruptType & SP_IIR_CHAR_TIMEOUT) {
-    printf("\n** CHARACTER TIMEOUT.\n");
   }
 
   return data;

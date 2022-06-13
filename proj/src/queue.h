@@ -2,19 +2,7 @@
 
 #include <lcom/lcf.h>
 
-/** @struct Queue
- *  @brief Struct relativa à Transmissão/Receção de Informação da Serial Port
- *  @var Queue::front
- *  Índice do primeiro elemento da Queue
- *  @var Queue::rear
- *  Índice do último elemento da Queue
- *  @var Queue::size
- *  Número de elementos da Queue
- *  @var Queue::capacity
- *  Número máximo de elementos da Queue
- *  @var Queue::array
- *  Lista dos elementos da Queue
- */
+
 typedef struct {
 
   uint8_t front, rear, size; 
@@ -24,51 +12,51 @@ typedef struct {
 } Queue;
 
 /**
- *  @brief Aloca memória e cria a Queue
- *  @param capacity Número máximo de elementos da Queue
- *  @return Queue criada
+ *  @brief crerates a queue allocating memory
+ *  @param capacity capacity of the queu
+ *  @return queueu created
  */
 Queue * createQueue(unsigned capacity);
 
 /**
- *  @brief Verifica se a Queue está cheia
- *  @param queue Queue a verificar se está cheia
- *  @return 1 se a Queue estiver Cheia, 0 caso contrário
+ *  @brief checks if the queue is full
+ *  @param queue queueu that we want to check if is full
+ *  @return 1 if is full 0 otherwise
  */
 int queueIsFull(Queue * queue);
 
 /**
- *  @brief Verifica se a Queue está vazia
- *  @param queue Queue a verificar se está vazia
- *  @return 1 se a Queue estiver Vazia, 0 caso contrário
+ *  @brief checks if the queue is empty
+ *  @param queue queue that we want to check if is empty
+ *  @return 1 if is full 0 otherwise
  */
 int queueIsEmpty(Queue * queue);
 
 /**
- *  @brief Adiciona um Item à Queue
- *  @param queue Queue à qual se vai adicionar o Item
- *  @param item Item a adicionar à Queue
+ *  @brief adds item to the queu
+ *  @param queue queue that we want to add items to
+ *  @param item item that we want to add
  */
 void addToQueue(Queue * queue, uint8_t item);
 
 /**
- *  @brief Remove um Item da Queue
- *  @param queue Queue da qual se vai remover o Item
- *  @return Elemento removido da Queue
+ *  @brief removes item from queue
+ *  @param queue queue that we want to remove a item from
+ *  @return item removed from queu
  */
 uint8_t removeFromQueue(Queue * queue);
 
 /**
- *  @brief Devolve o elemento da frente da Queue
- *  @param queue Queue da qual se vai devolver o elemento da frente
- *  @return Elemento da frente da Queue
+ *  @brief gets the fron item of the queue
+ *  @param queue queue that we want to get the first element 
+ *  @return front item
  */
 int queueFront(Queue * queue);
 
 /**
- *  @brief Devolve o último elemento da Queue
- *  @param queue Queue da qual se vai devolver o último elemento
- *  @return 0 em caso de sucesso, 1 caso contrário
+ *  @brief gets the last element of the queue
+ *  @param queue queue that we want to get the last element
+ *  @return 0 if succeeded 1 otherwise
  */
 int queueRear(Queue * queue);
 

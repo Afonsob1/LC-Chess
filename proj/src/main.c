@@ -283,7 +283,7 @@ void name_choice_ih(GameState* gameState, Event* event){
                   (piece->type<=5 && player == BLACK))){ //player 2 can only press black pieces
 
                     dragging_piece = board->board[y*8+x];
-                    changePiecePriority(board, dragging_piece, true);
+                    changePiecePriority(dragging_piece, true);
                     
                     inicialPieceCol = x;
                     inicialPieceRow = y;
@@ -300,7 +300,7 @@ void name_choice_ih(GameState* gameState, Event* event){
           drawBoard(board); // redraw board to clear possible positions
 
           
-          changePiecePriority(board, dragging_piece, false);
+          changePiecePriority(dragging_piece, false);
           printf(" ****** RELEASED\n");
           int y = getBoardY(cursor.y);
           int x = getBoardX(cursor.x);
@@ -605,7 +605,7 @@ int(proj_main_loop)(int argc, char *argv[]) {
   irq_set_mouse = BIT(bit_mouse);
 
   /* subscribe serial port */
-  uint32_t irq_set_sp = BIT(SP_COM1_IRQ);
+  uint32_t irq_set_sp = BIT(SP_IRQ);
   uint8_t sp_bit_no;
   if (sp_subscribe_int(&sp_bit_no) != 0) {return 1;}
 
