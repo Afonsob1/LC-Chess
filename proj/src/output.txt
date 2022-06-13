@@ -4,15 +4,26 @@ ENABLE 1
 ENABLE 2
 
 ENABLE 4
-
+** EVENT keyboard 
+INICIO - 9c 
+entrou - 9c 
+œ
  ** Received data
  * Receive fc.
 ** EVENT keyboard 
 ** EVENT keyboard 
+INICIO - 93 
+entrou - 93 
+“** EVENT keyboard 
 ** EVENT keyboard 
-INICIO - b0 
-entrou - b0 
-°** EVENT keyboard 
+INICIO - 96 
+entrou - 96 
+–** EVENT keyboard 
+** EVENT keyboard 
+INICIO - 97 
+entrou - 97 
+—** EVENT keyboard 
+** EVENT keyboard 
 INICIO - 9c 
 
 WAITING 
@@ -21,8 +32,8 @@ CREATED BACKGROUND
  ** Received data
  * Receive fb.
 VM CONNECTED 2 
-MY TURN!
-CREATED BACKGROUND * Receive 1.
+MY TURN! ****** PRESSED
+Sen * Receive 1.
 Create animation
 Init board
 Draw board
@@ -37,12 +48,11 @@ Moving 3 6 3 4
 END Moving
  * Receive f8.
 MY TURN!
-osition
  ****** PRESSED
  ****** Possible solutions
  ****** RELEASED
  ****** RELEASED
-67
+14
  ****** setPiecePosition
  ****** PRESSED
  ****** Possible solutions
@@ -56,12 +66,183 @@ osition
 Sent f9.
  
 **Finished sending data
-Sent 1e.
-Sent 1c.
+Sent 19.
+Sent 1b.
  
 **Finished sending data
 Sent f8.
  
 **Finished sending data
+
+ ** Received data
+ * Receive f9.
+
+ ** Received data
+ * Receive 26.
+ * Receive 25.
+
+ ** Received data
+ * Receive f8.
+Received position
+ Old position 4:6 
+ New position 4:5
+Moving 4 6 4 5
+END Moving
+MY TURN!
  ****** PRESSED
+ ****** Possible solutions
  ****** RELEASED
+ ****** RELEASED
+14
+ ****** position livre
+ ****** mokito
+ ****** fu
+ ****** end turn
+Sent f9.
+ 
+**Finished sending data
+Sent 21.
+Sent 23.
+ 
+**Finished sending data
+Sent f8.
+ 
+**Finished sending data
+** EVENT keyboard 
+** EVENT keyboard 
+** EVENT keyboard 
+** EVENT keyboard 
+
+ ** Received data
+ * Receive f9.
+
+ ** Received data
+ * Receive 1f.
+ * Receive 3b.
+
+ ** Received data
+ * Receive f8.
+Received position
+ Old position 3:7 
+ New position 7:3
+Moving 3 7 7 3
+END Moving
+MY TURN!
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** position livre
+ ****** mokito
+ ****** fu
+ ****** end turn
+Sent f9.
+ 
+**Finished sending data
+Sent 18.
+Sent 33.
+ 
+**Finished sending data
+Sent f8.
+ 
+**Finished sending data
+
+ ** Received data
+ * Receive f9.
+
+ ** Received data
+ * Receive 3b.
+ * Receive 33.
+
+ ** Received data
+ * Receive f8.
+Received position
+ Old position 7:3 
+ New position 6:3
+Moving 7 3 6 3
+END Moving
+MY TURN!
+*** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** setPiecePosition
+ ****** PRESSED
+ ****** Possible solutions
+ ****** RELEASED
+ ****** RELEASED
+14
+ ****** not same team
+ ****** end same team
+ ****** WTF
+Sent f9.
+ 
+**Finished sending data
+Sent 3b.
+Sent 33.
+ 
+**Finished sending data
+Sent f8.
+ 
+**Finished sending data
